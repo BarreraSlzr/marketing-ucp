@@ -1,0 +1,39 @@
+.main {
+  @apply min-h-screen bg-background;
+}
+
+.container {
+  @apply mx-auto flex max-w-2xl flex-col items-center gap-6 px-6 py-16 text-center;
+}
+
+.icon {
+  @apply flex h-16 w-16 items-center justify-center rounded-full bg-primary/10;
+}
+
+.iconSvg {
+  @apply h-8 w-8 text-primary;
+}
+
+.heading {
+  @apply text-2xl font-semibold tracking-tight text-foreground;
+}
+
+.description {
+  @apply text-muted-foreground;
+}
+
+.details {
+  @apply w-full rounded-lg border border-border bg-card p-6 text-left;
+}
+
+.detailRow {
+  @apply flex justify-between py-2 text-sm;
+}
+
+.detailLabel {
+  @apply text-muted-foreground;
+}
+
+.detailValue {
+  @apply font-medium text-foreground;
+}

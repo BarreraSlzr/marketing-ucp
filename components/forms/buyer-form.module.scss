@@ -1,0 +1,15 @@
+.grid {
+  @apply grid grid-cols-1 gap-4 md:grid-cols-2;
+}
+
+.fullWidth {
+  @apply md:col-span-2;
+}
+
+.marketingRow {
+  @apply flex items-center gap-3 md:col-span-2;
+}
+
+.marketingLabel {
+  @apply text-sm text-foreground;
+}

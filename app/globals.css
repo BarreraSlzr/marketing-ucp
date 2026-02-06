@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 220 15% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 15% 12%;
+  --primary: 215 90% 52%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 14% 96%;
+  --secondary-foreground: 220 15% 12%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 220 9% 46%;
+  --accent: 220 14% 96%;
+  --accent-foreground: 220 15% 12%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 215 90% 52%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 220 15% 6%;
+  --foreground: 220 14% 96%;
+  --card: 220 15% 9%;
+  --card-foreground: 220 14% 96%;
+  --primary: 215 90% 52%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 15% 15%;
+  --secondary-foreground: 220 14% 96%;
+  --muted: 220 15% 15%;
+  --muted-foreground: 220 9% 55%;
+  --accent: 220 15% 15%;
+  --accent-foreground: 220 14% 96%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 15% 18%;
+  --input: 220 15% 18%;
+  --ring: 215 90% 52%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}

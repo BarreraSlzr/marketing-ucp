@@ -1,0 +1,27 @@
+.main {
+  @apply min-h-screen bg-background;
+}
+
+.header {
+  @apply border-b border-border bg-card;
+}
+
+.headerInner {
+  @apply mx-auto flex max-w-3xl items-center justify-between px-6 py-4;
+}
+
+.title {
+  @apply text-lg font-semibold tracking-tight text-foreground;
+}
+
+.badge {
+  @apply rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary;
+}
+
+.container {
+  @apply mx-auto flex max-w-3xl flex-col gap-6 px-6 py-8;
+}
+
+.checkoutAction {
+  @apply flex justify-end;
+}
