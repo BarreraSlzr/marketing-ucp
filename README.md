@@ -1,0 +1,69 @@
+# Universal Checkout Protocol (UCP)
+
+UCP is a Next.js 16 + Turborepo monorepo for a universal, URL-driven checkout experience. It provides shared Zod schemas, reusable UI primitives, and a reference checkout app that can be embedded or extended by integrations.
+
+## North Star
+Enable any commerce system to create a portable, secure checkout that works across platforms and channels.
+
+## Highlights
+- URL-first checkout state powered by nuqs
+- Shared, typed Zod schemas for buyers, payments, and orders
+- UI primitives packaged in @repo/ui
+- App Router implementation with CSS modules
+
+## Quick Start
+Prerequisites: Bun and Node.js 20+.
+
+```bash
+bun install
+bun run dev
+```
+
+App runs at http://localhost:3000.
+
+## Scripts
+- `bun run dev` - start Next.js in dev mode
+- `bun run build` - build the app
+- `bun run start` - run production server
+- `bun run lint` - lint the repo
+- `bun run test` - run all tests
+- `bun run test:entities` - run entities tests only
+
+## Vercel Deployment
+- Vercel Git integration is recommended for preview and production deployments.
+- CI adds optional preview and production deploy jobs when the following secrets are set:
+	- `VERCEL_TOKEN`
+	- `VERCEL_ORG_ID`
+	- `VERCEL_PROJECT_ID`
+
+## Vercel Analytics
+Enable analytics and speed insights in production:
+1. Install `@vercel/analytics` and `@vercel/speed-insights`.
+2. Add the analytics components in `app/layout.tsx`.
+3. Enable Vercel Analytics in the project dashboard.
+
+## Repo Structure
+- `app/` - Next.js App Router UI and routes
+- `components/` - shared UI components
+- `packages/entities/` - Zod schemas, parsers, types
+- `packages/ui/` - reusable UI components
+- `docs/` - architecture and workflow docs
+
+## Architecture Notes
+- URL-driven state is centralized in `packages/entities` parsers and consumed by the app.
+- Form data flows through server actions for validation and confirmation.
+- CSS modules keep styles co-located and predictable.
+
+## Roadmap
+- Multi-line-item cart support
+- First integration package (Polar or Shopify)
+- API routes for headless usage
+- i18n, analytics, and publishable `@repo/entities`
+
+## Contributing
+- Keep changes focused and documented.
+- Add tests for schema or behavior changes.
+- Prefer params objects for multi-argument functions.
+
+## License
+MIT. See [LICENSE](LICENSE).

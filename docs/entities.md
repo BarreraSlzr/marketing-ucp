@@ -104,6 +104,10 @@ erDiagram
 Each entity field maps to a flat URL search parameter. The naming convention
 uses a `{entity}_{field}` prefix to avoid collisions.
 
+Note: `serializeCheckout()` omits params that match parser defaults. For example,
+`checkout_currency` defaults to `USD`, so it may be absent from the URL. Treat
+missing values as defaults when reading URLs.
+
 ```mermaid
 graph LR
     subgraph URL["URL Search Params"]
