@@ -1,39 +1,12 @@
-@import "tailwindcss";
-
-@custom-variant dark (&:is(.dark *));
-
-@theme {
-  --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(220 15% 12%);
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(220 15% 12%);
-  --color-primary: hsl(215 90% 52%);
-  --color-primary-foreground: hsl(0 0% 100%);
-  --color-secondary: hsl(220 14% 96%);
-  --color-secondary-foreground: hsl(220 15% 12%);
-  --color-muted: hsl(220 14% 96%);
-  --color-muted-foreground: hsl(220 9% 46%);
-  --color-accent: hsl(220 14% 96%);
-  --color-accent-foreground: hsl(220 15% 12%);
-  --color-destructive: hsl(0 84% 60%);
-  --color-destructive-foreground: hsl(0 0% 100%);
-  --color-border: hsl(220 13% 91%);
-  --color-input: hsl(220 13% 91%);
-  --color-ring: hsl(215 90% 52%);
-  --radius: 0.5rem;
-  --radius-sm: calc(0.5rem - 4px);
-  --radius-md: calc(0.5rem - 2px);
-  --radius-lg: 0.5rem;
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-}
+@import "./theme.css";
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--color-border);
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }

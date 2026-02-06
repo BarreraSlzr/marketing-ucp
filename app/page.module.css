@@ -1,5 +1,4 @@
-@reference "tailwindcss";
-@reference "./globals.css";
+@reference "./theme.css";
 
 .main {
   @apply min-h-screen bg-background;

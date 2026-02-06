@@ -1,5 +1,4 @@
-@reference "tailwindcss";
-@reference "../app/globals.css";
+@reference "../app/theme.css";
 
 .stack {
   @apply flex flex-col gap-6;

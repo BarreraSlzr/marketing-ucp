@@ -1,5 +1,4 @@
-@reference "tailwindcss";
-@reference "../../../app/globals.css";
+@reference "../../../app/theme.css";
 
 .select {
   @apply flex h-10 w-full items-center justify-between rounded-md border
