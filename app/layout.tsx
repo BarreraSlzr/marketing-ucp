@@ -14,9 +14,12 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UCP Checkout - Marketing",
+  title: {
+    default: "UCP - Universal Checkout Protocol",
+    template: "%s | UCP",
+  },
   description:
-    "Universal Checkout Protocol demo with stateless, URL-driven forms.",
+    "Unify checkout across services with stateless, URL-driven forms. Integrate Shopify, Polar, and more.",
 };
 
 export const viewport: Viewport = {
