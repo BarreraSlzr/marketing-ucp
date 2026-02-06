@@ -46,8 +46,23 @@ Enable analytics and speed insights in production:
 - `app/` - Next.js App Router UI and routes
 - `components/` - shared UI components
 - `packages/entities/` - Zod schemas, parsers, types
+- `packages/polar/` - Polar checkout + webhook integration helpers
+- `packages/shopify/` - Shopify Storefront API clients and schemas
 - `packages/ui/` - reusable UI components
 - `docs/` - architecture and workflow docs
+
+## Integrations
+- Shopify product endpoint: `GET /api/shopify/products?handle=...`
+- Polar checkout endpoint: `POST /api/polar/checkout`
+- Payment webhooks: `POST /api/webhooks/payment?provider=polar`
+
+### Integration Environment Variables
+- `SHOPIFY_STORE_DOMAIN` (example: `your-store.myshopify.com`)
+- `SHOPIFY_STOREFRONT_TOKEN`
+- `SHOPIFY_API_VERSION` (optional, default `2024-10`)
+- `POLAR_API_KEY`
+- `POLAR_WEBHOOK_SECRET`
+- `POLAR_BASE_URL` (optional)
 
 ## Architecture Notes
 - URL-driven state is centralized in `packages/entities` parsers and consumed by the app.
@@ -56,7 +71,7 @@ Enable analytics and speed insights in production:
 
 ## Roadmap
 - Multi-line-item cart support
-- First integration package (Polar or Shopify)
+- Shopify + Polar integrations
 - API routes for headless usage
 - i18n, analytics, and publishable `@repo/entities`
 

@@ -115,7 +115,7 @@ graph LR
         bap["billing_line1..country"]
         sap["shipping_line1..country"]
         pp["payment_handler<br/>payment_credential_type<br/>payment_token"]
-        lip["item_id..item_sku"]
+        lip["item_id..item_sku<br/>line_items"]
         cp["checkout_id<br/>checkout_status<br/>checkout_currency"]
     end
 
@@ -125,6 +125,7 @@ graph LR
         shippingP["shippingAddressParsers"]
         paymentP["paymentParsers"]
         lineItemP["lineItemParsers"]
+        lineItemsP["lineItemsParsers"]
         checkoutP["checkoutParsers"]
     end
 
@@ -133,6 +134,7 @@ graph LR
     sap --> shippingP
     pp --> paymentP
     lip --> lineItemP
+    lip --> lineItemsP
     cp --> checkoutP
 
     buyerP --> allParsers["allParsers (aggregated)"]
@@ -140,6 +142,7 @@ graph LR
     shippingP --> allParsers
     paymentP --> allParsers
     lineItemP --> allParsers
+    lineItemsP --> allParsers
     checkoutP --> allParsers
     allParsers --> serializer["serializeCheckout()"]
 ```

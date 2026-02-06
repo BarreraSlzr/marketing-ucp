@@ -266,14 +266,23 @@ All checkout data can be serialized into URL search params for stateless, sharea
 ```typescript
 import { serializeCheckout } from "@repo/entities";
 
-const params = serializeCheckout({
+const params = serializeCheckout("/checkout", {
   buyer_email: "user@example.com",
   buyer_first_name: "Alice",
+        line_items: [
+                {
+                        id: "item_001",
+                        name: "Starter Plan",
+                        quantity: 1,
+                        unit_price: 2500,
+                        total_price: 2500,
+                },
+        ],
   // ... all checkout fields
 });
 
 // Generate shareable link
-const checkoutLink = `/checkout?${params}`;
+const checkoutLink = params;
 // /checkout?buyer_email=user%40example.com&buyer_first_name=Alice&...
 ```
 
