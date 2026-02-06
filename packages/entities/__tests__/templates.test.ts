@@ -64,6 +64,8 @@ describe("templateToUrl", () => {
     expect(parsed.searchParams.get("buyer_email")).toBe("jane@example.com");
     expect(parsed.searchParams.get("item_name")).toBe("Red Roses Bouquet");
     expect(parsed.searchParams.get("item_unit_price")).toBe("3500");
+    const items = JSON.parse(parsed.searchParams.get("line_items") ?? "[]");
+    expect(items.length).toBeGreaterThan(1);
   });
 
   test("generates URL for digital product without shipping", () => {
@@ -106,6 +108,15 @@ describe("serializeCheckout", () => {
   test("produces valid URL search string", () => {
     const url = serializeCheckout("/checkout", {
       buyer_email: "test@test.com",
+      line_items: [
+        {
+          id: "item_123",
+          name: "Widget",
+          quantity: 3,
+          unit_price: 1500,
+          total_price: 4500,
+        },
+      ],
       item_name: "Widget",
       item_quantity: 3,
     });
@@ -114,6 +125,8 @@ describe("serializeCheckout", () => {
     expect(parsed.searchParams.get("buyer_email")).toBe("test@test.com");
     expect(parsed.searchParams.get("item_name")).toBe("Widget");
     expect(parsed.searchParams.get("item_quantity")).toBe("3");
+    const items = JSON.parse(parsed.searchParams.get("line_items") ?? "[]");
+    expect(items[0]?.id).toBe("item_123");
   });
 
   test("omits null/undefined values", () => {
@@ -162,8 +175,13 @@ describe("template data integrity", () => {
   test("all non-blank templates have at least one item", () => {
     const nonBlank = ALL_TEMPLATES.filter((t) => t.id !== "blank");
     for (const template of nonBlank) {
-      expect(template.params.item_id).toBeTruthy();
-      expect(template.params.item_name).toBeTruthy();
+      const hasItems = Array.isArray(template.params.line_items)
+        ? template.params.line_items.length > 0
+        : false;
+      const hasLegacyItem = Boolean(
+        template.params.item_id && template.params.item_name
+      );
+      expect(hasItems || hasLegacyItem).toBe(true);
     }
   });
 

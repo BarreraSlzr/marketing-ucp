@@ -1,11 +1,13 @@
 import {
-  createSerializer,
-  parseAsBoolean,
-  parseAsInteger,
-  parseAsString,
-  parseAsStringEnum,
-  type inferParserType,
+    createSerializer,
+    parseAsBoolean,
+    parseAsInteger,
+    parseAsJson,
+    parseAsString,
+    parseAsStringEnum,
+    type inferParserType,
 } from "nuqs/server";
+import { LineItemSchema, type LineItem } from "./line-item.zod";
 
 /**
  * nuqs search-param parsers for each entity.
@@ -61,6 +63,17 @@ export const lineItemParsers = {
   item_image_url: parseAsString,
 };
 
+/* ── Line Items (multi-item cart via JSON) ──────────────── */
+const lineItemsSchema = LineItemSchema.array();
+const parseLineItems = (value: unknown): LineItem[] | null => {
+  const result = lineItemsSchema.safeParse(value);
+  return result.success ? result.data : null;
+};
+
+export const lineItemsParsers = {
+  line_items: parseAsJson(parseLineItems).withDefault([]),
+};
+
 /* ── Product (content creation fields) ───────────────────── */
 export const productParsers = {
   product_name: parseAsString.withDefault(""),
@@ -97,6 +110,7 @@ export const allParsers = {
   ...shippingAddressParsers,
   ...paymentParsers,
   ...lineItemParsers,
+  ...lineItemsParsers,
 };
 
 /* ── Serializer for building shareable URLs ──────────────── */
@@ -111,6 +125,7 @@ export type ShippingAddressParams = inferParserType<
 >;
 export type PaymentParams = inferParserType<typeof paymentParsers>;
 export type LineItemParams = inferParserType<typeof lineItemParsers>;
+export type LineItemsParams = inferParserType<typeof lineItemsParsers>;
 export type CheckoutParams = inferParserType<typeof checkoutParsers>;
 export type AllCheckoutParams = inferParserType<typeof allParsers>;
 export type ProductParams = inferParserType<typeof productParsers>;
