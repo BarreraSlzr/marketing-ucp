@@ -1,9 +1,9 @@
 "use server";
 
+import { serializeCheckout } from "@repo/entities";
 import { BuyerSchema } from "@repo/entities/buyer.zod";
 import { PostalAddressSchema } from "@repo/entities/postal-address.zod";
 import { redirect } from "next/navigation";
-import { serializeCheckout } from "@repo/entities";
 
 /**
  * Shared utility: extract FormData into a plain object,
@@ -24,6 +24,25 @@ export type FormState = {
   errors?: Record<string, string[]>;
   message?: string;
 };
+
+export type CheckoutRedirectParams = {
+  basePath: string;
+  formData: FormData;
+};
+
+export function buildCheckoutRedirectUrl(
+  params: CheckoutRedirectParams
+): string {
+  const raw = formDataToObject(params.formData);
+
+  return serializeCheckout(params.basePath, {
+    buyer_email: raw.buyer_email || null,
+    buyer_first_name: raw.buyer_first_name || null,
+    buyer_last_name: raw.buyer_last_name || null,
+    checkout_status: "ready_for_complete",
+    checkout_currency: raw.checkout_currency || "USD",
+  });
+}
 
 /* ── Buyer Form Action ───────────────────────────────────── */
 export async function submitBuyerAction(
@@ -149,15 +168,10 @@ export async function submitCheckoutAction(
   _prev: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const raw = formDataToObject(formData);
-
   // Build the URL state from all submitted form sections
-  const url = serializeCheckout("/checkout/confirm", {
-    buyer_email: raw.buyer_email || null,
-    buyer_first_name: raw.buyer_first_name || null,
-    buyer_last_name: raw.buyer_last_name || null,
-    checkout_status: "ready_for_complete",
-    checkout_currency: raw.checkout_currency || "USD",
+  const url = buildCheckoutRedirectUrl({
+    basePath: "/checkout/confirm",
+    formData,
   });
 
   redirect(url);

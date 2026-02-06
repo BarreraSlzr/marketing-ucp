@@ -1,15 +1,15 @@
 import { describe, expect, test } from "bun:test";
-import {
-  ALL_TEMPLATES,
-  TEMPLATE_FLOWER_SHOP,
-  TEMPLATE_DIGITAL_PRODUCT,
-  TEMPLATE_SHOPIFY_PRODUCT,
-  TEMPLATE_POLAR_SUBSCRIPTION,
-  TEMPLATE_EMPTY,
-  getTemplateById,
-  templateToUrl,
-} from "../templates";
 import { serializeCheckout } from "../parsers";
+import {
+    ALL_TEMPLATES,
+    TEMPLATE_DIGITAL_PRODUCT,
+    TEMPLATE_EMPTY,
+    TEMPLATE_FLOWER_SHOP,
+    TEMPLATE_POLAR_SUBSCRIPTION,
+    TEMPLATE_SHOPIFY_PRODUCT,
+    getTemplateById,
+    templateToUrl,
+} from "../templates";
 
 /* ── Template Registry ───────────────────────────────────── */
 
@@ -59,17 +59,19 @@ describe("getTemplateById", () => {
 describe("templateToUrl", () => {
   test("generates URL string for flower shop", () => {
     const url = templateToUrl(TEMPLATE_FLOWER_SHOP);
-    expect(url).toContain("/checkout?");
-    expect(url).toContain("buyer_email=jane%40example.com");
-    expect(url).toContain("item_name=Red+Roses+Bouquet");
-    expect(url).toContain("item_unit_price=3500");
+    const parsed = new URL(url, "http://localhost");
+    expect(parsed.pathname).toBe("/checkout");
+    expect(parsed.searchParams.get("buyer_email")).toBe("jane@example.com");
+    expect(parsed.searchParams.get("item_name")).toBe("Red Roses Bouquet");
+    expect(parsed.searchParams.get("item_unit_price")).toBe("3500");
   });
 
   test("generates URL for digital product without shipping", () => {
     const url = templateToUrl(TEMPLATE_DIGITAL_PRODUCT);
-    expect(url).toContain("/checkout?");
-    expect(url).toContain("buyer_email=developer%40company.io");
-    expect(url).not.toContain("shipping_line1");
+    const parsed = new URL(url, "http://localhost");
+    expect(parsed.pathname).toBe("/checkout");
+    expect(parsed.searchParams.get("buyer_email")).toBe("developer@company.io");
+    expect(parsed.searchParams.has("shipping_line1")).toBe(false);
   });
 
   test("generates URL for Shopify template", () => {
@@ -107,9 +109,11 @@ describe("serializeCheckout", () => {
       item_name: "Widget",
       item_quantity: 3,
     });
-    expect(url).toContain("buyer_email=test%40test.com");
-    expect(url).toContain("item_name=Widget");
-    expect(url).toContain("item_quantity=3");
+    const parsed = new URL(url, "http://localhost");
+    expect(parsed.pathname).toBe("/checkout");
+    expect(parsed.searchParams.get("buyer_email")).toBe("test@test.com");
+    expect(parsed.searchParams.get("item_name")).toBe("Widget");
+    expect(parsed.searchParams.get("item_quantity")).toBe("3");
   });
 
   test("omits null/undefined values", () => {
