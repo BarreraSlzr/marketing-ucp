@@ -17,6 +17,10 @@
     "paths": {
       "@repo/entities": ["./packages/entities/index.ts"],
       "@repo/entities/*": ["./packages/entities/*"],
+      "@repo/polar": ["./packages/polar/index.ts"],
+      "@repo/polar/*": ["./packages/polar/*"],
+      "@repo/shopify": ["./packages/shopify/index.ts"],
+      "@repo/shopify/*": ["./packages/shopify/*"],
       "@repo/ui": ["./packages/ui/index.ts"],
       "@repo/ui/*": ["./packages/ui/*"],
       "@/*": ["./*"]
