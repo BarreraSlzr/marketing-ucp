@@ -1,6 +1,14 @@
 /* ── Zod Schemas ─────────────────────────────────────────── */
 export { BuyerSchema, type Buyer } from "./buyer.zod";
 export {
+    CheckoutApiRequestSchema,
+    CheckoutApiResponseSchema,
+    CheckoutLineItemInputSchema,
+    type CheckoutApiRequest,
+    type CheckoutApiResponse,
+    type CheckoutLineItemInput
+} from "./checkout-api.zod";
+export {
     CheckoutSchema, CheckoutStatusSchema, type Checkout, type CheckoutStatus
 } from "./checkout.zod";
 export { LineItemSchema, type LineItem } from "./line-item.zod";

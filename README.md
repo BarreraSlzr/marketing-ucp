@@ -52,6 +52,7 @@ Enable analytics and speed insights in production:
 - `docs/` - architecture and workflow docs
 
 ## Integrations
+- Headless checkout endpoint: `POST /api/checkout`
 - Shopify product endpoint: `GET /api/shopify/products?handle=...`
 - Polar checkout endpoint: `POST /api/polar/checkout`
 - Payment webhooks: `POST /api/webhooks/payment?provider=polar`
@@ -72,7 +73,6 @@ Enable analytics and speed insights in production:
 ## Roadmap
 - Multi-line-item cart support
 - Shopify + Polar integrations
-- API routes for headless usage
 - i18n, analytics, and publishable `@repo/entities`
 
 ## Contributing
