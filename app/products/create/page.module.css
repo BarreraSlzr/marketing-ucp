@@ -1,0 +1,50 @@
+@reference "../../theme.css";
+
+.main {
+  @apply flex min-h-screen flex-col items-center bg-background px-4 py-12;
+}
+
+.container {
+  @apply flex w-full max-w-2xl flex-col gap-6;
+}
+
+.backLink {
+  @apply inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors;
+
+  &:hover {
+    @apply text-foreground;
+  }
+}
+
+.header {
+  @apply flex flex-col gap-2;
+}
+
+.title {
+  @apply text-2xl font-bold tracking-tight text-foreground;
+}
+
+.description {
+  @apply text-base text-muted-foreground leading-relaxed;
+}
+
+.templateBar {
+  @apply flex flex-col gap-3 rounded-lg border border-border bg-muted/30 p-4;
+}
+
+.templateBarTitle {
+  @apply text-sm font-medium text-foreground;
+}
+
+.templateGrid {
+  @apply flex flex-wrap gap-2;
+}
+
+.templateChip {
+  @apply inline-flex items-center rounded-md border border-border bg-card px-3 py-1.5
+    text-xs font-medium text-foreground transition-colors cursor-pointer;
+
+  &:hover {
+    @apply border-primary bg-primary/5 text-primary;
+  }
+}

@@ -1,0 +1,86 @@
+@reference "../app/theme.css";
+
+.wrapper {
+  @apply flex flex-col gap-4;
+}
+
+.header {
+  @apply flex flex-col gap-1;
+}
+
+.title {
+  @apply text-sm font-medium text-foreground;
+}
+
+.description {
+  @apply text-xs text-muted-foreground;
+}
+
+.grid {
+  @apply grid grid-cols-1 gap-3;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    @apply grid-cols-2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    @apply grid-cols-3;
+  }
+}
+
+.card {
+  @apply flex cursor-pointer flex-col gap-2 rounded-lg border border-border bg-card p-4
+    transition-colors;
+
+  &:hover {
+    @apply border-primary bg-accent;
+  }
+}
+
+.cardActive {
+  @apply border-primary ring-1 ring-primary;
+}
+
+.cardTop {
+  @apply flex items-center justify-between;
+}
+
+.cardName {
+  @apply text-sm font-semibold text-foreground;
+}
+
+.badge {
+  @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+}
+
+.badgeDemo {
+  @apply bg-secondary text-secondary-foreground;
+}
+
+.badgeShopify {
+  @apply bg-primary/10 text-primary;
+}
+
+.badgePolar {
+  @apply bg-accent text-accent-foreground;
+}
+
+.badgeCustom {
+  @apply bg-muted text-muted-foreground;
+}
+
+.cardDescription {
+  @apply text-xs text-muted-foreground leading-relaxed;
+}
+
+.cardFields {
+  @apply mt-1 flex flex-wrap gap-1;
+}
+
+.fieldTag {
+  @apply rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground font-mono;
+}

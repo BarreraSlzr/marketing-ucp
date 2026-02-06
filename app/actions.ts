@@ -112,6 +112,38 @@ export async function submitPaymentAction(
   };
 }
 
+/* ── Product Create/Update Action ─────────────────────────── */
+export async function submitProductAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const raw = formDataToObject(formData);
+
+  if (!raw.product_name) {
+    return {
+      success: false,
+      errors: { name: ["Product name is required."] },
+      message: "Please provide a product name.",
+    };
+  }
+
+  const price = parseInt(raw.product_price || "0", 10);
+  if (isNaN(price) || price < 0) {
+    return {
+      success: false,
+      errors: { price: ["Price must be a non-negative number."] },
+      message: "Invalid price.",
+    };
+  }
+
+  // In a real implementation, this would persist to a database
+  // or call an external API (Shopify, etc.)
+  return {
+    success: true,
+    message: `Product "${raw.product_name}" saved successfully. Use the checkout link to test the purchase flow.`,
+  };
+}
+
 /* ── Full Checkout Submit ────────────────────────────────── */
 export async function submitCheckoutAction(
   _prev: FormState,
