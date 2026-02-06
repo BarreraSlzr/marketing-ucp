@@ -1,5 +1,6 @@
 "use client";
 
+import { useActionState } from "react";
 import { useQueryStates } from "nuqs";
 import { allParsers, serializeCheckout } from "@repo/entities";
 import { Button, Separator } from "@repo/ui";
@@ -27,6 +28,7 @@ const checkoutInitial: FormState = { success: false };
 
 export function CheckoutClient() {
   const [params] = useQueryStates(allParsers, { shallow: false });
+  const [checkoutState, checkoutAction, isCheckoutPending] = useActionState(submitCheckoutAction, checkoutInitial);
 
   // Generate the shareable URL
   const shareableUrl = serializeCheckout("", params);
@@ -84,10 +86,10 @@ export function CheckoutClient() {
       </div>
 
       {/* Full Checkout Submit */}
-      <form id={CHECKOUT_FORM_ID} action={submitCheckoutAction.bind(null, checkoutInitial)} />
+      <form id={CHECKOUT_FORM_ID} action={checkoutAction} />
       <div className={styles.checkoutAction}>
-        <Button type="submit" form={CHECKOUT_FORM_ID} size="lg">
-          Complete Checkout
+        <Button type="submit" form={CHECKOUT_FORM_ID} size="lg" disabled={isCheckoutPending}>
+          {isCheckoutPending ? "Processing..." : "Complete Checkout"}
         </Button>
       </div>
     </div>
