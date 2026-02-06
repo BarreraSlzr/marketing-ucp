@@ -2,10 +2,6 @@
   "name": "marketing-ucp",
   "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
