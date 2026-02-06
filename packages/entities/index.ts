@@ -23,6 +23,28 @@ export {
   type CheckoutStatus,
   type Checkout,
 } from "./checkout.zod";
+export {
+  OrderStatusSchema,
+  OrderSchema,
+  type OrderStatus,
+  type Order,
+} from "./order.zod";
+export {
+  WebhookEventTypeSchema,
+  WebhookEventSchema,
+  WebhookProcessingStateSchema,
+  type WebhookEventType,
+  type WebhookEvent,
+  type WebhookProcessingState,
+} from "./webhook.zod";
+export {
+  type PaymentHandlerConfig,
+  type PaymentHandler,
+  registerPaymentHandler,
+  getPaymentHandler,
+  listPaymentHandlers,
+  paymentHandlers,
+} from "./payment-handler";
 
 /* ── Templates / Presets ─────────────────────────────────── */
 export {
