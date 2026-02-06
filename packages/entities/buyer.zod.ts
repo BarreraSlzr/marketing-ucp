@@ -1,4 +1,5 @@
-import { z } from 'zod';
+import { z } from "zod";
+import { PostalAddressSchema } from "./postal-address.zod";
 
 export const BuyerSchema = z.object({
   email: z.string().email().describe("Buyer's email address"),
@@ -8,5 +9,7 @@ export const BuyerSchema = z.object({
   billing_address: PostalAddressSchema.optional().describe("Billing address"),
   shipping_address: PostalAddressSchema.optional().describe("Shipping address"),
   customer_id: z.string().optional().describe("Existing customer identifier"),
-  accepts_marketing: z.boolean().optional().describe("Marketing consent")
+  accepts_marketing: z.boolean().optional().describe("Marketing consent"),
 });
+
+export type Buyer = z.infer<typeof BuyerSchema>;

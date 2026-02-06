@@ -1,0 +1,21 @@
+@reference "../app/theme.css";
+
+.stack {
+  @apply flex flex-col gap-6;
+}
+
+.checkoutAction {
+  @apply flex justify-end;
+}
+
+.urlPreview {
+  @apply rounded-lg border border-border bg-muted p-4;
+}
+
+.urlLabel {
+  @apply mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground;
+}
+
+.urlValue {
+  @apply break-all font-mono text-xs text-foreground;
+}

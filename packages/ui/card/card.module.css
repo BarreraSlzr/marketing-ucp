@@ -1,0 +1,25 @@
+@reference "../../../app/theme.css";
+
+.card {
+  @apply rounded-lg border border-border bg-card text-card-foreground shadow-sm;
+}
+
+.header {
+  @apply flex flex-col gap-1.5 p-6;
+}
+
+.title {
+  @apply text-2xl font-semibold leading-none tracking-tight text-card-foreground;
+}
+
+.description {
+  @apply text-sm text-muted-foreground;
+}
+
+.content {
+  @apply p-6 pt-0;
+}
+
+.footer {
+  @apply flex items-center p-6 pt-0;
+}
