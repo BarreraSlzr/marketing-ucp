@@ -5,7 +5,7 @@ import {
   parseAsString,
   parseAsStringEnum,
   type inferParserType,
-} from "nuqs";
+} from "nuqs/server";
 
 /**
  * nuqs search-param parsers for each entity.
