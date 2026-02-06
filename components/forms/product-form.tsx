@@ -1,13 +1,13 @@
 "use client";
 
-import { useQueryStates } from "nuqs";
 import {
   productParsers,
-  serializeProduct,
   serializeCheckout,
+  serializeProduct,
 } from "@repo/entities";
-import { Input, FormField, Checkbox, Button } from "@repo/ui";
+import { Button, Checkbox, FormField, Input } from "@repo/ui";
 import Link from "next/link";
+import { useQueryStates } from "nuqs";
 import styles from "./product-form.module.css";
 
 export const PRODUCT_FORM_ID = "product-form";
@@ -16,12 +16,27 @@ const CURRENCIES = ["USD", "EUR", "GBP", "MXN", "BRL", "JPY"];
 
 export function ProductForm() {
   const [params] = useQueryStates(productParsers, { shallow: false });
+  const unitPrice = params.product_price ?? 0;
 
   // Build a checkout URL from current product data
   const checkoutUrl = serializeCheckout("/checkout", {
+    line_items: params.product_name
+      ? [
+          {
+            id: params.product_sku || params.product_name,
+            name: params.product_name,
+            description: params.product_description || undefined,
+            quantity: 1,
+            unit_price: unitPrice,
+            total_price: unitPrice,
+            image_url: params.product_image_url || undefined,
+            sku: params.product_sku || undefined,
+          },
+        ]
+      : null,
     item_name: params.product_name || null,
     item_description: params.product_description || null,
-    item_unit_price: params.product_price || null,
+    item_unit_price: unitPrice || null,
     item_sku: params.product_sku || null,
     item_image_url: params.product_image_url || null,
     item_quantity: 1,
@@ -30,7 +45,10 @@ export function ProductForm() {
   });
 
   // Build a shareable product URL
-  const shareableUrl = serializeProduct("/products/create", params as Record<string, unknown>);
+  const shareableUrl = serializeProduct(
+    "/products/create",
+    params as Record<string, unknown>,
+  );
 
   function formatPrice(cents: number): string {
     return (cents / 100).toFixed(2);
@@ -179,7 +197,9 @@ export function ProductForm() {
       <div className={styles.previewSection}>
         <p className={styles.previewTitle}>Generated Checkout Link</p>
         <code className={styles.previewUrl}>
-          {params.product_name ? checkoutUrl : "(fill in product name to generate)"}
+          {params.product_name
+            ? checkoutUrl
+            : "(fill in product name to generate)"}
         </code>
         <div className={styles.previewActions}>
           {params.product_name && (
@@ -192,9 +212,7 @@ export function ProductForm() {
 
       <div className={styles.previewSection}>
         <p className={styles.previewTitle}>Shareable Product URL</p>
-        <code className={styles.previewUrl}>
-          {shareableUrl || "(empty)"}
-        </code>
+        <code className={styles.previewUrl}>{shareableUrl || "(empty)"}</code>
       </div>
     </div>
   );
