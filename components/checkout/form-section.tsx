@@ -11,7 +11,7 @@ import {
   Button,
 } from "@repo/ui";
 import type { FormState } from "@/app/actions";
-import styles from "./checkout-section.module.scss";
+import styles from "./checkout-section.module.css";
 
 interface FormSectionProps {
   formId: string;

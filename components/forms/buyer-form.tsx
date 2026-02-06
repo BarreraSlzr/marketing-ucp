@@ -3,7 +3,7 @@
 import { useQueryStates } from "nuqs";
 import { buyerParsers } from "@repo/entities";
 import { Input, FormField, Checkbox } from "@repo/ui";
-import styles from "./buyer-form.module.scss";
+import styles from "./buyer-form.module.css";
 
 export const BUYER_FORM_ID = "buyer-form";
 

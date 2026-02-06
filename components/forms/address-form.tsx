@@ -6,7 +6,7 @@ import {
   shippingAddressParsers,
 } from "@repo/entities";
 import { Input, FormField } from "@repo/ui";
-import styles from "./address-form.module.scss";
+import styles from "./address-form.module.css";
 
 export const BILLING_FORM_ID = "billing-address-form";
 export const SHIPPING_FORM_ID = "shipping-address-form";

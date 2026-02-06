@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 import { Label } from "../label/label";
-import styles from "./form-field.module.scss";
+import styles from "./form-field.module.css";
 
 export interface FormFieldProps {
   name: string;

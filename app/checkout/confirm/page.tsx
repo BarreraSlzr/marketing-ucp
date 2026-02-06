@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { ConfirmClient } from "./confirm-client";
-import styles from "./page.module.scss";
+import styles from "./page.module.css";
 
 export const metadata = {
   title: "Checkout Confirmed - UCP",

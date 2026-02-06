@@ -20,7 +20,7 @@ import {
   submitCheckoutAction,
   type FormState,
 } from "@/app/actions";
-import styles from "./checkout-client.module.scss";
+import styles from "./checkout-client.module.css";
 
 const CHECKOUT_FORM_ID = "checkout-form";
 const checkoutInitial: FormState = { success: false };

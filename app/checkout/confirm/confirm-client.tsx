@@ -5,7 +5,7 @@ import { allParsers } from "@repo/entities";
 import { Button, Separator } from "@repo/ui";
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
-import styles from "./page.module.scss";
+import styles from "./page.module.css";
 
 export function ConfirmClient() {
   const [params] = useQueryStates(allParsers, { shallow: false });

@@ -3,7 +3,7 @@
 import { useQueryStates } from "nuqs";
 import { paymentParsers } from "@repo/entities";
 import { Input, FormField, NativeSelect } from "@repo/ui";
-import styles from "./payment-form.module.scss";
+import styles from "./payment-form.module.css";
 
 export const PAYMENT_FORM_ID = "payment-form";
 
