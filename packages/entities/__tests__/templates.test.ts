@@ -1,0 +1,171 @@
+import { describe, expect, test } from "bun:test";
+import {
+  ALL_TEMPLATES,
+  TEMPLATE_FLOWER_SHOP,
+  TEMPLATE_DIGITAL_PRODUCT,
+  TEMPLATE_SHOPIFY_PRODUCT,
+  TEMPLATE_POLAR_SUBSCRIPTION,
+  TEMPLATE_EMPTY,
+  getTemplateById,
+  templateToUrl,
+} from "../templates";
+import { serializeCheckout } from "../parsers";
+
+/* ── Template Registry ───────────────────────────────────── */
+
+describe("ALL_TEMPLATES", () => {
+  test("contains exactly 5 templates", () => {
+    expect(ALL_TEMPLATES).toHaveLength(5);
+  });
+
+  test("all templates have unique IDs", () => {
+    const ids = ALL_TEMPLATES.map((t) => t.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  test("all templates have required fields", () => {
+    for (const template of ALL_TEMPLATES) {
+      expect(template.id).toBeTruthy();
+      expect(template.name).toBeTruthy();
+      expect(template.description).toBeTruthy();
+      expect(["demo", "shopify", "polar", "custom"]).toContain(template.category);
+      expect(typeof template.params).toBe("object");
+    }
+  });
+});
+
+/* ── getTemplateById ─────────────────────────────────────── */
+
+describe("getTemplateById", () => {
+  test("returns template by valid ID", () => {
+    const result = getTemplateById("flower-shop");
+    expect(result).toBe(TEMPLATE_FLOWER_SHOP);
+  });
+
+  test("returns undefined for unknown ID", () => {
+    const result = getTemplateById("nonexistent");
+    expect(result).toBeUndefined();
+  });
+
+  test("finds each template", () => {
+    for (const template of ALL_TEMPLATES) {
+      expect(getTemplateById(template.id)).toBe(template);
+    }
+  });
+});
+
+/* ── templateToUrl ───────────────────────────────────────── */
+
+describe("templateToUrl", () => {
+  test("generates URL string for flower shop", () => {
+    const url = templateToUrl(TEMPLATE_FLOWER_SHOP);
+    expect(url).toContain("/checkout?");
+    expect(url).toContain("buyer_email=jane%40example.com");
+    expect(url).toContain("item_name=Red+Roses+Bouquet");
+    expect(url).toContain("item_unit_price=3500");
+  });
+
+  test("generates URL for digital product without shipping", () => {
+    const url = templateToUrl(TEMPLATE_DIGITAL_PRODUCT);
+    expect(url).toContain("/checkout?");
+    expect(url).toContain("buyer_email=developer%40company.io");
+    expect(url).not.toContain("shipping_line1");
+  });
+
+  test("generates URL for Shopify template", () => {
+    const url = templateToUrl(TEMPLATE_SHOPIFY_PRODUCT);
+    expect(url).toContain("item_id=gid");
+    expect(url).toContain("shipping_city=Austin");
+  });
+
+  test("generates URL for Polar subscription", () => {
+    const url = templateToUrl(TEMPLATE_POLAR_SUBSCRIPTION);
+    expect(url).toContain("payment_handler=paypal");
+    expect(url).toContain("item_name=Pro+Plan");
+  });
+
+  test("blank template produces minimal URL", () => {
+    const url = templateToUrl(TEMPLATE_EMPTY);
+    expect(url).toContain("/checkout?");
+    // Should only have currency and status
+    expect(url).not.toContain("buyer_email");
+    expect(url).not.toContain("item_name");
+  });
+
+  test("respects custom basePath", () => {
+    const url = templateToUrl(TEMPLATE_FLOWER_SHOP, "/custom/checkout");
+    expect(url).toStartWith("/custom/checkout?");
+  });
+});
+
+/* ── Serialization Round-Trip ────────────────────────────── */
+
+describe("serializeCheckout", () => {
+  test("produces valid URL search string", () => {
+    const url = serializeCheckout("/checkout", {
+      buyer_email: "test@test.com",
+      item_name: "Widget",
+      item_quantity: 3,
+    });
+    expect(url).toContain("buyer_email=test%40test.com");
+    expect(url).toContain("item_name=Widget");
+    expect(url).toContain("item_quantity=3");
+  });
+
+  test("omits null/undefined values", () => {
+    const url = serializeCheckout("/checkout", {
+      buyer_email: "a@b.com",
+      buyer_phone: null,
+      buyer_first_name: undefined,
+    });
+    expect(url).toContain("buyer_email");
+    expect(url).not.toContain("buyer_phone");
+    expect(url).not.toContain("buyer_first_name");
+  });
+
+  test("handles special characters in values", () => {
+    const url = serializeCheckout("/checkout", {
+      item_name: "T-Shirt (Large) & More",
+    });
+    expect(url).toContain("item_name=");
+    // Should be URL-encoded
+    expect(url).not.toContain("&More");
+  });
+});
+
+/* ── Template Data Integrity ─────────────────────────────── */
+
+describe("template data integrity", () => {
+  test("flower shop has shipping address", () => {
+    const params = TEMPLATE_FLOWER_SHOP.params;
+    expect(params.shipping_line1).toBeTruthy();
+    expect(params.shipping_city).toBeTruthy();
+    expect(params.shipping_country).toBeTruthy();
+  });
+
+  test("digital product has no shipping address", () => {
+    const params = TEMPLATE_DIGITAL_PRODUCT.params;
+    expect(params.shipping_line1).toBeUndefined();
+  });
+
+  test("all non-blank templates have buyer_email", () => {
+    const nonBlank = ALL_TEMPLATES.filter((t) => t.id !== "blank");
+    for (const template of nonBlank) {
+      expect(template.params.buyer_email).toBeTruthy();
+    }
+  });
+
+  test("all non-blank templates have at least one item", () => {
+    const nonBlank = ALL_TEMPLATES.filter((t) => t.id !== "blank");
+    for (const template of nonBlank) {
+      expect(template.params.item_id).toBeTruthy();
+      expect(template.params.item_name).toBeTruthy();
+    }
+  });
+
+  test("all templates have checkout_currency", () => {
+    for (const template of ALL_TEMPLATES) {
+      expect(template.params.checkout_currency).toBe("USD");
+    }
+  });
+});
