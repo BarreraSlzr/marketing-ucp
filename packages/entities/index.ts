@@ -24,6 +24,19 @@ export {
   type Checkout,
 } from "./checkout.zod";
 
+/* ── Templates / Presets ─────────────────────────────────── */
+export {
+  ALL_TEMPLATES,
+  TEMPLATE_FLOWER_SHOP,
+  TEMPLATE_DIGITAL_PRODUCT,
+  TEMPLATE_SHOPIFY_PRODUCT,
+  TEMPLATE_POLAR_SUBSCRIPTION,
+  TEMPLATE_EMPTY,
+  getTemplateById,
+  templateToUrl,
+  type CheckoutTemplate,
+} from "./templates";
+
 /* ── nuqs Parsers ────────────────────────────────────────── */
 export {
   buyerParsers,
@@ -33,7 +46,9 @@ export {
   lineItemParsers,
   checkoutParsers,
   allParsers,
+  productParsers,
   serializeCheckout,
+  serializeProduct,
   type BuyerParams,
   type BillingAddressParams,
   type ShippingAddressParams,
@@ -41,4 +56,5 @@ export {
   type LineItemParams,
   type CheckoutParams,
   type AllCheckoutParams,
+  type ProductParams,
 } from "./parsers";

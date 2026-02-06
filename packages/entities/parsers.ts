@@ -54,9 +54,25 @@ export const paymentParsers = {
 export const lineItemParsers = {
   item_id: parseAsString,
   item_name: parseAsString,
+  item_description: parseAsString,
   item_quantity: parseAsInteger.withDefault(1),
   item_unit_price: parseAsInteger.withDefault(0),
   item_sku: parseAsString,
+  item_image_url: parseAsString,
+};
+
+/* ── Product (content creation fields) ───────────────────── */
+export const productParsers = {
+  product_name: parseAsString.withDefault(""),
+  product_description: parseAsString.withDefault(""),
+  product_price: parseAsInteger.withDefault(0),
+  product_currency: parseAsString.withDefault("USD"),
+  product_sku: parseAsString.withDefault(""),
+  product_image_url: parseAsString,
+  product_category: parseAsString,
+  product_vendor: parseAsString,
+  product_inventory: parseAsInteger.withDefault(0),
+  product_published: parseAsBoolean.withDefault(false),
 };
 
 /* ── Checkout Session ────────────────────────────────────── */
@@ -85,6 +101,7 @@ export const allParsers = {
 
 /* ── Serializer for building shareable URLs ──────────────── */
 export const serializeCheckout = createSerializer(allParsers);
+export const serializeProduct = createSerializer(productParsers);
 
 /* ── Inferred types from parsers ─────────────────────────── */
 export type BuyerParams = inferParserType<typeof buyerParsers>;
@@ -96,3 +113,4 @@ export type PaymentParams = inferParserType<typeof paymentParsers>;
 export type LineItemParams = inferParserType<typeof lineItemParsers>;
 export type CheckoutParams = inferParserType<typeof checkoutParsers>;
 export type AllCheckoutParams = inferParserType<typeof allParsers>;
+export type ProductParams = inferParserType<typeof productParsers>;

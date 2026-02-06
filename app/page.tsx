@@ -8,7 +8,9 @@ import {
   Zap,
   Link2,
   Shield,
+  Package,
 } from "lucide-react";
+import { ALL_TEMPLATES, templateToUrl } from "@repo/entities";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -108,6 +110,9 @@ export default function HomePage() {
             <Link href="/checkout" className={styles.navLink}>
               Checkout Demo
             </Link>
+            <Link href="/products/create" className={styles.navLink}>
+              Create Product
+            </Link>
             <a
               href="https://github.com/BarreraSlzr/marketing-ucp"
               className={styles.navLink}
@@ -161,6 +166,57 @@ export default function HomePage() {
               <span className={styles.statLabel}>{stat.label}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Quick Launch Templates */}
+      <section className={styles.templates}>
+        <div className={styles.templatesInner}>
+          <div className={styles.featuresHeader}>
+            <p className={styles.featuresLabel}>Try it now</p>
+            <h2 className={styles.featuresTitle}>
+              Pre-built checkout templates
+            </h2>
+            <p className={styles.featuresDescription}>
+              Click any template to launch a fully-populated checkout. Every
+              field is encoded in the URL -- stateless, shareable, and
+              resumable.
+            </p>
+          </div>
+          <div className={styles.templateCards}>
+            {ALL_TEMPLATES.filter((t) => t.id !== "blank").map((template) => (
+              <Link
+                key={template.id}
+                href={templateToUrl(template)}
+                className={styles.templateCard}
+              >
+                <div className={styles.templateCardTop}>
+                  <span className={styles.templateCardName}>
+                    {template.name}
+                  </span>
+                  <span className={styles.templateBadge}>
+                    {template.category}
+                  </span>
+                </div>
+                <p className={styles.templateCardDesc}>
+                  {template.description}
+                </p>
+                <span className={styles.templateCardLink}>
+                  Launch checkout
+                  <ArrowRight className="ml-1 inline-block h-3 w-3" />
+                </span>
+              </Link>
+            ))}
+          </div>
+          <div className={styles.templateActions}>
+            <Link href="/checkout" className={styles.heroSecondary}>
+              Start Blank Checkout
+            </Link>
+            <Link href="/products/create" className={styles.heroSecondary}>
+              <Package className="mr-2 inline-block h-4 w-4" />
+              Create a Product
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -251,6 +307,9 @@ export default function HomePage() {
           <div className={styles.footerLinks}>
             <Link href="/checkout" className={styles.footerLink}>
               Demo
+            </Link>
+            <Link href="/products/create" className={styles.footerLink}>
+              Products
             </Link>
             <a
               href="https://github.com/BarreraSlzr/marketing-ucp"
