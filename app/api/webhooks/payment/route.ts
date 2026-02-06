@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getPaymentHandler } from "@repo/entities";
+import { generateStamp, getIsoTimestamp, getIsoTimestampFromUnix } from "@/utils/stamp";
 import type { WebhookEvent } from "@repo/entities";
+import { getPaymentHandler } from "@repo/entities";
+import { NextRequest, NextResponse } from "next/server";
+import { registerPaymentHandlers } from "./handlers";
 
 /**
  * Webhook handler for payment events
@@ -14,6 +16,7 @@ import type { WebhookEvent } from "@repo/entities";
  */
 export async function POST(req: NextRequest) {
   try {
+    registerPaymentHandlers();
     // Get provider from query param
     const provider = req.nextUrl.searchParams.get("provider") || "stripe";
     const body = await req.text();
@@ -45,11 +48,12 @@ export async function POST(req: NextRequest) {
     // Parse event
     const eventData = JSON.parse(body);
     const event: WebhookEvent = {
-      id: eventData.id || `${provider}_${Date.now()}`,
+      id: eventData.id || `${provider}_${generateStamp()}`,
       type: eventData.type || "unknown",
-      timestamp: eventData.created
-        ? new Date(eventData.created * 1000).toISOString()
-        : new Date().toISOString(),
+      timestamp:
+        typeof eventData.created === "number"
+          ? getIsoTimestampFromUnix({ seconds: eventData.created })
+          : getIsoTimestamp(),
       source: (provider as any) || "custom",
       data: eventData,
       signature,
@@ -81,6 +85,7 @@ export async function POST(req: NextRequest) {
  * GET handler for webhook health check
  */
 export async function GET(req: NextRequest) {
+  registerPaymentHandlers();
   const provider = req.nextUrl.searchParams.get("provider");
 
   if (provider) {
