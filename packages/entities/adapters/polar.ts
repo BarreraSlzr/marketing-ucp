@@ -1,4 +1,5 @@
-import type { Order, WebhookEvent } from "../order.zod";
+import type { Order } from "../order.zod";
+import type { WebhookEvent } from "../webhook.zod";
 import type { PaymentHandler } from "../payment-handler";
 
 /**
