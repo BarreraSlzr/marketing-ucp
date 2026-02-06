@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@reference "../../../app/globals.css";
+
 .field {
   @apply flex flex-col gap-2;
 }

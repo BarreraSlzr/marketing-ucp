@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@reference "../../../app/globals.css";
+
 .root {
   @apply peer h-4 w-4 shrink-0 rounded-sm border border-primary
     ring-offset-background

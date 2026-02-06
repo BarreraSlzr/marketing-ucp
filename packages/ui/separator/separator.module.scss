@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@reference "../../../app/globals.css";
+
 .separator {
   @apply shrink-0 bg-border;
 }
