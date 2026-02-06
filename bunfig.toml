@@ -1,0 +1,14 @@
+# Bun configuration
+# Monorepo workspace support is automatic for bun
+# Install with: bun install
+
+[install]
+# Use Bun's faster, more reliable dependency resolution
+production = false
+allow-optional-dependencies = true
+
+[packages]
+# Bun auto-detects workspaces from package.json, no need to list them
+
+[define]
+# Environment definitions can go here if needed
