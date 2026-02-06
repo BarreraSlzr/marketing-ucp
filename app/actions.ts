@@ -1,9 +1,9 @@
 "use server";
 
+import { serializeCheckout } from "@repo/entities";
 import { BuyerSchema } from "@repo/entities/buyer.zod";
 import { PostalAddressSchema } from "@repo/entities/postal-address.zod";
 import { redirect } from "next/navigation";
-import { serializeCheckout } from "@repo/entities";
 
 /**
  * Shared utility: extract FormData into a plain object,
@@ -24,6 +24,25 @@ export type FormState = {
   errors?: Record<string, string[]>;
   message?: string;
 };
+
+export type CheckoutRedirectParams = {
+  basePath: string;
+  formData: FormData;
+};
+
+export function buildCheckoutRedirectUrl(
+  params: CheckoutRedirectParams
+): string {
+  const raw = formDataToObject(params.formData);
+
+  return serializeCheckout(params.basePath, {
+    buyer_email: raw.buyer_email || null,
+    buyer_first_name: raw.buyer_first_name || null,
+    buyer_last_name: raw.buyer_last_name || null,
+    checkout_status: "ready_for_complete",
+    checkout_currency: raw.checkout_currency || "USD",
+  });
+}
 
 /* ── Buyer Form Action ───────────────────────────────────── */
 export async function submitBuyerAction(
@@ -112,20 +131,47 @@ export async function submitPaymentAction(
   };
 }
 
-/* ── Full Checkout Submit ────────────────────────────────── */
-export async function submitCheckoutAction(
+/* ── Product Create/Update Action ─────────────────────────── */
+export async function submitProductAction(
   _prev: FormState,
   formData: FormData
 ): Promise<FormState> {
   const raw = formDataToObject(formData);
 
+  if (!raw.product_name) {
+    return {
+      success: false,
+      errors: { name: ["Product name is required."] },
+      message: "Please provide a product name.",
+    };
+  }
+
+  const price = parseInt(raw.product_price || "0", 10);
+  if (isNaN(price) || price < 0) {
+    return {
+      success: false,
+      errors: { price: ["Price must be a non-negative number."] },
+      message: "Invalid price.",
+    };
+  }
+
+  // In a real implementation, this would persist to a database
+  // or call an external API (Shopify, etc.)
+  return {
+    success: true,
+    message: `Product "${raw.product_name}" saved successfully. Use the checkout link to test the purchase flow.`,
+  };
+}
+
+/* ── Full Checkout Submit ────────────────────────────────── */
+export async function submitCheckoutAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
   // Build the URL state from all submitted form sections
-  const url = serializeCheckout("/checkout/confirm", {
-    buyer_email: raw.buyer_email || null,
-    buyer_first_name: raw.buyer_first_name || null,
-    buyer_last_name: raw.buyer_last_name || null,
-    checkout_status: "ready_for_complete",
-    checkout_currency: raw.checkout_currency || "USD",
+  const url = buildCheckoutRedirectUrl({
+    basePath: "/checkout/confirm",
+    formData,
   });
 
   redirect(url);

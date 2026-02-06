@@ -1,11 +1,13 @@
 import {
-  createSerializer,
-  parseAsBoolean,
-  parseAsInteger,
-  parseAsString,
-  parseAsStringEnum,
-  type inferParserType,
-} from "nuqs";
+    createSerializer,
+    parseAsBoolean,
+    parseAsInteger,
+    parseAsJson,
+    parseAsString,
+    parseAsStringEnum,
+    type inferParserType,
+} from "nuqs/server";
+import { LineItemSchema, type LineItem } from "./line-item.zod";
 
 /**
  * nuqs search-param parsers for each entity.
@@ -54,9 +56,36 @@ export const paymentParsers = {
 export const lineItemParsers = {
   item_id: parseAsString,
   item_name: parseAsString,
+  item_description: parseAsString,
   item_quantity: parseAsInteger.withDefault(1),
   item_unit_price: parseAsInteger.withDefault(0),
   item_sku: parseAsString,
+  item_image_url: parseAsString,
+};
+
+/* ── Line Items (multi-item cart via JSON) ──────────────── */
+const lineItemsSchema = LineItemSchema.array();
+const parseLineItems = (value: unknown): LineItem[] | null => {
+  const result = lineItemsSchema.safeParse(value);
+  return result.success ? result.data : null;
+};
+
+export const lineItemsParsers = {
+  line_items: parseAsJson(parseLineItems).withDefault([]),
+};
+
+/* ── Product (content creation fields) ───────────────────── */
+export const productParsers = {
+  product_name: parseAsString.withDefault(""),
+  product_description: parseAsString.withDefault(""),
+  product_price: parseAsInteger.withDefault(0),
+  product_currency: parseAsString.withDefault("USD"),
+  product_sku: parseAsString.withDefault(""),
+  product_image_url: parseAsString,
+  product_category: parseAsString,
+  product_vendor: parseAsString,
+  product_inventory: parseAsInteger.withDefault(0),
+  product_published: parseAsBoolean.withDefault(false),
 };
 
 /* ── Checkout Session ────────────────────────────────────── */
@@ -81,10 +110,12 @@ export const allParsers = {
   ...shippingAddressParsers,
   ...paymentParsers,
   ...lineItemParsers,
+  ...lineItemsParsers,
 };
 
 /* ── Serializer for building shareable URLs ──────────────── */
 export const serializeCheckout = createSerializer(allParsers);
+export const serializeProduct = createSerializer(productParsers);
 
 /* ── Inferred types from parsers ─────────────────────────── */
 export type BuyerParams = inferParserType<typeof buyerParsers>;
@@ -94,5 +125,7 @@ export type ShippingAddressParams = inferParserType<
 >;
 export type PaymentParams = inferParserType<typeof paymentParsers>;
 export type LineItemParams = inferParserType<typeof lineItemParsers>;
+export type LineItemsParams = inferParserType<typeof lineItemsParsers>;
 export type CheckoutParams = inferParserType<typeof checkoutParsers>;
 export type AllCheckoutParams = inferParserType<typeof allParsers>;
+export type ProductParams = inferParserType<typeof productParsers>;

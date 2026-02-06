@@ -4,26 +4,278 @@
   @apply min-h-screen bg-background;
 }
 
-.header {
+/* ── Nav ─────────────────────────────────────────────────── */
+.nav {
   @apply border-b border-border bg-card;
 }
 
-.headerInner {
-  @apply mx-auto flex max-w-3xl items-center justify-between px-6 py-4;
+.navInner {
+  @apply mx-auto flex max-w-5xl items-center justify-between px-6 py-4;
 }
 
-.title {
-  @apply text-lg font-semibold tracking-tight text-foreground;
+.navBrand {
+  @apply flex items-center gap-2;
 }
 
-.badge {
-  @apply rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary;
+.navLogo {
+  @apply text-lg font-bold tracking-tight text-foreground;
 }
 
-.container {
-  @apply mx-auto flex max-w-3xl flex-col gap-6 px-6 py-8;
+.navBadge {
+  @apply rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary;
 }
 
-.checkoutAction {
-  @apply flex justify-end;
+.navLinks {
+  @apply hidden items-center gap-6 md:flex;
+}
+
+.navLink {
+  @apply text-sm font-medium text-muted-foreground transition-colors;
+
+  &:hover {
+    @apply text-foreground;
+  }
+}
+
+.navCta {
+  @apply rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors;
+
+  &:hover {
+    @apply bg-primary/90;
+  }
+}
+
+/* ── Hero ────────────────────────────────────────────────── */
+.hero {
+  @apply mx-auto flex max-w-5xl flex-col items-center px-6 py-20 text-center;
+}
+
+.heroLabel {
+  @apply mb-4 inline-block rounded-full border border-border px-3 py-1 text-xs font-medium tracking-wide text-muted-foreground;
+}
+
+.heroTitle {
+  @apply mx-auto max-w-3xl text-balance text-4xl font-bold leading-tight tracking-tight text-foreground md:text-5xl;
+}
+
+.heroDescription {
+  @apply mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground;
+}
+
+.heroActions {
+  @apply mt-10 flex flex-col items-center gap-4 sm:flex-row;
+}
+
+.heroPrimary {
+  @apply rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors;
+
+  &:hover {
+    @apply bg-primary/90;
+  }
+}
+
+.heroSecondary {
+  @apply rounded-md border border-border bg-card px-6 py-3 text-sm font-medium text-foreground transition-colors;
+
+  &:hover {
+    @apply bg-secondary;
+  }
+}
+
+/* ── Stats ───────────────────────────────────────────────── */
+.stats {
+  @apply border-y border-border bg-secondary/50;
+}
+
+.statsInner {
+  @apply mx-auto grid max-w-5xl grid-cols-2 gap-px bg-border md:grid-cols-4;
+}
+
+.stat {
+  @apply flex flex-col gap-1 bg-background px-6 py-8;
+}
+
+.statValue {
+  @apply text-2xl font-bold tracking-tight text-foreground;
+}
+
+.statLabel {
+  @apply text-sm text-muted-foreground;
+}
+
+/* ── Templates ───────────────────────────────────────────── */
+.templates {
+  @apply mx-auto max-w-5xl px-6 py-16;
+}
+
+.templatesInner {
+  @apply flex flex-col gap-10;
+}
+
+.templateCards {
+  @apply grid gap-4 md:grid-cols-2;
+}
+
+.templateCard {
+  @apply flex flex-col gap-3 rounded-lg border border-border bg-card p-5 transition-colors;
+
+  &:hover {
+    @apply border-primary bg-primary/5;
+  }
+}
+
+.templateCardTop {
+  @apply flex items-center justify-between;
+}
+
+.templateCardName {
+  @apply text-sm font-semibold text-foreground;
+}
+
+.templateBadge {
+  @apply rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium capitalize text-primary;
+}
+
+.templateCardDesc {
+  @apply text-sm leading-relaxed text-muted-foreground;
+}
+
+.templateCardLink {
+  @apply mt-auto text-xs font-medium text-primary;
+}
+
+.templateActions {
+  @apply flex flex-wrap justify-center gap-4;
+}
+
+/* ── Features ────────────────────────────────────────────── */
+.features {
+  @apply mx-auto max-w-5xl px-6 py-20;
+}
+
+.featuresHeader {
+  @apply mb-12 text-center;
+}
+
+.featuresLabel {
+  @apply mb-2 text-sm font-medium text-primary;
+}
+
+.featuresTitle {
+  @apply text-3xl font-bold tracking-tight text-foreground;
+}
+
+.featuresDescription {
+  @apply mx-auto mt-3 max-w-xl text-muted-foreground;
+}
+
+.featuresGrid {
+  @apply grid gap-6 md:grid-cols-3;
+}
+
+.featureCard {
+  @apply flex flex-col gap-4 rounded-lg border border-border bg-card p-6 transition-colors;
+
+  &:hover {
+    @apply border-primary/30 bg-card;
+  }
+}
+
+.featureIcon {
+  @apply flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary;
+}
+
+.featureTitle {
+  @apply text-base font-semibold text-foreground;
+}
+
+.featureDescription {
+  @apply text-sm leading-relaxed text-muted-foreground;
+}
+
+/* ── Integrations ────────────────────────────────────────── */
+.integrations {
+  @apply border-t border-border bg-secondary/30;
+}
+
+.integrationsInner {
+  @apply mx-auto max-w-5xl px-6 py-20;
+}
+
+.integrationsHeader {
+  @apply mb-12 text-center;
+}
+
+.integrationsGrid {
+  @apply grid gap-4 md:grid-cols-2;
+}
+
+.integrationCard {
+  @apply flex items-start gap-4 rounded-lg border border-border bg-card p-6 transition-colors;
+
+  &:hover {
+    @apply border-primary/30;
+  }
+}
+
+.integrationIcon {
+  @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-lg font-bold text-primary;
+}
+
+.integrationContent {
+  @apply flex flex-1 flex-col gap-1;
+}
+
+.integrationName {
+  @apply text-base font-semibold text-foreground;
+}
+
+.integrationDescription {
+  @apply text-sm text-muted-foreground;
+}
+
+.integrationStatus {
+  @apply mt-2 inline-block self-start rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground;
+}
+
+/* ── CTA ─────────────────────────────────────────────────── */
+.cta {
+  @apply mx-auto max-w-5xl px-6 py-20 text-center;
+}
+
+.ctaTitle {
+  @apply text-3xl font-bold tracking-tight text-foreground;
+}
+
+.ctaDescription {
+  @apply mx-auto mt-4 max-w-xl text-muted-foreground;
+}
+
+.ctaActions {
+  @apply mt-8 flex justify-center gap-4;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.footer {
+  @apply border-t border-border bg-card;
+}
+
+.footerInner {
+  @apply mx-auto flex max-w-5xl items-center justify-between px-6 py-6;
+}
+
+.footerText {
+  @apply text-sm text-muted-foreground;
+}
+
+.footerLinks {
+  @apply flex gap-6;
+}
+
+.footerLink {
+  @apply text-sm text-muted-foreground transition-colors;
+
+  &:hover {
+    @apply text-foreground;
+  }
 }

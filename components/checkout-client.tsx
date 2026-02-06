@@ -21,6 +21,7 @@ import {
   submitCheckoutAction,
   type FormState,
 } from "@/app/actions";
+import { TemplateSelector } from "@/components/template-selector";
 import styles from "./checkout-client.module.css";
 
 const CHECKOUT_FORM_ID = "checkout-form";
@@ -35,6 +36,11 @@ export function CheckoutClient() {
 
   return (
     <div className={styles.stack}>
+      {/* Template Selector for quick autofill */}
+      <TemplateSelector />
+
+      <Separator />
+
       {/* Buyer Information */}
       <FormSection
         formId={BUYER_FORM_ID}

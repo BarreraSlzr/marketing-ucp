@@ -43,7 +43,7 @@ export function ConfirmClient() {
       )}
 
       <Button asChild variant="outline">
-        <Link href="/">Back to Checkout</Link>
+        <Link href="/checkout">Back to Checkout</Link>
       </Button>
     </>
   );
