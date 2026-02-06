@@ -9,6 +9,8 @@ import type { WebhookEvent } from "./webhook.zod";
  * 
  * UCP Spec: https://ucp.dev/specification/payment-handler-guide
  */
+
+export interface PaymentHandlerConfig {
   id: string; // e.g., "stripe", "polar", "thirdweb"
   name: string;
   apiKey: string;
