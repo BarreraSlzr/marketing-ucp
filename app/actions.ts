@@ -1,9 +1,18 @@
 "use server";
 
+import { generateStamp } from "@/utils/stamp";
 import { serializeCheckout } from "@repo/entities";
 import { BuyerSchema } from "@repo/entities/buyer.zod";
 import { PostalAddressSchema } from "@repo/entities/postal-address.zod";
+import {
+    PipelineTypeSchema,
+    SESSION_ID_MAX_LENGTH,
+    tracedStep,
+    type PipelineType,
+} from "@repo/pipeline";
+import { Effect } from "effect";
 import { redirect } from "next/navigation";
+import { ZodError } from "zod";
 
 /**
  * Shared utility: extract FormData into a plain object,
@@ -17,6 +26,46 @@ function formDataToObject(formData: FormData): Record<string, string> {
     }
   });
   return obj;
+}
+
+type PipelineContext = {
+  session_id: string;
+  pipeline_type: PipelineType;
+};
+
+function normalizeSessionId(params: { value: string }): string {
+  const sanitized = params.value
+    .replace(/[^a-zA-Z0-9_-]+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
+  const clipped = sanitized.slice(0, SESSION_ID_MAX_LENGTH);
+  return clipped.length > 0 ? clipped : "session";
+}
+
+function resolvePipelineType(params: { raw: Record<string, string> }): PipelineType {
+  const explicit = params.raw.checkout_pipeline_type;
+  if (explicit) {
+    const parsed = PipelineTypeSchema.safeParse(explicit);
+    if (parsed.success) {
+      return parsed.data;
+    }
+  }
+
+  const hasAddress = Boolean(
+    params.raw._address_type ||
+      params.raw.shipping_line1 ||
+      params.raw.billing_line1
+  );
+
+  return hasAddress ? "checkout_physical" : "checkout_digital";
+}
+
+function resolvePipelineContext(params: { raw: Record<string, string> }): PipelineContext {
+  const sessionCandidate = params.raw.checkout_id ?? generateStamp();
+  return {
+    session_id: normalizeSessionId({ value: sessionCandidate }),
+    pipeline_type: resolvePipelineType({ raw: params.raw }),
+  };
 }
 
 export type FormState = {
@@ -50,26 +99,53 @@ export async function submitBuyerAction(
   formData: FormData
 ): Promise<FormState> {
   const raw = formDataToObject(formData);
+  const pipelineContext = resolvePipelineContext({ raw });
 
-  const result = BuyerSchema.pick({
-    email: true,
-    phone: true,
-    first_name: true,
-    last_name: true,
-    customer_id: true,
-  }).safeParse({
+  const input = {
     email: raw.buyer_email,
     phone: raw.buyer_phone || undefined,
     first_name: raw.buyer_first_name || undefined,
     last_name: raw.buyer_last_name || undefined,
     customer_id: raw.buyer_customer_id || undefined,
+  };
+
+  const validationEffect = Effect.flatMap(
+    Effect.sync(() =>
+      BuyerSchema.pick({
+        email: true,
+        phone: true,
+        first_name: true,
+        last_name: true,
+        customer_id: true,
+      }).safeParse(input)
+    ),
+    (result) => (result.success ? Effect.succeed(result.data) : Effect.fail(result.error))
+  );
+
+  const traced = tracedStep({
+    session_id: pipelineContext.session_id,
+    pipeline_type: pipelineContext.pipeline_type,
+    step: "buyer_validated",
+    handler: "zod",
+    input,
+    effect: validationEffect,
   });
 
-  if (!result.success) {
+  const outcome = await Effect.runPromise(Effect.either(traced));
+
+  if (outcome._tag === "Left") {
+    const error = outcome.left;
+    if (error instanceof ZodError) {
+      return {
+        success: false,
+        errors: error.flatten().fieldErrors as Record<string, string[]>,
+        message: "Please fix the errors below.",
+      };
+    }
+
     return {
       success: false,
-      errors: result.error.flatten().fieldErrors as Record<string, string[]>,
-      message: "Please fix the errors below.",
+      message: "Unable to validate buyer information.",
     };
   }
 
@@ -86,21 +162,46 @@ export async function submitAddressAction(
 ): Promise<FormState> {
   const raw = formDataToObject(formData);
   const prefix = raw._address_type === "shipping" ? "shipping" : "billing";
+  const pipelineContext = resolvePipelineContext({ raw });
 
-  const result = PostalAddressSchema.safeParse({
+  const input = {
     line1: raw[`${prefix}_line1`],
     line2: raw[`${prefix}_line2`] || undefined,
     city: raw[`${prefix}_city`],
     state: raw[`${prefix}_state`] || undefined,
     postal_code: raw[`${prefix}_postal_code`],
     country: raw[`${prefix}_country`],
+  };
+
+  const validationEffect = Effect.flatMap(
+    Effect.sync(() => PostalAddressSchema.safeParse(input)),
+    (result) => (result.success ? Effect.succeed(result.data) : Effect.fail(result.error))
+  );
+
+  const traced = tracedStep({
+    session_id: pipelineContext.session_id,
+    pipeline_type: pipelineContext.pipeline_type,
+    step: "address_validated",
+    handler: "zod",
+    input,
+    effect: validationEffect,
   });
 
-  if (!result.success) {
+  const outcome = await Effect.runPromise(Effect.either(traced));
+
+  if (outcome._tag === "Left") {
+    const error = outcome.left;
+    if (error instanceof ZodError) {
+      return {
+        success: false,
+        errors: error.flatten().fieldErrors as Record<string, string[]>,
+        message: "Please fix the address errors below.",
+      };
+    }
+
     return {
       success: false,
-      errors: result.error.flatten().fieldErrors as Record<string, string[]>,
-      message: "Please fix the address errors below.",
+      message: "Unable to validate the address.",
     };
   }
 
@@ -116,8 +217,24 @@ export async function submitPaymentAction(
   formData: FormData
 ): Promise<FormState> {
   const raw = formDataToObject(formData);
+  const pipelineContext = resolvePipelineContext({ raw });
 
-  if (!raw.payment_handler) {
+  const validationEffect = raw.payment_handler
+    ? Effect.succeed(raw.payment_handler)
+    : Effect.fail(new Error("Payment handler is required."));
+
+  const traced = tracedStep({
+    session_id: pipelineContext.session_id,
+    pipeline_type: pipelineContext.pipeline_type,
+    step: "payment_initiated",
+    handler: "form",
+    input: { payment_handler: raw.payment_handler },
+    effect: validationEffect,
+  });
+
+  const outcome = await Effect.runPromise(Effect.either(traced));
+
+  if (outcome._tag === "Left") {
     return {
       success: false,
       errors: { handler: ["Payment handler is required."] },
@@ -168,11 +285,27 @@ export async function submitCheckoutAction(
   _prev: FormState,
   formData: FormData
 ): Promise<FormState> {
+  const raw = formDataToObject(formData);
+  const pipelineContext = resolvePipelineContext({ raw });
+
   // Build the URL state from all submitted form sections
-  const url = await buildCheckoutRedirectUrl({
-    basePath: "/checkout/confirm",
-    formData,
-  });
+  const url = await Effect.runPromise(
+    tracedStep({
+      session_id: pipelineContext.session_id,
+      pipeline_type: pipelineContext.pipeline_type,
+      step: "checkout_completed",
+      handler: "redirect",
+      input: { basePath: "/checkout/confirm" },
+      effect: Effect.tryPromise({
+        try: () =>
+          buildCheckoutRedirectUrl({
+            basePath: "/checkout/confirm",
+            formData,
+          }),
+        catch: (error) => error as Error,
+      }),
+    })
+  );
 
   redirect(url);
 }

@@ -17,6 +17,7 @@
         "@radix-ui/react-tooltip": "1.1.6",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "effect": "^3.17.5",
         "lucide-react": "^0.544.0",
         "next": "16.1.6",
         "next-intl": "^4.8.2",
@@ -53,6 +54,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@repo/entities": "workspace:*",
+        "effect": "^3.17.5",
         "zod": "^3.24.1",
       },
     },
@@ -61,6 +63,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@repo/entities": "workspace:*",
+        "@repo/pipeline": "workspace:*",
         "effect": "^3.17.5",
         "zod": "^3.24.1",
       },
@@ -69,7 +72,15 @@
       "name": "@repo/shopify",
       "version": "0.0.0",
       "dependencies": {
+        "@repo/pipeline": "workspace:*",
         "effect": "^3.17.5",
+        "zod": "^3.24.1",
+      },
+    },
+    "packages/tracing": {
+      "name": "@repo/tracing",
+      "version": "0.0.0",
+      "dependencies": {
         "zod": "^3.24.1",
       },
     },
@@ -343,6 +354,8 @@
     "@repo/polar": ["@repo/polar@workspace:packages/polar"],
 
     "@repo/shopify": ["@repo/shopify@workspace:packages/shopify"],
+
+    "@repo/tracing": ["@repo/tracing@workspace:packages/tracing"],
 
     "@repo/ui": ["@repo/ui@workspace:packages/ui"],
 
