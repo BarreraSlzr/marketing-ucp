@@ -1,8 +1,12 @@
 // LEGEND: Pipeline event schema — structured runtime event log for UCP checkout pipelines
 // Every step in a checkout pipeline emits a PipelineEvent for observability and verification
+// Event IDs are composite coordinates: {session}.{pipeline}.{step}.{seq}
+// All usage must comply with this LEGEND and the LICENSE
 
 import { z } from "zod";
-import { generateStamp, getIsoTimestamp } from "../../utils/stamp";
+import { getIsoTimestamp } from "../../utils/stamp";
+import { ChecksumHexSchema, SessionIdSchema, type PipelineType } from "./constants";
+import { EventIdSchema, createEventId } from "./event-id";
 
 /* ── Step Enum ───────────────────────────────────────────── */
 
@@ -34,20 +38,24 @@ export type PipelineEventStatus = z.infer<typeof PipelineEventStatusSchema>;
 /* ── PipelineEvent ───────────────────────────────────────── */
 
 export const PipelineEventSchema = z.object({
-  /** Unique event ID */
-  id: z.string().min(1),
-  /** ID of the pipeline run this event belongs to */
-  pipeline_id: z.string().min(1),
-  /** Which step fired */
+  /** Composite event ID: {session}.{pipeline}.{step}.{seq} */
+  id: EventIdSchema,
+  /** Checkout session ID — the universal traveler across systems */
+  session_id: SessionIdSchema,
+  /** Pipeline type from the registry (matrix column) */
+  pipeline_type: z.string().min(1),
+  /** Which step fired (matrix row) */
   step: PipelineStepSchema,
+  /** Retry/attempt sequence number (0 = first attempt) */
+  sequence: z.number().nonnegative().default(0),
   /** Outcome of the step */
   status: PipelineEventStatusSchema,
   /** Payment handler that processed this step (e.g. "polar", "shopify") */
   handler: z.string().optional(),
   /** SHA-256 hex digest of the step's input payload */
-  input_checksum: z.string().optional(),
+  input_checksum: ChecksumHexSchema.optional(),
   /** SHA-256 hex digest of the step's output payload */
-  output_checksum: z.string().optional(),
+  output_checksum: ChecksumHexSchema.optional(),
   /** Wall-clock duration of the step in milliseconds */
   duration_ms: z.number().nonnegative().optional(),
   /** Error message if status === "failure" */
@@ -62,11 +70,13 @@ export type PipelineEvent = z.infer<typeof PipelineEventSchema>;
 
 /* ── Helpers ─────────────────────────────────────────────── */
 
-/** Create a new PipelineEvent with canonical timestamp and generated ID */
+/** Create a new PipelineEvent with composite ID, canonical timestamp */
 export function createPipelineEvent(params: {
-  pipeline_id: string;
+  session_id: string;
+  pipeline_type: PipelineType;
   step: PipelineStep;
   status: PipelineEventStatus;
+  sequence?: number;
   handler?: string;
   input_checksum?: string;
   output_checksum?: string;
@@ -74,9 +84,27 @@ export function createPipelineEvent(params: {
   error?: string;
   metadata?: Record<string, unknown>;
 }): PipelineEvent {
+  const seq = params.sequence ?? 0;
+  const id = createEventId({
+    session_id: params.session_id,
+    pipeline_type: params.pipeline_type,
+    step: params.step,
+    sequence: seq,
+  });
+
   return PipelineEventSchema.parse({
-    id: generateStamp(),
+    id,
+    session_id: params.session_id,
+    pipeline_type: params.pipeline_type,
+    sequence: seq,
     timestamp: getIsoTimestamp(),
-    ...params,
+    step: params.step,
+    status: params.status,
+    handler: params.handler,
+    input_checksum: params.input_checksum,
+    output_checksum: params.output_checksum,
+    duration_ms: params.duration_ms,
+    error: params.error,
+    metadata: params.metadata,
   });
 }
