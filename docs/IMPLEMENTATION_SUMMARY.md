@@ -281,6 +281,11 @@ Updated `packages/pipeline/index.ts` to export:
    - Cache `getStatusSummary()` results briefly
    - Use Redis/Memcached for high-traffic scenarios
 
+## Branch / Issue Alignment (2026-02-07)
+- PR #15 (`codex/check-align-issue-approach` → `feat/runtime-observability-core`) currently has no code diff from the base branch; the runtime observability work summarized above already lives on the target branch.
+- This scope maps to Issue #5 (Runtime Observability Core). Recommend closing this PR or linking it to Issue #5 only if validation is needed; otherwise open a new PR for the remaining observability tasks.
+- Next forward steps: tackle Issue #6 (tracedStep wrapper + action instrumentation) and Issue #7 (dashboard timeline/handler views) in new, scoped PRs off `feat/runtime-observability-core`.
+
 ## Conclusion
 
 This implementation provides a complete, production-ready solution for:
