@@ -8,6 +8,10 @@
   @apply flex w-full max-w-2xl flex-col gap-6;
 }
 
+.topRow {
+  @apply flex items-center justify-between;
+}
+
 .backLink {
   @apply inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors;
 

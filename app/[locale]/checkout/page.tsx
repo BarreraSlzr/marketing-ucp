@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
 import { CheckoutClient } from "@/components/checkout-client";
-import styles from "./page.module.css";
+import { LocaleSwitcher } from "@/components/locale-switcher";
+import type { Metadata } from "next";
+import { useTranslations } from "next-intl";
+import { Suspense } from "react";
+import styles from "../../checkout/page.module.css";
 
 export const metadata: Metadata = {
   title: "Checkout - UCP",
@@ -9,12 +11,17 @@ export const metadata: Metadata = {
 };
 
 export default function CheckoutPage() {
+  const t = useTranslations();
+
   return (
     <main className={styles.main}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <h1 className={styles.title}>UCP Checkout</h1>
-          <span className={styles.badge}>Stateless</span>
+          <div className={styles.headerLeft}>
+            <h1 className={styles.title}>{t("checkout.title")}</h1>
+            <span className={styles.badge}>{t("checkout.badge")}</span>
+          </div>
+          <LocaleSwitcher />
         </div>
       </header>
 
