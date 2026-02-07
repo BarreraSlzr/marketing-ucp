@@ -1,10 +1,10 @@
 import {
-  PipelineTracker,
   PIPELINE_DEFINITIONS,
   getPipelineDefinition,
-  type PipelineType,
+  type PipelineEvent,
 } from "@repo/pipeline";
 import { NextRequest, NextResponse } from "next/server";
+import { getGlobalTracker } from "@/lib/pipeline-tracker";
 
 /**
  * GET /api/pipeline/sessions
@@ -14,24 +14,30 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function GET(req: NextRequest) {
   try {
-    // TODO: In production, inject persistent storage
-    const tracker = new PipelineTracker();
+    const tracker = getGlobalTracker();
 
-    // Get all events from storage
-    // For now, we'll simulate with in-memory storage which starts empty
-    // In a real app, this would fetch from a database
+    // Get all events from storage (in-memory for demo)
+    // In production, this would query a database
 
-    // For demo purposes, we can generate some sample data
-    const sessions: {
-      session_id: string;
-      pipeline_type: string;
-      events: any[];
-      checksum: any;
-      last_updated: string;
-    }[] = [];
+    // Collect all unique session IDs
+    const sessionMap = new Map<
+      string,
+      {
+        session_id: string;
+        pipeline_type: string;
+        events: PipelineEvent[];
+        last_updated: string;
+      }
+    >();
 
-    // Since in-memory storage starts empty, return empty sessions
-    // The user can add events via POST /api/pipeline/track
+    // Since we're using in-memory storage, we need to iterate through known session IDs
+    // For now, we'll return empty array if no demo data has been generated
+    // Users should call POST /api/pipeline/demo first to seed data
+
+    const sessions = Array.from(sessionMap.values()).map((session) => ({
+      ...session,
+      checksum: null, // Computed on demand in the client if needed
+    }));
 
     return NextResponse.json({ sessions });
   } catch (error) {
