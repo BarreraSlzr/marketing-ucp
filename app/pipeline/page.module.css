@@ -1,0 +1,105 @@
+@reference "../theme.css";
+
+.container {
+  @apply max-w-7xl mx-auto px-4 py-8;
+}
+
+.header {
+  @apply flex items-center justify-between mb-6;
+}
+
+.header h1 {
+  @apply text-3xl font-bold;
+}
+
+.actions {
+  @apply flex gap-2;
+}
+
+.button {
+  @apply px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors;
+}
+
+.stats {
+  @apply grid grid-cols-3 gap-4 mb-6;
+}
+
+.statCard {
+  @apply bg-white border border-gray-200 rounded-lg p-4 shadow-sm;
+}
+
+.statLabel {
+  @apply text-sm text-gray-600 mb-1;
+}
+
+.statValue {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.loading {
+  @apply text-center py-8 text-gray-600;
+}
+
+.error {
+  @apply bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-4;
+}
+
+.emptyState {
+  @apply bg-gray-50 border border-gray-200 rounded-lg p-8 text-center;
+}
+
+.emptyState h2 {
+  @apply text-xl font-semibold mb-2;
+}
+
+.emptyState p {
+  @apply text-gray-600 mb-2;
+}
+
+.sessionSelector {
+  @apply mb-6 flex items-center gap-3;
+}
+
+.label {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.select {
+  @apply flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.instructions {
+  @apply bg-blue-50 border border-blue-200 rounded-lg p-6 mt-6;
+}
+
+.instructions h3 {
+  @apply text-lg font-semibold mb-3;
+}
+
+.instructions ul {
+  @apply list-disc list-inside space-y-2 text-gray-700;
+}
+
+.instructions strong {
+  @apply font-semibold text-gray-900;
+}
+
+.statusBadge {
+  @apply inline-flex items-center justify-center w-6 h-6 rounded-full mx-1 text-white font-bold text-xs;
+}
+
+.statusBadge.success {
+  @apply bg-green-500;
+}
+
+.statusBadge.failure {
+  @apply bg-red-500;
+}
+
+.statusBadge.pending {
+  @apply bg-yellow-500;
+}
+
+.statusBadge.skipped {
+  @apply bg-gray-400;
+}
