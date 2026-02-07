@@ -2,16 +2,16 @@
 // Captures RSC render, fetch, Server Actions, and Edge runtime execution
 // All usage must comply with this LEGEND and the LICENSE
 
-import {
-  createSpan,
-  endSpan,
-  setAttribute,
-  type Span,
-  type SpanAttributes,
-  type TraceId,
-  type SpanId,
-} from "./span";
 import { getGlobalCollector } from "./collector";
+import {
+    createSpan,
+    endSpan,
+    setAttribute,
+    type Span,
+    type SpanAttributes,
+    type SpanId,
+    type TraceId,
+} from "./span";
 
 /* ── Server Tracing Context ──────────────────────────────── */
 
@@ -68,7 +68,7 @@ export class ServerTracer {
   /** Detect runtime environment */
   private detectRuntime(): "edge" | "nodejs" {
     // Check for Edge Runtime
-    if (typeof EdgeRuntime !== "undefined") {
+    if ("EdgeRuntime" in globalThis) {
       return "edge";
     }
     return "nodejs";

@@ -143,6 +143,7 @@ export class TraceCollector {
     // Add process name metadata
     events.push({
       name: "process_name",
+      cat: "metadata",
       ph: "M",
       pid: this.processId,
       tid: 0,
@@ -153,6 +154,7 @@ export class TraceCollector {
     // Add thread name metadata
     events.push({
       name: "thread_name",
+      cat: "metadata",
       ph: "M",
       pid: this.processId,
       tid: 1,

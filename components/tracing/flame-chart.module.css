@@ -45,7 +45,7 @@
 }
 
 .details-panel h4 {
-  @apply text-md font-semibold mt-3 mb-1;
+  @apply text-base font-semibold mt-3 mb-1;
 }
 
 .details-panel pre {
