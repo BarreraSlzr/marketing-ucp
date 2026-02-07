@@ -35,6 +35,12 @@
       "@repo/pipeline/*": [
         "./packages/pipeline/*"
       ],
+      "@repo/tracing": [
+        "./packages/tracing/index.ts"
+      ],
+      "@repo/tracing/*": [
+        "./packages/tracing/*"
+      ],
       "@repo/polar": [
         "./packages/polar/index.ts"
       ],
