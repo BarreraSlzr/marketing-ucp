@@ -48,6 +48,14 @@
         "zod": "^3.24.1",
       },
     },
+    "packages/pipeline": {
+      "name": "@repo/pipeline",
+      "version": "0.0.0",
+      "dependencies": {
+        "@repo/entities": "workspace:*",
+        "zod": "^3.24.1",
+      },
+    },
     "packages/polar": {
       "name": "@repo/polar",
       "version": "0.0.0",
@@ -329,6 +337,8 @@
     "@radix-ui/rect": ["@radix-ui/rect@1.1.0", "", {}, "sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg=="],
 
     "@repo/entities": ["@repo/entities@workspace:packages/entities"],
+
+    "@repo/pipeline": ["@repo/pipeline@workspace:packages/pipeline"],
 
     "@repo/polar": ["@repo/polar@workspace:packages/polar"],
 
