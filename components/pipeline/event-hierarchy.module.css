@@ -1,0 +1,261 @@
+@reference "../../app/theme.css";
+
+.container {
+  @apply space-y-6;
+}
+
+.header {
+  @apply flex items-start justify-between gap-6 mb-6 flex-wrap;
+}
+
+.sessionInfo h2 {
+  @apply text-2xl font-bold mb-1;
+}
+
+.pipelineType {
+  @apply text-sm text-gray-600;
+}
+
+.checksumCard {
+  @apply border rounded-lg p-4 shadow-sm;
+}
+
+.checksumCard.valid {
+  @apply bg-green-50 border-green-200;
+}
+
+.checksumCard.invalid {
+  @apply bg-red-50 border-red-200;
+}
+
+.checksumHeader {
+  @apply flex items-center justify-between mb-3;
+}
+
+.checksumLabel {
+  @apply font-semibold text-gray-700;
+}
+
+.checksumBadge {
+  @apply px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.valid .checksumBadge {
+  @apply bg-green-100 text-green-800;
+}
+
+.invalid .checksumBadge {
+  @apply bg-red-100 text-red-800;
+}
+
+.checksumDetails {
+  @apply space-y-2;
+}
+
+.checksumStat {
+  @apply flex items-center justify-between text-sm;
+}
+
+.checksumStatLabel {
+  @apply text-gray-600;
+}
+
+.checksumStatValue {
+  @apply font-mono font-semibold;
+}
+
+.checksumStatValue.failure {
+  @apply text-red-600;
+}
+
+.checksumHash {
+  @apply flex items-center justify-between text-sm;
+}
+
+.hash {
+  @apply font-mono text-xs bg-gray-100 px-2 py-1 rounded;
+}
+
+.controls {
+  @apply flex items-center gap-3 mb-6 p-4 bg-gray-50 rounded-lg;
+}
+
+.filterLabel {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.filterSelect {
+  @apply px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.timeline {
+  @apply mb-6;
+}
+
+.timeline h3 {
+  @apply text-xl font-semibold mb-4;
+}
+
+.eventList {
+  @apply space-y-2;
+}
+
+.eventItem {
+  @apply border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm;
+}
+
+.eventHeader {
+  @apply flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-50 transition-colors;
+}
+
+.eventIcon {
+  @apply text-gray-400 text-xs;
+}
+
+.eventStatus {
+  @apply flex items-center justify-center w-6 h-6 rounded-full text-white font-bold text-xs;
+}
+
+.eventStep {
+  @apply flex-1 font-medium;
+}
+
+.eventSequence {
+  @apply text-xs text-gray-500 italic;
+}
+
+.eventTimestamp {
+  @apply text-sm text-gray-600;
+}
+
+.eventDuration {
+  @apply text-xs text-gray-500 font-mono;
+}
+
+.status-success .eventStatus {
+  @apply bg-green-500;
+}
+
+.status-failure .eventStatus {
+  @apply bg-red-500;
+}
+
+.status-pending .eventStatus {
+  @apply bg-yellow-500;
+}
+
+.status-skipped .eventStatus {
+  @apply bg-gray-400;
+}
+
+.eventDetails {
+  @apply bg-gray-50 p-4 border-t border-gray-200;
+}
+
+.detailsList {
+  @apply grid grid-cols-[auto_1fr] gap-x-4 gap-y-2;
+}
+
+.detailsList dt {
+  @apply font-semibold text-gray-700 text-sm;
+}
+
+.detailsList dd {
+  @apply text-gray-900 text-sm;
+}
+
+.detailsList dd code {
+  @apply font-mono text-xs bg-white px-2 py-1 rounded border border-gray-200;
+}
+
+.checksum {
+  @apply break-all;
+}
+
+.error {
+  @apply text-red-600 font-medium;
+}
+
+.metadata {
+  @apply text-xs bg-white p-2 rounded border border-gray-200 overflow-x-auto;
+}
+
+.emptyState {
+  @apply text-center py-8 text-gray-500;
+}
+
+.groupedView {
+  @apply mt-8;
+}
+
+.groupedView h3 {
+  @apply text-xl font-semibold mb-4;
+}
+
+.stepGroups {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.stepGroup {
+  @apply border border-gray-200 rounded-lg p-4 bg-white shadow-sm;
+}
+
+.stepHeader {
+  @apply flex items-center justify-between mb-3 pb-2 border-b border-gray-200;
+}
+
+.stepHeader h4 {
+  @apply font-semibold text-gray-900;
+}
+
+.stepCount {
+  @apply text-xs text-gray-500;
+}
+
+.stepEvents {
+  @apply space-y-2;
+}
+
+.stepEvent {
+  @apply flex items-center gap-2 p-2 rounded text-sm;
+}
+
+.stepEvent.status-success {
+  @apply bg-green-50 text-green-900;
+}
+
+.stepEvent.status-failure {
+  @apply bg-red-50 text-red-900;
+}
+
+.stepEvent.status-pending {
+  @apply bg-yellow-50 text-yellow-900;
+}
+
+.stepEvent.status-skipped {
+  @apply bg-gray-50 text-gray-600;
+}
+
+.stepEventStatus {
+  @apply font-bold;
+}
+
+.stepEventTime {
+  @apply flex-1 font-mono text-xs;
+}
+
+.stepEventRetry {
+  @apply text-xs italic;
+}
+
+.stepEventDuration {
+  @apply text-xs font-mono;
+}
+
+.statusDefault {
+  @apply bg-gray-100;
+}
+
+.statusDefault .eventStatus {
+  @apply bg-gray-500;
+}
