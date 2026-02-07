@@ -29,6 +29,12 @@
       "@repo/entities/*": [
         "./packages/entities/*"
       ],
+      "@repo/pipeline": [
+        "./packages/pipeline/index.ts"
+      ],
+      "@repo/pipeline/*": [
+        "./packages/pipeline/*"
+      ],
       "@repo/polar": [
         "./packages/polar/index.ts"
       ],
