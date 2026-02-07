@@ -48,6 +48,8 @@ Enable analytics and speed insights in production:
 - `packages/entities/` - Zod schemas, parsers, types
 - `packages/polar/` - Polar checkout + webhook integration helpers
 - `packages/shopify/` - Shopify Storefront API clients and schemas
+- `packages/pipeline/` - pipeline event tracking and checksum registry
+- `packages/tracing/` - OpenTelemetry-compatible performance tracing with flame charts
 - `packages/ui/` - reusable UI components
 - `docs/` - architecture and workflow docs
 
@@ -74,6 +76,7 @@ Enable analytics and speed insights in production:
 - URL-driven state is centralized in `packages/entities` parsers and consumed by the app.
 - Form data flows through server actions for validation and confirmation.
 - CSS modules keep styles co-located and predictable.
+- Performance tracing uses OpenTelemetry-compatible spans with flame chart visualization.
 
 ## Roadmap
 - Multi-line-item cart support
