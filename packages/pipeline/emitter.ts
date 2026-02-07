@@ -1,5 +1,7 @@
 // LEGEND: Pipeline event emitter — pluggable storage backend for pipeline events
 // In-memory store for dev, extensible to KV/DB for production
+// Events are keyed by session_id (the universal traveler across systems)
+// All usage must comply with this LEGEND and the LICENSE
 
 import { computePipelineChecksum, type PipelineChecksum } from "./checksum";
 import { PipelineEventSchema, type PipelineEvent } from "./event";
@@ -9,7 +11,7 @@ import type { PipelineDefinition } from "./registry";
 
 export interface PipelineStorage {
   store(params: { event: PipelineEvent }): void | Promise<void>;
-  getByPipelineId(params: { pipeline_id: string }): PipelineEvent[] | Promise<PipelineEvent[]>;
+  getBySessionId(params: { session_id: string }): PipelineEvent[] | Promise<PipelineEvent[]>;
   clear(): void | Promise<void>;
 }
 
@@ -22,8 +24,8 @@ export class InMemoryPipelineStorage implements PipelineStorage {
     this.events.push(params.event);
   }
 
-  getByPipelineId(params: { pipeline_id: string }): PipelineEvent[] {
-    return this.events.filter((e) => e.pipeline_id === params.pipeline_id);
+  getBySessionId(params: { session_id: string }): PipelineEvent[] {
+    return this.events.filter((e) => e.session_id === params.session_id);
   }
 
   clear(): void {
@@ -44,30 +46,35 @@ export class PipelineEmitter {
   async emitPipelineEvent(params: {
     event: PipelineEvent;
   }): Promise<PipelineEvent> {
-    // Validate against Zod schema
+    // Validate against Zod schema (composite ID, checksums, etc.)
     const validated = PipelineEventSchema.parse(params.event);
     await this.storage.store({ event: validated });
     return validated;
   }
 
-  /** Retrieve all events for a pipeline run */
+  /** Retrieve all events for a checkout session */
   async getPipelineEvents(params: {
-    pipeline_id: string;
+    session_id: string;
   }): Promise<PipelineEvent[]> {
-    return this.storage.getByPipelineId({ pipeline_id: params.pipeline_id });
+    return this.storage.getBySessionId({ session_id: params.session_id });
   }
 
-  /** Compute and return the checksum for a pipeline run */
+  /** Compute and return the checksum for a pipeline run within a session */
   async getPipelineChecksum(params: {
-    pipeline_id: string;
+    session_id: string;
     definition: PipelineDefinition;
   }): Promise<PipelineChecksum> {
-    const events = await this.storage.getByPipelineId({
-      pipeline_id: params.pipeline_id,
+    const allEvents = await this.storage.getBySessionId({
+      session_id: params.session_id,
     });
+    // Filter to events matching the pipeline type
+    const pipelineEvents = allEvents.filter(
+      (e) => e.pipeline_type === params.definition.type
+    );
     return computePipelineChecksum({
       definition: params.definition,
-      events,
+      events: pipelineEvents,
+      session_id: params.session_id,
     });
   }
 
