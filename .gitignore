@@ -22,7 +22,7 @@ Thumbs.db
 bun.lockb
 
 # Lock files (bun generates bun.lockb)
-pnpm-lock.yaml
+# Note: pnpm-lock.yaml is tracked for reproducible builds
 package-lock.json
 yarn.lock
 
