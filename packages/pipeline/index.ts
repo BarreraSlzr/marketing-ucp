@@ -46,6 +46,12 @@ export {
     type PipelineChecksum
 } from "./checksum";
 
+/* ── Checksum Utils ─────────────────────────────────────── */
+export {
+    computeInputChecksum,
+    computeOutputChecksum
+} from "./checksum-utils";
+
 /* ── Registry ────────────────────────────────────────────── */
 export {
     PIPELINE_CHECKOUT_DIGITAL,
@@ -77,4 +83,10 @@ export {
     PipelineTracker,
     type PipelineTrackerConfig
 } from "./tracker";
+
+/* ── Traced Effect ───────────────────────────────────────── */
+export {
+    tracedStep,
+    type TracedStepParams
+} from "./traced-effect";
 
