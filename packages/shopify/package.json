@@ -9,6 +9,7 @@
     "./*": "./*"
   },
   "dependencies": {
+    "@repo/pipeline": "workspace:*",
     "effect": "^3.17.5",
     "zod": "^3.24.1"
   }
