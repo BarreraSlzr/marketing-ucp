@@ -11,7 +11,9 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "bun test",
-    "test:entities": "bun test packages/entities"
+    "test:entities": "bun test packages/entities",
+    "test:pipeline": "bun test packages/pipeline",
+    "test:tracing": "bun test packages/tracing"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "1.1.3",

@@ -29,6 +29,18 @@
       "@repo/entities/*": [
         "./packages/entities/*"
       ],
+      "@repo/pipeline": [
+        "./packages/pipeline/index.ts"
+      ],
+      "@repo/pipeline/*": [
+        "./packages/pipeline/*"
+      ],
+      "@repo/tracing": [
+        "./packages/tracing/index.ts"
+      ],
+      "@repo/tracing/*": [
+        "./packages/tracing/*"
+      ],
       "@repo/polar": [
         "./packages/polar/index.ts"
       ],

@@ -71,6 +71,49 @@
       "effect": "Logica de negocio tipada y componible con EffectTS para validacion y procesamiento."
     }
   },
+  "roadmap": {
+    "label": "Estado de Desarrollo",
+    "title": "Progreso Actual y Hoja de Ruta",
+    "description": "Sigue la evolución de UCP. Construimos públicamente con total transparencia.",
+    "viewIssues": "Ver Todos los Issues",
+    "core": "Características Principales",
+    "foundation": {
+      "title": "Fundación Completa ✅",
+      "description": "Estado manejado por URL con nuqs, esquemas de validación Zod y componentes UI componibles están listos para producción."
+    },
+    "observability": {
+      "title": "Observabilidad de Pipeline",
+      "status": "En Desarrollo",
+      "description": "Registro de eventos, verificación de checksums y rastreo en tiempo de ejecución para comercio sin confianza.",
+      "issue": "Issues #5-6"
+    },
+    "dashboard": {
+      "title": "Dashboard Visual",
+      "status": "Planificado",
+      "description": "Monitoreo de pipeline en tiempo real, streams de eventos y visualización de salud de handlers.",
+      "issue": "Issues #7-10"
+    },
+    "distribution": {
+      "title": "Publicación en npm",
+      "status": "Planificado",
+      "description": "Publicar @ucp/entities, @ucp/pipeline y paquetes de handlers para fácil adopción.",
+      "issue": "Issue #11"
+    },
+    "tooling": {
+      "title": "Herramientas de Desarrollo",
+      "status": "Planificado",
+      "description": "CLI create-ucp para bootstrapping instantáneo de proyectos y documentación.",
+      "issue": "Issue #12"
+    }
+  },
+  "development": {
+    "label": "Desarrollo Abierto",
+    "title": "Construido con transparencia",
+    "description": "Cada característica, cada decisión, cada línea de código se rastrea en issues de GitHub. Síguenos, contribuye o haz fork según tus necesidades.",
+    "contribute": "Cómo Contribuir",
+    "viewSource": "Ver Código Fuente",
+    "documentation": "Leer la Documentación"
+  },
   "cta": {
     "title": "Listo para unificar tu checkout?",
     "description": "Comienza con el demo. Cada campo se vuelve un parametro URL -- sin estado, compartible y listo para produccion.",

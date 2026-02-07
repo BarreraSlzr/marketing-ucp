@@ -1,0 +1,97 @@
+@reference "../theme.css";
+
+.container {
+  @apply max-w-7xl mx-auto px-4 py-8;
+}
+
+.header {
+  @apply flex items-center justify-between mb-6;
+}
+
+.header h1 {
+  @apply text-3xl font-bold;
+}
+
+.actions {
+  @apply flex gap-2;
+}
+
+.actions button {
+  @apply px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed;
+}
+
+.stats {
+  @apply grid grid-cols-4 gap-4 mb-6;
+}
+
+.stat-card {
+  @apply bg-white border border-gray-200 rounded-lg p-4;
+}
+
+.stat-label {
+  @apply text-sm text-gray-600 mb-1;
+}
+
+.stat-value {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.loading {
+  @apply text-center py-8 text-gray-600;
+}
+
+.error {
+  @apply bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-4;
+}
+
+.empty-state {
+  @apply bg-gray-50 border border-gray-200 rounded-lg p-8 text-center;
+}
+
+.empty-state h2 {
+  @apply text-xl font-semibold mb-2;
+}
+
+.empty-state p {
+  @apply text-gray-600 mb-2;
+}
+
+.flame-chart-container {
+  @apply mb-6;
+}
+
+.flame-chart-container h2 {
+  @apply text-xl font-semibold mb-3;
+}
+
+.instructions {
+  @apply bg-blue-50 border border-blue-200 rounded-lg p-6;
+}
+
+.instructions h3 {
+  @apply text-lg font-semibold mb-3;
+}
+
+.instructions ul {
+  @apply list-disc list-inside space-y-2 text-gray-700;
+}
+
+.instructions strong {
+  @apply font-semibold text-gray-900;
+}
+
+.color-legend {
+  @apply inline-block w-4 h-4 rounded mx-1;
+}
+
+.color-legend.server {
+  @apply bg-blue-500;
+}
+
+.color-legend.client {
+  @apply bg-green-500;
+}
+
+.color-legend.internal {
+  @apply bg-orange-500;
+}

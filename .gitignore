@@ -12,6 +12,7 @@ Thumbs.db
 
 # Environment
 .vercel
+next-env.d.ts
 .env*.local
 .env
 
