@@ -76,14 +76,39 @@ Enable analytics and speed insights in production:
 - CSS modules keep styles co-located and predictable.
 
 ## Roadmap
-- Multi-line-item cart support
-- Shopify + Polar integrations
-- i18n, analytics, and publishable `@repo/entities`
+
+See [docs/development-status.md](docs/development-status.md) for detailed status and timeline.
+
+**Current Focus**: Pipeline Observability (Issues #5-6)
+
+**Upcoming Features**:
+- Visual Dashboard for pipeline monitoring (#7-10)
+- npm package publishing (#11)
+- `create-ucp` CLI tool (#12)
+
+**Foundation Complete** ✅:
+- URL-driven state with nuqs
+- Zod validation schemas
+- Multi-form checkout flow
+- Template system
+- i18n support (EN, ES)
 
 ## Contributing
-- Keep changes focused and documented.
-- Add tests for schema or behavior changes.
-- Prefer params objects for multi-argument functions.
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- How to set up the development environment
+- Code style guidelines and best practices
+- How to pick up and work on issues
+- Pull request process
+
+All development is tracked via [GitHub Issues](https://github.com/BarreraSlzr/marketing-ucp/issues). Check the issue board to see what's being worked on or to propose new features.
+
+**Quick guidelines**:
+- Keep changes focused and well-documented
+- Add tests for schema or behavior changes
+- Follow DRY (Don't Repeat Yourself) and KISS (Keep It Simple) principles
+- Prefer TypeScript type safety over any
+- Use Zod schemas for runtime validation
 
 ## License
 MIT. See [LICENSE](LICENSE).
