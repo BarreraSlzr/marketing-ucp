@@ -90,6 +90,9 @@ export default function HomePage() {
           </div>
           <div className={styles.navLinks}>
             <div className={styles.navControls}>
+              <Link href="/docs" className={styles.navLink}>
+                {t("nav.docs")}
+              </Link>
               <Link href="/checkout" className={styles.navLink}>
                 {t("nav.checkoutDemo")}
               </Link>
@@ -420,6 +423,10 @@ export default function HomePage() {
             </p>
           </div>
           <div className={styles.developmentActions}>
+            <Link href="/docs" className={styles.heroSecondary}>
+              <FileText className="mr-2 inline-block h-4 w-4" />
+              {t("development.documentation")}
+            </Link>
             <a
               href="https://github.com/BarreraSlzr/marketing-ucp/blob/main/README.md#contributing"
               className={styles.heroSecondary}
@@ -437,15 +444,6 @@ export default function HomePage() {
             >
               <Code2 className="mr-2 inline-block h-4 w-4" />
               {t("development.viewSource")}
-            </a>
-            <a
-              href="https://github.com/BarreraSlzr/marketing-ucp/tree/main/docs"
-              className={styles.heroSecondary}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FileText className="mr-2 inline-block h-4 w-4" />
-              {t("development.documentation")}
             </a>
           </div>
         </div>

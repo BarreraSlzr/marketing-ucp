@@ -1,0 +1,205 @@
+@reference "../theme.css";
+
+.main {
+  @apply min-h-screen bg-background;
+}
+
+.container {
+  @apply mx-auto max-w-5xl px-6 py-12;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.header {
+  @apply mb-12;
+}
+
+.backLink {
+  @apply mb-6 inline-block text-sm text-muted-foreground transition-colors;
+
+  &:hover {
+    @apply text-foreground;
+  }
+}
+
+.titleGroup {
+  @apply flex items-center gap-3 mb-4;
+}
+
+.icon {
+  @apply h-8 w-8 text-primary;
+}
+
+.title {
+  @apply text-4xl font-bold tracking-tight text-foreground;
+}
+
+.description {
+  @apply text-lg text-muted-foreground max-w-2xl;
+}
+
+/* ── Documentation Grid ──────────────────────────────────── */
+.grid {
+  @apply grid gap-4 md:grid-cols-2 mb-12;
+}
+
+.card {
+  @apply flex flex-col gap-3 rounded-lg border border-border bg-card p-6 transition-all;
+
+  &:hover {
+    @apply border-primary bg-primary/5 shadow-sm;
+  }
+}
+
+.cardHeader {
+  @apply flex items-start justify-between gap-4;
+}
+
+.cardTitle {
+  @apply text-lg font-semibold text-foreground;
+}
+
+.cardIcon {
+  @apply h-5 w-5 shrink-0 text-muted-foreground transition-colors;
+
+  .card:hover & {
+    @apply text-primary;
+  }
+}
+
+.cardDescription {
+  @apply text-sm text-muted-foreground leading-relaxed;
+}
+
+.cardLink {
+  @apply text-xs font-medium text-primary;
+}
+
+/* ── Quick Links ─────────────────────────────────────────── */
+.quickLinks {
+  @apply rounded-lg border border-border bg-secondary/30 p-6;
+}
+
+.quickLinksTitle {
+  @apply text-lg font-semibold text-foreground mb-4;
+}
+
+.quickLinksGrid {
+  @apply flex flex-wrap gap-3;
+}
+
+.quickLink {
+  @apply text-sm font-medium text-primary transition-colors;
+
+  &:hover {
+    @apply text-primary/80;
+  }
+}
+
+/* ── Document Page ───────────────────────────────────────── */
+.docContainer {
+  @apply mx-auto max-w-4xl px-6 py-12;
+}
+
+.docHeader {
+  @apply mb-8 border-b border-border pb-8;
+}
+
+.docTitle {
+  @apply text-4xl font-bold tracking-tight text-foreground mb-4;
+}
+
+.docMeta {
+  @apply flex items-center gap-4 text-sm text-muted-foreground;
+}
+
+.docContent {
+  @apply prose prose-slate dark:prose-invert max-w-none;
+
+  /* Headers */
+  :global(h1) {
+    @apply text-3xl font-bold tracking-tight text-foreground mt-8 mb-4;
+  }
+
+  :global(h2) {
+    @apply text-2xl font-semibold tracking-tight text-foreground mt-8 mb-4;
+  }
+
+  :global(h3) {
+    @apply text-xl font-semibold text-foreground mt-6 mb-3;
+  }
+
+  :global(h4) {
+    @apply text-lg font-semibold text-foreground mt-4 mb-2;
+  }
+
+  /* Paragraphs and text */
+  :global(p) {
+    @apply text-foreground leading-relaxed mb-4;
+  }
+
+  :global(a) {
+    @apply text-primary underline-offset-4 transition-colors;
+
+    &:hover {
+      @apply text-primary/80;
+    }
+  }
+
+  /* Lists */
+  :global(ul),
+  :global(ol) {
+    @apply text-foreground mb-4 pl-6;
+  }
+
+  :global(li) {
+    @apply mb-2;
+  }
+
+  /* Code */
+  :global(code) {
+    @apply rounded bg-secondary px-1.5 py-0.5 text-sm font-mono text-foreground;
+  }
+
+  :global(pre) {
+    @apply rounded-lg bg-secondary p-4 overflow-x-auto mb-4;
+
+    :global(code) {
+      @apply bg-transparent p-0;
+    }
+  }
+
+  /* Blockquotes */
+  :global(blockquote) {
+    @apply border-l-4 border-primary pl-4 italic text-muted-foreground mb-4;
+  }
+
+  /* Tables */
+  :global(table) {
+    @apply w-full border-collapse mb-4;
+  }
+
+  :global(th) {
+    @apply border border-border bg-secondary px-4 py-2 text-left font-semibold;
+  }
+
+  :global(td) {
+    @apply border border-border px-4 py-2;
+  }
+
+  /* Horizontal rule */
+  :global(hr) {
+    @apply border-border my-8;
+  }
+}
+
+.docActions {
+  @apply mt-12 flex flex-wrap gap-4 border-t border-border pt-8;
+}
+
+.docAction {
+  @apply rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors;
+
+  &:hover {
+    @apply bg-secondary;
+  }
+}

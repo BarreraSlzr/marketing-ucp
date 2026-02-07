@@ -1,6 +1,7 @@
 {
   "nav": {
     "protocolBadge": "Protocolo",
+    "docs": "Docs",
     "checkoutDemo": "Demo de Checkout",
     "createProduct": "Crear Producto",
     "tryIt": "Probar",
