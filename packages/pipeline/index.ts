@@ -63,3 +63,18 @@ export {
     type PipelineStorage
 } from "./emitter";
 
+/* ── Registry Entry ──────────────────────────────────────── */
+export {
+    ChecksumRegistryEntrySchema,
+    InMemoryChecksumRegistryStorage,
+    createChecksumRegistryEntry,
+    type ChecksumRegistryEntry,
+    type ChecksumRegistryStorage
+} from "./registry-entry";
+
+/* ── Tracker ─────────────────────────────────────────────── */
+export {
+    PipelineTracker,
+    type PipelineTrackerConfig
+} from "./tracker";
+
