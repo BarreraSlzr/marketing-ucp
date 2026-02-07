@@ -71,6 +71,49 @@
       "effect": "Typed, composable server-side business logic with EffectTS. Governs validation, enrichment, and processing pipelines."
     }
   },
+  "roadmap": {
+    "label": "Development Status",
+    "title": "Current Progress & Roadmap",
+    "description": "Track the evolution of UCP. We're building in public with full transparency.",
+    "viewIssues": "View All Issues",
+    "core": "Core Features",
+    "foundation": {
+      "title": "Foundation Complete ✅",
+      "description": "URL-driven state management with nuqs, Zod validation schemas, and composable UI components are production-ready."
+    },
+    "observability": {
+      "title": "Pipeline Observability",
+      "status": "In Development",
+      "description": "Event logging, checksum verification, and runtime tracing for trustless commerce.",
+      "issue": "Issues #5-6"
+    },
+    "dashboard": {
+      "title": "Visual Dashboard",
+      "status": "Planned",
+      "description": "Real-time pipeline monitoring, event streams, and handler health visualization.",
+      "issue": "Issues #7-10"
+    },
+    "distribution": {
+      "title": "npm Publishing",
+      "status": "Planned",
+      "description": "Publish @ucp/entities, @ucp/pipeline, and handler packages for easy adoption.",
+      "issue": "Issue #11"
+    },
+    "tooling": {
+      "title": "Developer Tools",
+      "status": "Planned",
+      "description": "create-ucp CLI for instant project bootstrapping and documentation.",
+      "issue": "Issue #12"
+    }
+  },
+  "development": {
+    "label": "Open Development",
+    "title": "Built with transparency",
+    "description": "Every feature, every decision, every line of code is tracked in GitHub issues. Follow along, contribute, or fork for your needs.",
+    "contribute": "How to Contribute",
+    "viewSource": "View Source Code",
+    "documentation": "Read the Docs"
+  },
   "cta": {
     "title": "Ready to unify your checkout?",
     "description": "Start with the live demo. Every field you fill becomes a URL parameter -- stateless, shareable, and ready for production.",
