@@ -3,10 +3,16 @@ import { Link } from "@/i18n/navigation";
 import { ALL_TEMPLATES, templateToUrl } from "@repo/entities";
 import {
   ArrowRight,
+  CheckCircle2,
+  Clock,
+  Code2,
   CreditCard,
+  ExternalLink,
+  FileText,
   Globe,
   Link2,
   Package,
+  Settings,
   Shield,
   ShoppingCart,
   Zap,
@@ -238,6 +244,209 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Roadmap */}
+      <section className={styles.roadmap}>
+        <div className={styles.roadmapInner}>
+          <div className={styles.featuresHeader}>
+            <p className={styles.featuresLabel}>{t("roadmap.label")}</p>
+            <h2 className={styles.featuresTitle}>{t("roadmap.title")}</h2>
+            <p className={styles.featuresDescription}>
+              {t("roadmap.description")}
+            </p>
+          </div>
+          <div className={styles.roadmapGrid}>
+            {/* Foundation Complete */}
+            <div className={styles.roadmapCard}>
+              <div className={styles.roadmapCardHeader}>
+                <div className={styles.roadmapIcon}>
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                </div>
+                <div className={styles.roadmapCardTitleGroup}>
+                  <h3 className={styles.roadmapCardTitle}>
+                    {t("roadmap.foundation.title")}
+                  </h3>
+                  <span className={styles.roadmapStatusComplete}>
+                    {t("integrations.available")}
+                  </span>
+                </div>
+              </div>
+              <p className={styles.roadmapCardDescription}>
+                {t("roadmap.foundation.description")}
+              </p>
+            </div>
+
+            {/* Pipeline Observability */}
+            <div className={styles.roadmapCard}>
+              <div className={styles.roadmapCardHeader}>
+                <div className={styles.roadmapIcon}>
+                  <Settings className="h-5 w-5" />
+                </div>
+                <div className={styles.roadmapCardTitleGroup}>
+                  <h3 className={styles.roadmapCardTitle}>
+                    {t("roadmap.observability.title")}
+                  </h3>
+                  <span className={styles.roadmapStatusProgress}>
+                    {t("roadmap.observability.status")}
+                  </span>
+                </div>
+              </div>
+              <p className={styles.roadmapCardDescription}>
+                {t("roadmap.observability.description")}
+              </p>
+              <a
+                href="https://github.com/BarreraSlzr/marketing-ucp/issues/5"
+                className={styles.roadmapLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("roadmap.observability.issue")}
+                <ExternalLink className="ml-1 inline-block h-3 w-3" />
+              </a>
+            </div>
+
+            {/* Dashboard */}
+            <div className={styles.roadmapCard}>
+              <div className={styles.roadmapCardHeader}>
+                <div className={styles.roadmapIcon}>
+                  <Clock className="h-5 w-5" />
+                </div>
+                <div className={styles.roadmapCardTitleGroup}>
+                  <h3 className={styles.roadmapCardTitle}>
+                    {t("roadmap.dashboard.title")}
+                  </h3>
+                  <span className={styles.roadmapStatusPlanned}>
+                    {t("roadmap.dashboard.status")}
+                  </span>
+                </div>
+              </div>
+              <p className={styles.roadmapCardDescription}>
+                {t("roadmap.dashboard.description")}
+              </p>
+              <a
+                href="https://github.com/BarreraSlzr/marketing-ucp/issues/7"
+                className={styles.roadmapLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("roadmap.dashboard.issue")}
+                <ExternalLink className="ml-1 inline-block h-3 w-3" />
+              </a>
+            </div>
+
+            {/* Distribution */}
+            <div className={styles.roadmapCard}>
+              <div className={styles.roadmapCardHeader}>
+                <div className={styles.roadmapIcon}>
+                  <Package className="h-5 w-5" />
+                </div>
+                <div className={styles.roadmapCardTitleGroup}>
+                  <h3 className={styles.roadmapCardTitle}>
+                    {t("roadmap.distribution.title")}
+                  </h3>
+                  <span className={styles.roadmapStatusPlanned}>
+                    {t("roadmap.distribution.status")}
+                  </span>
+                </div>
+              </div>
+              <p className={styles.roadmapCardDescription}>
+                {t("roadmap.distribution.description")}
+              </p>
+              <a
+                href="https://github.com/BarreraSlzr/marketing-ucp/issues/11"
+                className={styles.roadmapLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("roadmap.distribution.issue")}
+                <ExternalLink className="ml-1 inline-block h-3 w-3" />
+              </a>
+            </div>
+
+            {/* Developer Tools */}
+            <div className={styles.roadmapCard}>
+              <div className={styles.roadmapCardHeader}>
+                <div className={styles.roadmapIcon}>
+                  <Code2 className="h-5 w-5" />
+                </div>
+                <div className={styles.roadmapCardTitleGroup}>
+                  <h3 className={styles.roadmapCardTitle}>
+                    {t("roadmap.tooling.title")}
+                  </h3>
+                  <span className={styles.roadmapStatusPlanned}>
+                    {t("roadmap.tooling.status")}
+                  </span>
+                </div>
+              </div>
+              <p className={styles.roadmapCardDescription}>
+                {t("roadmap.tooling.description")}
+              </p>
+              <a
+                href="https://github.com/BarreraSlzr/marketing-ucp/issues/12"
+                className={styles.roadmapLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("roadmap.tooling.issue")}
+                <ExternalLink className="ml-1 inline-block h-3 w-3" />
+              </a>
+            </div>
+          </div>
+          <div className={styles.roadmapActions}>
+            <a
+              href="https://github.com/BarreraSlzr/marketing-ucp/issues"
+              className={styles.heroPrimary}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("roadmap.viewIssues")}
+              <ExternalLink className="ml-2 inline-block h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Development/Contributing */}
+      <section className={styles.development}>
+        <div className={styles.developmentInner}>
+          <div className={styles.featuresHeader}>
+            <p className={styles.featuresLabel}>{t("development.label")}</p>
+            <h2 className={styles.featuresTitle}>{t("development.title")}</h2>
+            <p className={styles.featuresDescription}>
+              {t("development.description")}
+            </p>
+          </div>
+          <div className={styles.developmentActions}>
+            <a
+              href="https://github.com/BarreraSlzr/marketing-ucp/blob/main/README.md#contributing"
+              className={styles.heroSecondary}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FileText className="mr-2 inline-block h-4 w-4" />
+              {t("development.contribute")}
+            </a>
+            <a
+              href="https://github.com/BarreraSlzr/marketing-ucp"
+              className={styles.heroSecondary}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Code2 className="mr-2 inline-block h-4 w-4" />
+              {t("development.viewSource")}
+            </a>
+            <a
+              href="https://github.com/BarreraSlzr/marketing-ucp/tree/main/docs"
+              className={styles.heroSecondary}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FileText className="mr-2 inline-block h-4 w-4" />
+              {t("development.documentation")}
+            </a>
           </div>
         </div>
       </section>

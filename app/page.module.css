@@ -259,6 +259,86 @@
   @apply mt-8 flex justify-center gap-4;
 }
 
+/* ── Roadmap ─────────────────────────────────────────────── */
+.roadmap {
+  @apply border-t border-border bg-secondary/20;
+}
+
+.roadmapInner {
+  @apply mx-auto max-w-5xl px-6 py-20;
+}
+
+.roadmapGrid {
+  @apply mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3;
+}
+
+.roadmapCard {
+  @apply flex flex-col gap-4 rounded-lg border border-border bg-card p-6 transition-colors;
+
+  &:hover {
+    @apply border-primary/30 bg-card;
+  }
+}
+
+.roadmapCardHeader {
+  @apply flex items-start gap-3;
+}
+
+.roadmapIcon {
+  @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary;
+}
+
+.roadmapCardTitleGroup {
+  @apply flex flex-1 flex-col gap-1;
+}
+
+.roadmapCardTitle {
+  @apply text-base font-semibold text-foreground;
+}
+
+.roadmapCardDescription {
+  @apply text-sm leading-relaxed text-muted-foreground;
+}
+
+.roadmapStatusComplete {
+  @apply inline-block rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-600;
+}
+
+.roadmapStatusProgress {
+  @apply inline-block rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-600;
+}
+
+.roadmapStatusPlanned {
+  @apply inline-block rounded-full bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-600;
+}
+
+.roadmapLink {
+  @apply mt-2 text-xs font-medium text-primary transition-colors;
+
+  &:hover {
+    @apply text-primary/80;
+  }
+}
+
+.roadmapActions {
+  @apply mt-12 flex justify-center gap-4;
+}
+
+/* ── Development ─────────────────────────────────────────── */
+.development {
+  @apply mx-auto max-w-5xl px-6 py-20;
+}
+
+.developmentInner {
+  @apply flex flex-col gap-8;
+}
+
+.developmentActions {
+  @apply flex flex-wrap justify-center gap-4;
+}
+
+/* ── CTA (moved to keep logical order) ───────────────────── */
+
 /* ── Footer ──────────────────────────────────────────────── */
 .footer {
   @apply border-t border-border bg-card;
