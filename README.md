@@ -52,9 +52,15 @@ Enable analytics and speed insights in production:
 - `docs/` - architecture and workflow docs
 
 ## Integrations
+- Headless checkout endpoint: `POST /api/checkout`
 - Shopify product endpoint: `GET /api/shopify/products?handle=...`
 - Polar checkout endpoint: `POST /api/polar/checkout`
 - Payment webhooks: `POST /api/webhooks/payment?provider=polar`
+
+## i18n + Multi-Currency
+- Internationalization is powered by `next-intl` with locale segments.
+- Locale routing uses `/en-US/...` and `/es-ES/...` with `en-US` as default.
+- Currency formatting uses `Intl.NumberFormat` with the active locale.
 
 ### Integration Environment Variables
 - `SHOPIFY_STORE_DOMAIN` (example: `your-store.myshopify.com`)
@@ -72,7 +78,6 @@ Enable analytics and speed insights in production:
 ## Roadmap
 - Multi-line-item cart support
 - Shopify + Polar integrations
-- API routes for headless usage
 - i18n, analytics, and publishable `@repo/entities`
 
 ## Contributing

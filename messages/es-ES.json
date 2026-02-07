@@ -1,0 +1,189 @@
+{
+  "nav": {
+    "protocolBadge": "Protocolo",
+    "checkoutDemo": "Demo de Checkout",
+    "createProduct": "Crear Producto",
+    "tryIt": "Probar",
+    "github": "GitHub"
+  },
+  "hero": {
+    "label": "Protocolo Universal de Checkout",
+    "title": "Un protocolo de checkout para cada servicio",
+    "description": "Unifica el checkout entre Shopify, Polar y proveedores personalizados. Formularios sin estado guiados por parametros URL -- sin sesiones, sin base de datos, totalmente compartibles y reanudables.",
+    "primaryCta": "Probar demo de checkout",
+    "secondaryCta": "Ver en GitHub"
+  },
+  "stats": {
+    "serverSessions": "Sesiones en servidor",
+    "entitySchemas": "Esquemas de entidad",
+    "urlSerializable": "Serializable en URL",
+    "endToEnd": "De extremo a extremo"
+  },
+  "templates": {
+    "label": "Probar ahora",
+    "title": "Plantillas de checkout",
+    "description": "Haz clic en cualquier plantilla para abrir un checkout completo. Cada campo vive en la URL -- sin estado, compartible y reanudable.",
+    "launch": "Abrir checkout",
+    "startBlank": "Iniciar checkout en blanco",
+    "createProduct": "Crear producto"
+  },
+  "features": {
+    "label": "Como funciona",
+    "title": "Hecho para comercio moderno",
+    "description": "Cada decision esta enfocada en flujos de checkout sin estado y con tipos, listos para integrarse con cualquier servicio.",
+    "items": [
+      {
+        "title": "Sin estado y basado en URL",
+        "description": "Todo el estado del checkout vive en la URL. Sin sesiones, sin cookies, sin base de datos. Comparte o reanuda cualquier checkout."
+      },
+      {
+        "title": "Pipelines validados con Zod",
+        "description": "Cada seccion se valida con esquemas Zod. Tipado desde parametros URL hasta acciones del servidor."
+      },
+      {
+        "title": "Mejora progresiva",
+        "description": "Los formularios funcionan sin JavaScript con FormData y acciones del servidor. nuqs sincroniza la URL en tiempo real."
+      },
+      {
+        "title": "Delegacion de servicios",
+        "description": "Delegas pagos a Polar, cumplimiento a Shopify o cualquier proveedor. UCP es el pegamento entre checkout y servicios externos."
+      },
+      {
+        "title": "Multiples pagos",
+        "description": "Credenciales por token o tarjeta via union discriminada. Extensible a cualquier handler de pago."
+      },
+      {
+        "title": "Formularios componibles",
+        "description": "Cada seccion usa formId para conectar inputs en cualquier parte del DOM. Envios independientes o como checkout completo."
+      }
+    ]
+  },
+  "integrations": {
+    "label": "Integraciones",
+    "title": "Conecta tus servicios",
+    "description": "UCP delega a servicios especializados. Conecta pagos, storefronts y sistemas de contenido.",
+    "available": "Disponible",
+    "comingSoon": "Pronto",
+    "items": {
+      "shopify": "Sincroniza productos, inventario y cumplimiento con la API de Shopify Storefront.",
+      "polar": "Acepta pagos y suscripciones con Polar. Delegacion de pagos sin friccion.",
+      "cms": "Crea paginas de producto optimizadas para SEO y publica contenido que convierte.",
+      "effect": "Logica de negocio tipada y componible con EffectTS para validacion y procesamiento."
+    }
+  },
+  "cta": {
+    "title": "Listo para unificar tu checkout?",
+    "description": "Comienza con el demo. Cada campo se vuelve un parametro URL -- sin estado, compartible y listo para produccion.",
+    "button": "Abrir demo de checkout"
+  },
+  "footer": {
+    "demo": "Demo",
+    "products": "Productos"
+  },
+  "checkout": {
+    "title": "Checkout UCP",
+    "badge": "Sin estado"
+  },
+  "checkoutClient": {
+    "urlLabel": "Estado actual de URL",
+    "urlEmpty": "(vacio -- completa los campos arriba)",
+    "submit": "Completar checkout",
+    "submitting": "Procesando..."
+  },
+  "checkoutSections": {
+    "buyerTitle": "Informacion del comprador",
+    "buyerDescription": "Datos de contacto del comprador",
+    "billingTitle": "Direccion de facturacion",
+    "billingDescription": "Donde se envia la factura",
+    "shippingTitle": "Direccion de envio",
+    "shippingDescription": "Donde se entrega el pedido",
+    "paymentTitle": "Pago",
+    "paymentDescription": "Metodo de pago y credenciales"
+  },
+  "confirm": {
+    "heading": "Checkout listo",
+    "description": "Tu sesion de checkout esta lista. Revisa los detalles abajo.",
+    "back": "Volver al checkout",
+    "email": "Correo",
+    "name": "Nombre",
+    "status": "Estado",
+    "currency": "Moneda"
+  },
+  "product": {
+    "back": "Volver al inicio",
+    "title": "Crear producto",
+    "description": "Completa los detalles del producto abajo. Cada campo se sincroniza a parametros URL -- comparte el enlace o genera un checkout para probar el flujo completo.",
+    "quickStart": "Plantillas de producto",
+    "detailsTitle": "Detalles del producto",
+    "detailsDescription": "Define tu producto. Todos los campos se convierten en parametros URL para compartir sin estado.",
+    "submit": "Guardar producto"
+  },
+  "forms": {
+    "buyer": {
+      "emailLabel": "Correo",
+      "emailDescription": "Requerido para confirmar el pedido",
+      "emailPlaceholder": "buyer@example.com",
+      "phoneLabel": "Telefono",
+      "phonePlaceholder": "+1 (555) 000-0000",
+      "firstNameLabel": "Nombre",
+      "firstNamePlaceholder": "Jane",
+      "lastNameLabel": "Apellido",
+      "lastNamePlaceholder": "Doe",
+      "customerIdLabel": "ID de cliente",
+      "customerIdPlaceholder": "cust_abc123",
+      "marketingLabel": "Acepto recibir comunicaciones de marketing"
+    },
+    "address": {
+      "line1Label": "Direccion linea 1",
+      "line1Placeholder": "123 Main St",
+      "line2Label": "Direccion linea 2",
+      "line2Placeholder": "Apto, suite, etc.",
+      "cityLabel": "Ciudad",
+      "cityPlaceholder": "San Francisco",
+      "stateLabel": "Estado / Provincia",
+      "statePlaceholder": "CA",
+      "postalLabel": "Codigo postal",
+      "postalPlaceholder": "94102",
+      "countryLabel": "Pais",
+      "countryPlaceholder": "US"
+    },
+    "payment": {
+      "handlerLabel": "Proveedor de pago",
+      "handlerPlaceholder": "Selecciona un proveedor",
+      "credentialTypeLabel": "Tipo de credencial",
+      "credentialTypePlaceholder": "Selecciona tipo",
+      "tokenLabel": "Token / Referencia",
+      "tokenPlaceholder": "tok_xxxx",
+      "credentialToken": "Token",
+      "credentialCard": "Tarjeta"
+    },
+    "product": {
+      "nameLabel": "Nombre del producto",
+      "nameDescription": "Nombre publico para compradores",
+      "namePlaceholder": "Red Roses Bouquet",
+      "descriptionLabel": "Descripcion",
+      "descriptionDescription": "Descripcion detallada para SEO y contexto del comprador",
+      "descriptionPlaceholder": "Un arreglo de 12 rosas rojas...",
+      "priceLabel": "Precio (centavos)",
+      "pricePlaceholder": "3500",
+      "currencyLabel": "Moneda",
+      "currencyPlaceholder": "USD",
+      "skuLabel": "SKU",
+      "skuPlaceholder": "ROSES-RED-12",
+      "imageLabel": "URL de imagen",
+      "imagePlaceholder": "https://cdn.example.com/product.jpg",
+      "categoryLabel": "Categoria",
+      "categoryPlaceholder": "Flores, Electronica, Ropa...",
+      "vendorLabel": "Proveedor",
+      "vendorPlaceholder": "Tu tienda",
+      "inventoryLabel": "Inventario",
+      "inventoryPlaceholder": "100",
+      "publishLabel": "Publicar inmediatamente",
+      "previewCheckoutTitle": "Enlace de checkout",
+      "previewCheckoutEmpty": "(completa el nombre para generar)",
+      "previewCheckoutButton": "Abrir checkout",
+      "previewShareTitle": "URL de producto",
+      "previewShareEmpty": "(vacio)"
+    }
+  }
+}

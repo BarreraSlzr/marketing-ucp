@@ -1,21 +1,23 @@
 "use client";
 
-import { useQueryStates } from "nuqs";
 import { buyerParsers } from "@repo/entities";
-import { Input, FormField, Checkbox } from "@repo/ui";
+import { Checkbox, FormField, Input } from "@repo/ui";
+import { useTranslations } from "next-intl";
+import { useQueryStates } from "nuqs";
 import styles from "./buyer-form.module.css";
 
 export const BUYER_FORM_ID = "buyer-form";
 
 export function BuyerForm() {
   const [params] = useQueryStates(buyerParsers, { shallow: false });
+  const t = useTranslations("forms.buyer");
 
   return (
     <div className={styles.grid}>
       <FormField
         name="buyer_email"
-        label="Email"
-        description="Required for order confirmation"
+        label={t("emailLabel")}
+        description={t("emailDescription")}
       >
         <Input
           id="buyer_email"
@@ -23,45 +25,45 @@ export function BuyerForm() {
           type="email"
           form={BUYER_FORM_ID}
           defaultValue={params.buyer_email}
-          placeholder="buyer@example.com"
+          placeholder={t("emailPlaceholder")}
           required
         />
       </FormField>
 
-      <FormField name="buyer_phone" label="Phone">
+      <FormField name="buyer_phone" label={t("phoneLabel")}>
         <Input
           id="buyer_phone"
           name="buyer_phone"
           type="tel"
           form={BUYER_FORM_ID}
           defaultValue={params.buyer_phone ?? ""}
-          placeholder="+1 (555) 000-0000"
+          placeholder={t("phonePlaceholder")}
         />
       </FormField>
 
-      <FormField name="buyer_first_name" label="First Name">
+      <FormField name="buyer_first_name" label={t("firstNameLabel")}>
         <Input
           id="buyer_first_name"
           name="buyer_first_name"
           form={BUYER_FORM_ID}
           defaultValue={params.buyer_first_name ?? ""}
-          placeholder="Jane"
+          placeholder={t("firstNamePlaceholder")}
         />
       </FormField>
 
-      <FormField name="buyer_last_name" label="Last Name">
+      <FormField name="buyer_last_name" label={t("lastNameLabel")}>
         <Input
           id="buyer_last_name"
           name="buyer_last_name"
           form={BUYER_FORM_ID}
           defaultValue={params.buyer_last_name ?? ""}
-          placeholder="Doe"
+          placeholder={t("lastNamePlaceholder")}
         />
       </FormField>
 
       <FormField
         name="buyer_customer_id"
-        label="Customer ID"
+        label={t("customerIdLabel")}
         className={styles.fullWidth}
       >
         <Input
@@ -69,7 +71,7 @@ export function BuyerForm() {
           name="buyer_customer_id"
           form={BUYER_FORM_ID}
           defaultValue={params.buyer_customer_id ?? ""}
-          placeholder="cust_abc123"
+          placeholder={t("customerIdPlaceholder")}
         />
       </FormField>
 
@@ -85,7 +87,7 @@ export function BuyerForm() {
           htmlFor="buyer_accepts_marketing"
           className={styles.marketingLabel}
         >
-          I agree to receive marketing communications
+          {t("marketingLabel")}
         </label>
       </div>
     </div>

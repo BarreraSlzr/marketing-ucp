@@ -99,7 +99,9 @@ export const checkoutParsers = {
     "completed",
     "canceled",
   ] as const),
-  checkout_currency: parseAsString.withDefault("USD"),
+  checkout_currency: parseAsString
+    .withDefault("USD")
+    .withOptions({ clearOnDefault: false }),
 };
 
 /* ── Aggregated: all parsers for the full checkout page ──── */

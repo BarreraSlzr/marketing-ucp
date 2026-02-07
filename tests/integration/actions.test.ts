@@ -132,13 +132,13 @@ describe("submitProductAction", () => {
 /* ── Checkout Redirect ─────────────────────────────────── */
 
 describe("buildCheckoutRedirectUrl", () => {
-  test("builds URL with checkout status and currency", () => {
+  test("builds URL with checkout status and currency", async () => {
     const formData = createFormData({
       buyer_email: "buyer@example.com",
     });
 
     const basePath = "/checkout/confirm";
-    const url = buildCheckoutRedirectUrl({
+    const url = await buildCheckoutRedirectUrl({
       basePath,
       formData,
     });

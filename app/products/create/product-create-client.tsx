@@ -1,10 +1,11 @@
 "use client";
 
-import { useQueryStates } from "nuqs";
-import { productParsers } from "@repo/entities";
-import { FormSection } from "@/components/checkout/form-section";
-import { ProductForm, PRODUCT_FORM_ID } from "@/components/forms";
 import { submitProductAction } from "@/app/actions";
+import { FormSection } from "@/components/checkout/form-section";
+import { PRODUCT_FORM_ID, ProductForm } from "@/components/forms";
+import { productParsers } from "@repo/entities";
+import { useTranslations } from "next-intl";
+import { useQueryStates } from "nuqs";
 
 /* ── Product Templates for quick-start ───────────────────── */
 const PRODUCT_TEMPLATES = [
@@ -72,10 +73,9 @@ const PRODUCT_TEMPLATES = [
 
 export function ProductCreateClient() {
   const [, setParams] = useQueryStates(productParsers, { shallow: false });
+  const t = useTranslations("product");
 
-  function applyProductTemplate(
-    template: (typeof PRODUCT_TEMPLATES)[number]
-  ) {
+  function applyProductTemplate(template: (typeof PRODUCT_TEMPLATES)[number]) {
     const full: Record<string, unknown> = {};
     for (const key of Object.keys(productParsers)) {
       const value = (template.params as Record<string, unknown>)[key];
@@ -89,7 +89,7 @@ export function ProductCreateClient() {
       {/* Product quick-start templates */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <p style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-          Quick-start product templates
+          {t("quickStart")}
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
           {PRODUCT_TEMPLATES.map((tpl) => (
@@ -116,10 +116,10 @@ export function ProductCreateClient() {
 
       <FormSection
         formId={PRODUCT_FORM_ID}
-        title="Product Details"
-        description="Define your product. All fields become URL parameters for stateless sharing."
+        title={t("detailsTitle")}
+        description={t("detailsDescription")}
         action={submitProductAction}
-        submitLabel="Save Product"
+        submitLabel={t("submit")}
       >
         <ProductForm />
       </FormSection>

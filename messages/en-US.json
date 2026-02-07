@@ -1,0 +1,189 @@
+{
+  "nav": {
+    "protocolBadge": "Protocol",
+    "checkoutDemo": "Checkout Demo",
+    "createProduct": "Create Product",
+    "tryIt": "Try It",
+    "github": "GitHub"
+  },
+  "hero": {
+    "label": "Universal Checkout Protocol",
+    "title": "One checkout protocol for every service",
+    "description": "Unify checkout across Shopify, Polar, and custom providers. Stateless forms driven entirely by URL parameters -- no sessions, no database, fully shareable and resumable.",
+    "primaryCta": "Try the Checkout Demo",
+    "secondaryCta": "View on GitHub"
+  },
+  "stats": {
+    "serverSessions": "Server-side sessions",
+    "entitySchemas": "Entity schemas",
+    "urlSerializable": "URL-serializable",
+    "endToEnd": "End to end"
+  },
+  "templates": {
+    "label": "Try it now",
+    "title": "Pre-built checkout templates",
+    "description": "Click any template to launch a fully-populated checkout. Every field is encoded in the URL -- stateless, shareable, and resumable.",
+    "launch": "Launch checkout",
+    "startBlank": "Start Blank Checkout",
+    "createProduct": "Create a Product"
+  },
+  "features": {
+    "label": "How it works",
+    "title": "Built for modern commerce",
+    "description": "Every design decision serves stateless, type-safe checkout flows that integrate with any service.",
+    "items": [
+      {
+        "title": "Stateless & URL-Driven",
+        "description": "Every checkout state lives in the URL. No sessions, no cookies, no database required. Share, bookmark, or resume any checkout."
+      },
+      {
+        "title": "Zod-Validated Pipelines",
+        "description": "Each form section is independently validated with Zod schemas. Type-safe from URL params through server actions."
+      },
+      {
+        "title": "Progressive Enhancement",
+        "description": "Forms work without JavaScript via native FormData and server actions. Progressive enhancement with nuqs for real-time URL sync."
+      },
+      {
+        "title": "Service Delegation",
+        "description": "Delegate payment to Polar, fulfillment to Shopify, or any provider. UCP is the glue between your checkout and external services."
+      },
+      {
+        "title": "Multi-Payment Support",
+        "description": "Token-based or card-based credentials via a discriminated union schema. Extensible to any payment handler."
+      },
+      {
+        "title": "Composable Forms",
+        "description": "Each form section uses formId to wire inputs anywhere in the DOM. Sections submit independently or together as a full checkout."
+      }
+    ]
+  },
+  "integrations": {
+    "label": "Integrations",
+    "title": "Connect your services",
+    "description": "UCP delegates to specialized services. Plug in payment providers, storefronts, and content systems.",
+    "available": "Available",
+    "comingSoon": "Coming soon",
+    "items": {
+      "shopify": "Sync products, manage inventory, and fulfill orders through the Shopify Storefront API.",
+      "polar": "Accept payments and manage subscriptions with Polar. Delegate payment processing seamlessly.",
+      "cms": "Create SEO-optimized product pages. Publish content that ranks and converts.",
+      "effect": "Typed, composable server-side business logic with EffectTS. Governs validation, enrichment, and processing pipelines."
+    }
+  },
+  "cta": {
+    "title": "Ready to unify your checkout?",
+    "description": "Start with the live demo. Every field you fill becomes a URL parameter -- stateless, shareable, and ready for production.",
+    "button": "Open Checkout Demo"
+  },
+  "footer": {
+    "demo": "Demo",
+    "products": "Products"
+  },
+  "checkout": {
+    "title": "UCP Checkout",
+    "badge": "Stateless"
+  },
+  "checkoutClient": {
+    "urlLabel": "Current URL State",
+    "urlEmpty": "(empty -- fill in fields above)",
+    "submit": "Complete Checkout",
+    "submitting": "Processing..."
+  },
+  "checkoutSections": {
+    "buyerTitle": "Buyer Information",
+    "buyerDescription": "Contact details for the buyer",
+    "billingTitle": "Billing Address",
+    "billingDescription": "Where the invoice is sent",
+    "shippingTitle": "Shipping Address",
+    "shippingDescription": "Where the order will be delivered",
+    "paymentTitle": "Payment",
+    "paymentDescription": "Payment method and credentials"
+  },
+  "confirm": {
+    "heading": "Checkout Ready",
+    "description": "Your checkout session has been prepared. Review the details below.",
+    "back": "Back to Checkout",
+    "email": "Email",
+    "name": "Name",
+    "status": "Status",
+    "currency": "Currency"
+  },
+  "product": {
+    "back": "Back to Home",
+    "title": "Create Product",
+    "description": "Fill in product details using the form below. Every field syncs to URL parameters -- share the URL to let others edit, or generate a checkout link to test the full purchase flow.",
+    "quickStart": "Quick-start product templates",
+    "detailsTitle": "Product Details",
+    "detailsDescription": "Define your product. All fields become URL parameters for stateless sharing.",
+    "submit": "Save Product"
+  },
+  "forms": {
+    "buyer": {
+      "emailLabel": "Email",
+      "emailDescription": "Required for order confirmation",
+      "emailPlaceholder": "buyer@example.com",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "+1 (555) 000-0000",
+      "firstNameLabel": "First Name",
+      "firstNamePlaceholder": "Jane",
+      "lastNameLabel": "Last Name",
+      "lastNamePlaceholder": "Doe",
+      "customerIdLabel": "Customer ID",
+      "customerIdPlaceholder": "cust_abc123",
+      "marketingLabel": "I agree to receive marketing communications"
+    },
+    "address": {
+      "line1Label": "Address Line 1",
+      "line1Placeholder": "123 Main St",
+      "line2Label": "Address Line 2",
+      "line2Placeholder": "Apt, suite, etc.",
+      "cityLabel": "City",
+      "cityPlaceholder": "San Francisco",
+      "stateLabel": "State / Province",
+      "statePlaceholder": "CA",
+      "postalLabel": "Postal Code",
+      "postalPlaceholder": "94102",
+      "countryLabel": "Country",
+      "countryPlaceholder": "US"
+    },
+    "payment": {
+      "handlerLabel": "Payment Handler",
+      "handlerPlaceholder": "Select a handler",
+      "credentialTypeLabel": "Credential Type",
+      "credentialTypePlaceholder": "Select type",
+      "tokenLabel": "Token / Reference",
+      "tokenPlaceholder": "tok_xxxx",
+      "credentialToken": "Token",
+      "credentialCard": "Card"
+    },
+    "product": {
+      "nameLabel": "Product Name",
+      "nameDescription": "The public name shown to buyers",
+      "namePlaceholder": "Red Roses Bouquet",
+      "descriptionLabel": "Description",
+      "descriptionDescription": "Detailed product description for SEO and buyer context",
+      "descriptionPlaceholder": "A beautiful arrangement of 12 long-stem red roses...",
+      "priceLabel": "Price (cents)",
+      "pricePlaceholder": "3500",
+      "currencyLabel": "Currency",
+      "currencyPlaceholder": "USD",
+      "skuLabel": "SKU",
+      "skuPlaceholder": "ROSES-RED-12",
+      "imageLabel": "Image URL",
+      "imagePlaceholder": "https://cdn.example.com/product.jpg",
+      "categoryLabel": "Category",
+      "categoryPlaceholder": "Flowers, Electronics, Apparel...",
+      "vendorLabel": "Vendor",
+      "vendorPlaceholder": "Your Store Name",
+      "inventoryLabel": "Inventory Count",
+      "inventoryPlaceholder": "100",
+      "publishLabel": "Publish immediately",
+      "previewCheckoutTitle": "Generated Checkout Link",
+      "previewCheckoutEmpty": "(fill in product name to generate)",
+      "previewCheckoutButton": "Open in Checkout",
+      "previewShareTitle": "Shareable Product URL",
+      "previewShareEmpty": "(empty)"
+    }
+  }
+}

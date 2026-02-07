@@ -29,6 +29,10 @@
   @apply hidden items-center gap-6 md:flex;
 }
 
+.navControls {
+  @apply flex items-center gap-4;
+}
+
 .navLink {
   @apply text-sm font-medium text-muted-foreground transition-colors;
 

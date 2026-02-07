@@ -1,20 +1,27 @@
 "use client";
 
-import { useQueryStates } from "nuqs";
+import { Link } from "@/i18n/navigation";
 import { allParsers } from "@repo/entities";
 import { Button, Separator } from "@repo/ui";
 import { CheckCircle } from "lucide-react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { useQueryStates } from "nuqs";
 import styles from "./page.module.css";
 
 export function ConfirmClient() {
   const [params] = useQueryStates(allParsers, { shallow: false });
+  const t = useTranslations("confirm");
 
   const details = [
-    { label: "Email", value: params.buyer_email },
-    { label: "Name", value: [params.buyer_first_name, params.buyer_last_name].filter(Boolean).join(" ") },
-    { label: "Status", value: params.checkout_status },
-    { label: "Currency", value: params.checkout_currency },
+    { label: t("email"), value: params.buyer_email },
+    {
+      label: t("name"),
+      value: [params.buyer_first_name, params.buyer_last_name]
+        .filter(Boolean)
+        .join(" "),
+    },
+    { label: t("status"), value: params.checkout_status },
+    { label: t("currency"), value: params.checkout_currency },
   ].filter((d) => d.value);
 
   return (
@@ -23,10 +30,8 @@ export function ConfirmClient() {
         <CheckCircle className={styles.iconSvg} />
       </div>
 
-      <h1 className={styles.heading}>Checkout Ready</h1>
-      <p className={styles.description}>
-        Your checkout session has been prepared. Review the details below.
-      </p>
+      <h1 className={styles.heading}>{t("heading")}</h1>
+      <p className={styles.description}>{t("description")}</p>
 
       {details.length > 0 && (
         <div className={styles.details}>
@@ -43,7 +48,7 @@ export function ConfirmClient() {
       )}
 
       <Button asChild variant="outline">
-        <Link href="/checkout">Back to Checkout</Link>
+        <Link href="/checkout">{t("back")}</Link>
       </Button>
     </>
   );

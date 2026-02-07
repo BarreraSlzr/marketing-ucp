@@ -30,9 +30,9 @@ export type CheckoutRedirectParams = {
   formData: FormData;
 };
 
-export function buildCheckoutRedirectUrl(
+export async function buildCheckoutRedirectUrl(
   params: CheckoutRedirectParams
-): string {
+): Promise<string> {
   const raw = formDataToObject(params.formData);
 
   return serializeCheckout(params.basePath, {
@@ -169,7 +169,7 @@ export async function submitCheckoutAction(
   formData: FormData
 ): Promise<FormState> {
   // Build the URL state from all submitted form sections
-  const url = buildCheckoutRedirectUrl({
+  const url = await buildCheckoutRedirectUrl({
     basePath: "/checkout/confirm",
     formData,
   });
