@@ -4,7 +4,7 @@ import {
   type PipelineEvent,
 } from "@repo/pipeline";
 import { NextRequest, NextResponse } from "next/server";
-import { getGlobalTracker } from "@/lib/pipeline-tracker";
+import { getGlobalTracker, getAllSessionIds } from "@/lib/pipeline-tracker";
 
 /**
  * GET /api/pipeline/sessions
@@ -15,31 +15,52 @@ import { getGlobalTracker } from "@/lib/pipeline-tracker";
 export async function GET(req: NextRequest) {
   try {
     const tracker = getGlobalTracker();
+    const sessionIdList = getAllSessionIds();
 
-    // Get all events from storage (in-memory for demo)
-    // In production, this would query a database
+    // Get events and checksums for each session
+    const sessions = await Promise.all(
+      sessionIdList.map(async (session_id) => {
+        const events = await tracker.getEvents({ session_id });
 
-    // Collect all unique session IDs
-    const sessionMap = new Map<
-      string,
-      {
-        session_id: string;
-        pipeline_type: string;
-        events: PipelineEvent[];
-        last_updated: string;
-      }
-    >();
+        if (events.length === 0) {
+          return null;
+        }
 
-    // Since we're using in-memory storage, we need to iterate through known session IDs
-    // For now, we'll return empty array if no demo data has been generated
-    // Users should call POST /api/pipeline/demo first to seed data
+        // Get the pipeline type from the first event
+        const pipeline_type = events[0].pipeline_type;
+        const definition = getPipelineDefinition({ type: pipeline_type });
 
-    const sessions = Array.from(sessionMap.values()).map((session) => ({
-      ...session,
-      checksum: null, // Computed on demand in the client if needed
-    }));
+        let checksum = null;
+        if (definition) {
+          try {
+            checksum = await tracker.getCurrentChecksum({
+              session_id,
+              definition,
+            });
+          } catch (err) {
+            console.warn(`Failed to compute checksum for ${session_id}:`, err);
+          }
+        }
 
-    return NextResponse.json({ sessions });
+        const last_updated =
+          events.length > 0
+            ? events[events.length - 1].timestamp
+            : new Date().toISOString();
+
+        return {
+          session_id,
+          pipeline_type,
+          events,
+          checksum,
+          last_updated,
+        };
+      })
+    );
+
+    // Filter out null entries
+    const validSessions = sessions.filter((s) => s !== null);
+
+    return NextResponse.json({ sessions: validSessions });
   } catch (error) {
     console.error("Pipeline sessions error:", error);
     return NextResponse.json(
