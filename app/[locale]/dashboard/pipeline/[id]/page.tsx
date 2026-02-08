@@ -178,6 +178,10 @@ export default async function PipelineDetailPage({
     };
   });
 
+  const eventHistory = [...session.events].sort(
+    (a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp),
+  );
+
   const productDetails = extractProductDetails({
     events: session.events,
     fallbackName: session.pipeline_type.replace(/_/g, " "),
@@ -315,6 +319,43 @@ export default async function PipelineDetailPage({
             <p className={styles.emptyState}>Checksum not available.</p>
           )}
         </div>
+      </section>
+
+      <section className={styles.historyCard}>
+        <div className={styles.panelHeader}>
+          <h2>Event history</h2>
+          <p className={styles.panelHint}>All events in order</p>
+        </div>
+        {eventHistory.length === 0 ? (
+          <p className={styles.emptyState}>No events recorded yet.</p>
+        ) : (
+          <ul className={styles.historyList}>
+            {eventHistory.map((event) => (
+              <li key={event.id} className={styles.historyItem}>
+                <div>
+                  <div className={styles.historyTitle}>
+                    <span className={styles.stepName}>{event.step}</span>
+                    <span
+                      className={`${styles.statusBadge} ${
+                        styles[event.status] ?? ""
+                      }`}
+                    >
+                      {event.status}
+                    </span>
+                  </div>
+                  <p className={styles.stepMeta}>
+                    {event.handler ? `Handler: ${event.handler}` : ""}
+                    {event.handler ? " · " : ""}
+                    {event.duration_ms ? `${event.duration_ms}ms` : "--"}
+                  </p>
+                </div>
+                <span className={styles.historyTime}>
+                  {formatTimestamp({ timestamp: event.timestamp })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </div>
   );

@@ -52,8 +52,7 @@ export {
 
 /* ── Velocity Store ──────────────────────────────────────── */
 export {
-    InMemoryVelocityStorage,
-    getVelocityThreshold,
-    type VelocityStorage
+    getVelocityThreshold, InMemoryVelocityStorage,
+    VercelKvVelocityStorage, type VelocityStorage
 } from "./velocity-store";
 

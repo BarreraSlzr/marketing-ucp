@@ -1,15 +1,16 @@
 "use server";
 
+import { getSharedVelocityStore } from "@/lib/antifraud-velocity-store";
 import { generateStamp } from "@/utils/stamp";
-import { assessRisk, InMemoryVelocityStorage } from "@repo/antifraud";
+import { assessRisk } from "@repo/antifraud";
 import { serializeCheckout } from "@repo/entities";
 import { BuyerSchema } from "@repo/entities/buyer.zod";
 import { PostalAddressSchema } from "@repo/entities/postal-address.zod";
 import {
-    PipelineTypeSchema,
-    SESSION_ID_MAX_LENGTH,
-    tracedStep,
-    type PipelineType
+  PipelineTypeSchema,
+  SESSION_ID_MAX_LENGTH,
+  tracedStep,
+  type PipelineType
 } from "@repo/pipeline";
 import { Effect } from "effect";
 import { redirect } from "next/navigation";
@@ -237,7 +238,7 @@ export async function submitFraudCheckAction(
       const assessment = await assessRisk({
         input: assessmentInput,
         config: {
-          velocityStore: new InMemoryVelocityStorage(),
+          velocityStore: getSharedVelocityStore(),
         },
       });
 

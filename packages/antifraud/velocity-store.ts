@@ -2,12 +2,13 @@
 // Pluggable storage: in-memory default, swap for Redis/KV in production
 // All usage must comply with this LEGEND and the LICENSE
 
-import { getIsoTimestamp } from "../../utils/stamp";
+import { kv } from "@vercel/kv";
+import { getIsoTimestamp, getIsoTimestampFromUnix } from "../../utils/stamp";
 import {
-    VELOCITY_MAX_SESSIONS_PER_DEVICE,
-    VELOCITY_MAX_SESSIONS_PER_EMAIL,
-    VELOCITY_MAX_SESSIONS_PER_IP,
-    VELOCITY_WINDOW_MS,
+  VELOCITY_MAX_SESSIONS_PER_DEVICE,
+  VELOCITY_MAX_SESSIONS_PER_EMAIL,
+  VELOCITY_MAX_SESSIONS_PER_IP,
+  VELOCITY_WINDOW_MS,
 } from "./constants";
 import type { VelocityRecord } from "./schemas";
 
@@ -123,6 +124,122 @@ export class InMemoryVelocityStorage implements VelocityStorage {
     }
 
     return pruned;
+  }
+}
+
+/* ── Vercel KV Velocity Storage (persistent) ────────────── */
+
+interface KvVelocityEntry {
+  session_id: string;
+  timestamp_ms: number;
+}
+
+export class VercelKvVelocityStorage implements VelocityStorage {
+  private windowMs: number;
+
+  constructor(params: { windowMs?: number } = {}) {
+    this.windowMs = params.windowMs ?? VELOCITY_WINDOW_MS;
+  }
+
+  private storeKey(params: { key: string; key_type: string }): string {
+    return `ucp:antifraud:velocity:${params.key_type}:${params.key}`;
+  }
+
+  private getNowMs(): number {
+    return Date.parse(getIsoTimestamp());
+  }
+
+  private parseEntries(entries: unknown[]): KvVelocityEntry[] {
+    const parsed: KvVelocityEntry[] = [];
+    for (const entry of entries) {
+      if (typeof entry !== "string") {
+        continue;
+      }
+      try {
+        const value = JSON.parse(entry) as KvVelocityEntry;
+        if (
+          value &&
+          typeof value.session_id === "string" &&
+          typeof value.timestamp_ms === "number"
+        ) {
+          parsed.push(value);
+        }
+      } catch {
+        continue;
+      }
+    }
+    return parsed;
+  }
+
+  private filterActive(params: {
+    entries: KvVelocityEntry[];
+    nowMs: number;
+  }): KvVelocityEntry[] {
+    const cutoff = params.nowMs - this.windowMs;
+    return params.entries.filter((entry) => entry.timestamp_ms >= cutoff);
+  }
+
+  private async writeEntries(params: {
+    key: string;
+    entries: KvVelocityEntry[];
+  }): Promise<void> {
+    await kv.del(params.key);
+    if (params.entries.length === 0) {
+      return;
+    }
+    const values = params.entries.map((entry) => JSON.stringify(entry));
+    await kv.rpush(params.key, ...values);
+    await kv.expire(params.key, Math.ceil(this.windowMs / 1000));
+  }
+
+  async record(params: {
+    key: string;
+    key_type: VelocityRecord["key_type"];
+    session_id: string;
+  }): Promise<void> {
+    const sk = this.storeKey({ key: params.key, key_type: params.key_type });
+    const nowMs = this.getNowMs();
+    const rawEntries = await kv.lrange(sk, 0, -1);
+    const parsed = this.parseEntries(rawEntries);
+    const active = this.filterActive({ entries: parsed, nowMs });
+
+    if (!active.some((entry) => entry.session_id === params.session_id)) {
+      active.push({ session_id: params.session_id, timestamp_ms: nowMs });
+    }
+
+    await this.writeEntries({ key: sk, entries: active });
+  }
+
+  async get(params: {
+    key: string;
+    key_type: VelocityRecord["key_type"];
+  }): Promise<VelocityRecord | null> {
+    const sk = this.storeKey({ key: params.key, key_type: params.key_type });
+    const nowMs = this.getNowMs();
+    const rawEntries = await kv.lrange(sk, 0, -1);
+    const parsed = this.parseEntries(rawEntries);
+    const active = this.filterActive({ entries: parsed, nowMs });
+
+    if (active.length === 0) {
+      return null;
+    }
+
+    await this.writeEntries({ key: sk, entries: active });
+
+    const minTimestamp = Math.min(...active.map((entry) => entry.timestamp_ms));
+
+    return {
+      key: params.key,
+      key_type: params.key_type,
+      session_ids: active.map((entry) => entry.session_id),
+      window_start: getIsoTimestampFromUnix({ seconds: Math.floor(minTimestamp / 1000) }),
+      window_end: getIsoTimestamp(),
+      count: active.length,
+    };
+  }
+
+  async prune(): Promise<number> {
+    return 0;
   }
 }
 

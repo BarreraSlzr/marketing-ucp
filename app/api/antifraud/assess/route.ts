@@ -2,14 +2,14 @@
 // POST /api/antifraud/assess → RiskAssessment { decision, score, signals }
 // All usage must comply with this LEGEND and the LICENSE
 
+import { getSharedVelocityStore } from "@/lib/antifraud-velocity-store";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
-    assessRisk,
-    DeviceFingerprintSchema,
-    InMemoryVelocityStorage,
-    RiskSignalSchema,
-    type AssessmentConfig,
+  assessRisk,
+  DeviceFingerprintSchema,
+  RiskSignalSchema,
+  type AssessmentConfig,
 } from "../../../../packages/antifraud";
 import type { PipelineEvent } from "../../../../packages/pipeline/event";
 import { getIsoTimestamp } from "../../../../utils/stamp";
@@ -55,10 +55,6 @@ const AssessRequestSchema = z.object({
   custom_signals: z.array(RiskSignalSchema).optional(),
 });
 
-/* ── Singleton velocity store (swap for Redis in production) ─ */
-
-const velocityStore = new InMemoryVelocityStorage();
-
 /* ── Route Handler ───────────────────────────────────────── */
 
 export async function POST(request: Request) {
@@ -86,7 +82,7 @@ export async function POST(request: Request) {
       ?? undefined;
 
     const config: AssessmentConfig = {
-      velocityStore,
+      velocityStore: getSharedVelocityStore(),
     };
 
     const assessment = await assessRisk({
