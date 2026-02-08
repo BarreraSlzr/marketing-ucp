@@ -1,6 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { getIsoTimestamp } from "@/utils/stamp";
-import type { PipelineEvent } from "@repo/pipeline";
+import { computeHandlerHealth, type PipelineEvent } from "@repo/pipeline";
 import { getDashboardSessions } from "./data";
 import { DemoControls } from "./demo-controls";
 import styles from "./page.module.css";
@@ -120,41 +120,13 @@ export default async function DashboardPage() {
     {},
   );
 
+  const nowIso = getIsoTimestamp();
   const handlerCards = Object.entries(handlerStats).map(([handler, events]) => {
-    const successes = events.filter((event) => event.status === "success");
-    const failures = events.filter((event) => event.status === "failure");
-    const avgLatency = events.filter(
-      (event) => typeof event.duration_ms === "number",
-    );
-
-    const avgLatencyMs =
-      avgLatency.length > 0
-        ? Math.round(
-            avgLatency.reduce(
-              (sum, event) => sum + (event.duration_ms ?? 0),
-              0,
-            ) / avgLatency.length,
-          )
-        : 0;
-
-    const lastSuccess = successes.sort(
-      (a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp),
-    )[0];
-    const lastError = failures.sort(
-      (a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp),
-    )[0];
+    const health = computeHandlerHealth({ handler, events, nowIso });
 
     return {
       handler,
-      total: events.length,
-      successRate:
-        events.length > 0
-          ? Math.round((successes.length / events.length) * 100)
-          : 0,
-      avgLatencyMs,
-      lastSuccessAt: lastSuccess?.timestamp ?? null,
-      lastErrorAt: lastError?.timestamp ?? null,
-      lastErrorMessage: lastError?.error ?? null,
+      health,
     };
   });
 
@@ -227,41 +199,53 @@ export default async function DashboardPage() {
               handlerCards.map((card) => (
                 <div key={card.handler} className={styles.handlerCard}>
                   <div className={styles.handlerHeader}>
-                    <h3>{card.handler}</h3>
+                    <div className={styles.handlerTitle}>
+                      <h3>{card.handler}</h3>
+                      <span
+                        className={`${styles.statusDot} ${
+                          styles[card.health.status]
+                        }`}
+                      />
+                      <span className={styles.statusLabel}>
+                        {card.health.status}
+                      </span>
+                    </div>
                     <span className={styles.pill}>
-                      {card.successRate}% success
+                      {card.health.success_rate}% success
                     </span>
                   </div>
                   <div className={styles.handlerStats}>
                     <div>
                       <p className={styles.statLabel}>Total calls</p>
-                      <p className={styles.statValue}>{card.total}</p>
+                      <p className={styles.statValue}>
+                        {card.health.total_calls}
+                      </p>
                     </div>
                     <div>
                       <p className={styles.statLabel}>Avg latency</p>
                       <p className={styles.statValue}>
-                        {card.avgLatencyMs > 0
-                          ? `${card.avgLatencyMs}ms`
+                        {card.health.avg_latency_ms > 0
+                          ? `${card.health.avg_latency_ms}ms`
                           : "--"}
                       </p>
                     </div>
                     <div>
                       <p className={styles.statLabel}>Last success</p>
                       <p className={styles.statValue}>
-                        {formatTime({ timestamp: card.lastSuccessAt })}
+                        {formatTime({ timestamp: card.health.last_success })}
                       </p>
                     </div>
                   </div>
                   <div className={styles.handlerFoot}>
                     <p className={styles.statLabel}>Last error</p>
                     <p className={styles.statValue}>
-                      {card.lastErrorAt
-                        ? formatTime({ timestamp: card.lastErrorAt })
+                      {card.health.last_failure
+                        ? formatTime({ timestamp: card.health.last_failure })
                         : "None"}
                     </p>
-                    {card.lastErrorMessage && (
+                    {card.health.last_error && (
                       <p className={styles.errorText}>
-                        {card.lastErrorMessage}
+                        {card.health.last_error.message}
                       </p>
                     )}
                   </div>
