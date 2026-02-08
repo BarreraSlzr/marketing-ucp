@@ -11,6 +11,7 @@ import {
   PipelineEmitter,
   PipelineTypeSchema,
   tracedStep,
+  type PipelineType,
 } from "@repo/pipeline";
 import { Effect } from "effect";
 import { NextRequest, NextResponse } from "next/server";
@@ -44,7 +45,7 @@ function getSignature(params: { req: NextRequest }): string {
   );
 }
 
-function resolvePipelineType(params: { req: NextRequest }): string {
+function resolvePipelineType(params: { req: NextRequest }): PipelineType {
   const pipelineType =
     params.req.nextUrl.searchParams.get("pipeline_type") ||
     params.req.headers.get("x-ucp-pipeline-type") ||
