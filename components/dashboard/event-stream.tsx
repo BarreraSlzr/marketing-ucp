@@ -141,7 +141,10 @@ export function EventStream({
         const data = await response.json();
         const nextEvents: PipelineEvent[] = (data.sessions ?? [])
           .flatMap((session: { events: PipelineEvent[] }) => session.events)
-          .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp));
+          .sort(
+            (a: PipelineEvent, b: PipelineEvent) =>
+              Date.parse(b.timestamp) - Date.parse(a.timestamp),
+          );
 
         if (isActive) {
           setEventState(nextEvents);
