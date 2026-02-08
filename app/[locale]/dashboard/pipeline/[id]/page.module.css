@@ -14,6 +14,12 @@
   gap: 16px;
 }
 
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .kicker {
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -37,6 +43,16 @@
   padding: 10px 16px;
   background: transparent;
   color: var(--color-muted-foreground);
+}
+
+.secondaryButton {
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--color-secondary);
+  color: var(--color-foreground);
 }
 
 .timelineCard {
