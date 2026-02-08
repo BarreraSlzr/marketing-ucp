@@ -52,11 +52,32 @@ export async function collectVelocitySignals(params: {
         const overage = record.count - threshold;
         const score = Math.min(100, 20 + overage * 15);
 
+        const reason = `${check.key_type} "${check.key}" has ${record.count} sessions in window (threshold: ${threshold})`;
         signals.push({
           signal: check.signal,
+          name: check.signal,
           score,
           weight: DEFAULT_SIGNAL_WEIGHTS[check.signal] ?? 1.0,
-          reason: `${check.key_type} "${check.key}" has ${record.count} sessions in window (threshold: ${threshold})`,
+          reason,
+          description: reason,
+          metadata: {
+            key: check.key,
+            key_type: check.key_type,
+            count: record.count,
+            threshold,
+          },
+        });
+      } else if (record.count >= 2 && record.count < Math.ceil(threshold * 0.8)) {
+        // Flag rising activity only when count is below 80% of threshold
+        const score = Math.min(30, 10 + (record.count - 2) * 5);
+        const reason = `${check.key_type} "${check.key}" activity rising (${record.count} sessions, approaching threshold ${threshold})`;
+        signals.push({
+          signal: check.signal,
+          name: check.signal,
+          score,
+          weight: DEFAULT_SIGNAL_WEIGHTS[check.signal] ?? 1.0,
+          reason,
+          description: reason,
           metadata: {
             key: check.key,
             key_type: check.key_type,
@@ -92,21 +113,27 @@ export function collectTimingSignals(params: {
   const durationMs = lastTs - firstTs;
 
   if (durationMs < CHECKOUT_TOO_FAST_MS) {
+    const reason = `Checkout completed in ${durationMs}ms (threshold: ${CHECKOUT_TOO_FAST_MS}ms) — possible bot`;
     signals.push({
       signal: "timing_too_fast",
+      name: "timing_too_fast",
       score: Math.min(100, 60 + Math.round((1 - durationMs / CHECKOUT_TOO_FAST_MS) * 40)),
       weight: DEFAULT_SIGNAL_WEIGHTS.timing_too_fast ?? 1.0,
-      reason: `Checkout completed in ${durationMs}ms (threshold: ${CHECKOUT_TOO_FAST_MS}ms) — possible bot`,
+      reason,
+      description: reason,
       metadata: { duration_ms: durationMs, threshold_ms: CHECKOUT_TOO_FAST_MS },
     });
   }
 
   if (durationMs > CHECKOUT_TOO_SLOW_MS) {
+    const reason = `Checkout took ${Math.round(durationMs / 1000)}s (threshold: ${CHECKOUT_TOO_SLOW_MS / 1000}s) — possible session hijack`;
     signals.push({
       signal: "timing_too_slow",
+      name: "timing_too_slow",
       score: Math.min(100, 30 + Math.round(((durationMs - CHECKOUT_TOO_SLOW_MS) / CHECKOUT_TOO_SLOW_MS) * 30)),
       weight: DEFAULT_SIGNAL_WEIGHTS.timing_too_slow ?? 1.0,
-      reason: `Checkout took ${Math.round(durationMs / 1000)}s (threshold: ${CHECKOUT_TOO_SLOW_MS / 1000}s) — possible session hijack`,
+      reason,
+      description: reason,
       metadata: { duration_ms: durationMs, threshold_ms: CHECKOUT_TOO_SLOW_MS },
     });
   }
@@ -125,11 +152,14 @@ export function collectChainHashMutationSignals(params: {
   const signals: RiskSignal[] = [];
 
   if (params.previous_chain_hash && params.previous_chain_hash !== params.current_chain_hash) {
+    const reason = "Chain hash changed mid-checkout — input data was mutated after initial validation";
     signals.push({
       signal: "chain_hash_mutation",
+      name: "chain_hash_mutation",
       score: 80,
       weight: DEFAULT_SIGNAL_WEIGHTS.chain_hash_mutation ?? 1.0,
-      reason: "Chain hash changed mid-checkout — input data was mutated after initial validation",
+      reason,
+      description: reason,
       metadata: {
         previous_hash: params.previous_chain_hash,
         current_hash: params.current_chain_hash,
@@ -158,11 +188,14 @@ export function collectInputMutationSignals(params: {
   if (buyerEvents.length >= 2) {
     const uniqueChecksums = new Set(buyerEvents.map((e) => e.input_checksum));
     if (uniqueChecksums.size > 1) {
+      const reason = `Buyer data changed ${uniqueChecksums.size} times during checkout — possible session manipulation`;
       signals.push({
         signal: "input_mutation",
+        name: "input_mutation",
         score: 50,
         weight: DEFAULT_SIGNAL_WEIGHTS.input_mutation ?? 1.0,
-        reason: `Buyer data changed ${uniqueChecksums.size} times during checkout — possible session manipulation`,
+        reason,
+        description: reason,
         metadata: {
           mutation_count: uniqueChecksums.size,
           checksums: Array.from(uniqueChecksums),
@@ -183,19 +216,27 @@ export function collectGeoMismatchSignals(params: {
 }): RiskSignal[] {
   const signals: RiskSignal[] = [];
 
+  const highRiskCountries = new Set(["KP", "IR", "RU", "BY", "SY", "CN"]);
+
   if (
     params.billing_country &&
     params.ip_country &&
     params.billing_country.toUpperCase() !== params.ip_country.toUpperCase()
   ) {
+    const ipCountry = params.ip_country.toUpperCase();
+    const score = highRiskCountries.has(ipCountry) ? 85 : 40;
+    const reason = `Billing country (${params.billing_country}) does not match IP country (${params.ip_country})`;
     signals.push({
       signal: "geo_mismatch",
-      score: 40,
+      name: "geo_mismatch",
+      score,
       weight: DEFAULT_SIGNAL_WEIGHTS.geo_mismatch ?? 1.0,
-      reason: `Billing country (${params.billing_country}) does not match IP country (${params.ip_country})`,
+      reason,
+      description: reason,
       metadata: {
         billing_country: params.billing_country,
         ip_country: params.ip_country,
+        high_risk: highRiskCountries.has(ipCountry),
       },
     });
   }
@@ -236,11 +277,14 @@ export function collectDeviceAnomalySignals(params: {
   }
 
   if (anomalies.length > 0) {
+    const reason = anomalies.join("; ");
     signals.push({
       signal: "device_anomaly",
+      name: "device_anomaly",
       score: Math.min(100, 20 + anomalies.length * 20),
       weight: DEFAULT_SIGNAL_WEIGHTS.device_anomaly ?? 1.0,
-      reason: anomalies.join("; "),
+      reason,
+      description: reason,
       metadata: {
         anomalies,
         fingerprint: fp,
