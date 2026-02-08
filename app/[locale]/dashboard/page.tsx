@@ -14,16 +14,141 @@ function isPipelineCompleted(params: { events: PipelineEvent[] }): boolean {
   );
 }
 
-function getLatestFailure(params: {
+function getLatestEvent(params: {
   events: PipelineEvent[];
 }): PipelineEvent | null {
-  const failures = params.events.filter((event) => event.status === "failure");
-  if (failures.length === 0) {
+  if (params.events.length === 0) {
     return null;
   }
-  return failures.sort(
+  return [...params.events].sort(
     (a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp),
   )[0];
+}
+
+function getPipelineStatus(params: { events: PipelineEvent[] }): {
+  label: string;
+  tone: "success" | "warning" | "danger" | "neutral";
+} {
+  const { events } = params;
+
+  if (
+    events.some(
+      (event) => event.status === "failure" && event.step === "fraud_check",
+    )
+  ) {
+    return { label: "blocked", tone: "danger" };
+  }
+
+  if (
+    events.some(
+      (event) => event.status === "failure" && event.step === "checkout_failed",
+    )
+  ) {
+    return { label: "failed", tone: "danger" };
+  }
+
+  if (
+    events.some(
+      (event) =>
+        event.step === "fraud_review_escalated" && event.status === "pending",
+    )
+  ) {
+    return { label: "suspicious", tone: "warning" };
+  }
+
+  const reviewDecision = events.find(
+    (event) =>
+      event.step === "fraud_check" &&
+      typeof event.metadata === "object" &&
+      event.metadata !== null &&
+      (event.metadata as Record<string, unknown>).decision === "review",
+  );
+
+  if (reviewDecision) {
+    return { label: "suspicious", tone: "warning" };
+  }
+
+  if (
+    events.some(
+      (event) =>
+        event.step === "checkout_completed" && event.status === "success",
+    )
+  ) {
+    return { label: "successful", tone: "success" };
+  }
+
+  return { label: "in progress", tone: "neutral" };
+}
+
+function getChecksumStatus(params: {
+  checksum: { is_valid: boolean } | null;
+}): {
+  label: string;
+  tone: "success" | "warning" | "danger" | "neutral";
+} {
+  if (!params.checksum) {
+    return { label: "checksum pending", tone: "neutral" };
+  }
+
+  if (params.checksum.is_valid) {
+    return { label: "checksum valid", tone: "success" };
+  }
+
+  return { label: "checksum invalid", tone: "danger" };
+}
+
+function getFraudStatus(params: { events: PipelineEvent[] }): {
+  label: string;
+  tone: "success" | "warning" | "danger" | "neutral";
+} {
+  const { events } = params;
+
+  if (
+    events.some(
+      (event) => event.status === "failure" && event.step === "fraud_check",
+    )
+  ) {
+    return { label: "fraud blocked", tone: "danger" };
+  }
+
+  if (
+    events.some(
+      (event) =>
+        event.step === "fraud_review_escalated" && event.status === "pending",
+    )
+  ) {
+    return { label: "fraud review", tone: "warning" };
+  }
+
+  const reviewDecision = events.find(
+    (event) =>
+      event.step === "fraud_check" &&
+      typeof event.metadata === "object" &&
+      event.metadata !== null &&
+      (event.metadata as Record<string, unknown>).decision === "review",
+  );
+
+  if (reviewDecision) {
+    return { label: "fraud review", tone: "warning" };
+  }
+
+  if (
+    events.some(
+      (event) => event.step === "fraud_check" && event.status === "success",
+    )
+  ) {
+    return { label: "fraud cleared", tone: "success" };
+  }
+
+  return { label: "fraud pending", tone: "neutral" };
+}
+
+function isHealthHeartbeatEvent(params: { event: PipelineEvent }): boolean {
+  const metadata = params.event.metadata;
+  if (!metadata || typeof metadata !== "object") {
+    return false;
+  }
+  return (metadata as Record<string, unknown>).health_heartbeat === true;
 }
 
 function formatDuration(params: { durationMs: number }): string {
@@ -130,18 +255,87 @@ export default async function DashboardPage() {
     };
   });
 
-  const recentFailures = sessions
-    .map((session) => ({
-      session,
-      failure: getLatestFailure({ events: session.events }),
-    }))
-    .filter((entry) => entry.failure !== null)
+  const sessionById = sessions.reduce<
+    Record<string, (typeof sessions)[number]>
+  >((acc, session) => {
+    const existing = acc[session.session_id];
+    if (!existing) {
+      acc[session.session_id] = session;
+      return acc;
+    }
+    const existingLatest = getLatestEvent({ events: existing.events });
+    const candidateLatest = getLatestEvent({ events: session.events });
+    const existingMs = existingLatest
+      ? Date.parse(existingLatest.timestamp)
+      : 0;
+    const candidateMs = candidateLatest
+      ? Date.parse(candidateLatest.timestamp)
+      : 0;
+    if (candidateMs > existingMs) {
+      acc[session.session_id] = session;
+    }
+    return acc;
+  }, {});
+
+  const activityEvents = allEvents.filter(
+    (event) => !isHealthHeartbeatEvent({ event }),
+  );
+
+  const eventsBySession = activityEvents.reduce<
+    Record<string, PipelineEvent[]>
+  >((acc, event) => {
+    acc[event.session_id] = acc[event.session_id]
+      ? [...acc[event.session_id], event]
+      : [event];
+    return acc;
+  }, {});
+
+  const recentActivity = Object.entries(eventsBySession)
+    .map(([sessionId, events]) => {
+      const lastEvent = getLatestEvent({ events });
+      const session = sessionById[sessionId];
+
+      return {
+        sessionId,
+        eventCount: events.length,
+        status: getPipelineStatus({ events }),
+        fraudStatus: getFraudStatus({ events }),
+        checksumStatus: getChecksumStatus({
+          checksum: session?.checksum ?? null,
+        }),
+        lastEvent,
+      };
+    })
+    .filter((entry) => entry.lastEvent)
     .sort(
       (a, b) =>
-        Date.parse(b.failure?.timestamp ?? "") -
-        Date.parse(a.failure?.timestamp ?? ""),
+        Date.parse(b.lastEvent!.timestamp) - Date.parse(a.lastEvent!.timestamp),
     )
-    .slice(0, 5);
+    .slice(0, 4);
+
+  const inProgressActivity = Object.entries(eventsBySession)
+    .map(([sessionId, events]) => {
+      const lastEvent = getLatestEvent({ events });
+      const session = sessionById[sessionId];
+
+      return {
+        sessionId,
+        eventCount: events.length,
+        status: getPipelineStatus({ events }),
+        fraudStatus: getFraudStatus({ events }),
+        checksumStatus: getChecksumStatus({
+          checksum: session?.checksum ?? null,
+        }),
+        lastEvent,
+        isCompleted: isPipelineCompleted({ events }),
+      };
+    })
+    .filter((entry) => entry.lastEvent && !entry.isCompleted)
+    .sort(
+      (a, b) =>
+        Date.parse(b.lastEvent!.timestamp) - Date.parse(a.lastEvent!.timestamp),
+    )
+    .slice(0, 4);
 
   return (
     <div className={styles.page}>
@@ -257,45 +451,130 @@ export default async function DashboardPage() {
 
         <div className={styles.panel}>
           <div className={styles.panelHeader}>
-            <h2>Recent failures</h2>
+            <h2>Recent activity</h2>
             <Link className={styles.textLink} href="/dashboard/events">
               Inspect event stream
             </Link>
           </div>
-          {recentFailures.length === 0 ? (
-            <p className={styles.emptyState}>
-              No failed pipelines in this window.
-            </p>
-          ) : (
-            <ul className={styles.failureList}>
-              {recentFailures.map((entry) => (
-                <li
-                  key={entry.session.session_id}
-                  className={styles.failureItem}
-                >
-                  <div>
-                    <p className={styles.failureSession}>
-                      {entry.session.session_id}
-                    </p>
-                    <p className={styles.failureDetail}>
-                      Step: {entry.failure?.step}
-                    </p>
-                  </div>
-                  <div>
-                    <p className={styles.failureTime}>
-                      {formatDateTime({ timestamp: entry.failure?.timestamp })}
-                    </p>
-                    <Link
-                      className={styles.textLink}
-                      href={`/dashboard/pipeline/${entry.session.session_id}`}
-                    >
-                      View pipeline
-                    </Link>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+          <div className={styles.activityBlock}>
+            <h3 className={styles.activityTitle}>In progress</h3>
+            {inProgressActivity.length === 0 ? (
+              <p className={styles.emptyState}>
+                No active pipelines right now.
+              </p>
+            ) : (
+              <ul className={styles.failureList}>
+                {inProgressActivity.map((entry) => (
+                  <li key={entry.sessionId} className={styles.failureItem}>
+                    <div>
+                      <p className={styles.failureSession}>{entry.sessionId}</p>
+                      <p className={styles.failureDetail}>
+                        <span
+                          className={`${styles.statusBadge} ${
+                            styles[entry.status.tone]
+                          }`}
+                        >
+                          {entry.status.label}
+                        </span>
+                        <span
+                          className={`${styles.statusBadge} ${
+                            styles[entry.fraudStatus.tone]
+                          }`}
+                        >
+                          {entry.fraudStatus.label}
+                        </span>
+                        <span
+                          className={`${styles.statusBadge} ${
+                            styles[entry.checksumStatus.tone]
+                          }`}
+                        >
+                          {entry.checksumStatus.label}
+                        </span>
+                      </p>
+                      <p className={styles.currentStep}>
+                        {entry.lastEvent?.step
+                          ? `Currently at: ${entry.lastEvent.step}`
+                          : "Currently at: --"}
+                        {` · ${entry.eventCount} events`}
+                      </p>
+                    </div>
+                    <div>
+                      <p className={styles.failureTime}>
+                        {formatDateTime({
+                          timestamp: entry.lastEvent?.timestamp,
+                        })}
+                      </p>
+                      <Link
+                        className={styles.textLink}
+                        href={`/dashboard/pipeline/${entry.sessionId}`}
+                      >
+                        View pipeline
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className={styles.activityBlock}>
+            <h3 className={styles.activityTitle}>Recent activity</h3>
+            {recentActivity.length === 0 ? (
+              <p className={styles.emptyState}>No recent pipeline activity.</p>
+            ) : (
+              <ul className={styles.failureList}>
+                {recentActivity.map((entry) => (
+                  <li key={entry.sessionId} className={styles.failureItem}>
+                    <div>
+                      <p className={styles.failureSession}>{entry.sessionId}</p>
+                      <p className={styles.failureDetail}>
+                        <span
+                          className={`${styles.statusBadge} ${
+                            styles[entry.status.tone]
+                          }`}
+                        >
+                          {entry.status.label}
+                        </span>
+                        <span
+                          className={`${styles.statusBadge} ${
+                            styles[entry.fraudStatus.tone]
+                          }`}
+                        >
+                          {entry.fraudStatus.label}
+                        </span>
+                        <span
+                          className={`${styles.statusBadge} ${
+                            styles[entry.checksumStatus.tone]
+                          }`}
+                        >
+                          {entry.checksumStatus.label}
+                        </span>
+                      </p>
+                      <p className={styles.currentStep}>
+                        {entry.lastEvent?.step
+                          ? `Currently at: ${entry.lastEvent.step}`
+                          : "Currently at: --"}
+                        {` · ${entry.eventCount} events`}
+                      </p>
+                    </div>
+                    <div>
+                      <p className={styles.failureTime}>
+                        {formatDateTime({
+                          timestamp: entry.lastEvent?.timestamp,
+                        })}
+                      </p>
+                      <Link
+                        className={styles.textLink}
+                        href={`/dashboard/pipeline/${entry.sessionId}`}
+                      >
+                        View pipeline
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </section>
     </div>

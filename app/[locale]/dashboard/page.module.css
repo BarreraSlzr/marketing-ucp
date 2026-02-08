@@ -135,6 +135,17 @@
   align-items: center;
 }
 
+.activityBlock {
+  display: grid;
+  gap: 10px;
+}
+
+.activityTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
 .textLink {
   color: var(--color-primary);
   font-weight: 600;
@@ -265,12 +276,49 @@
 .failureDetail {
   font-size: 0.8rem;
   color: var(--color-muted-foreground);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.currentStep {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  margin-top: 4px;
 }
 
 .failureTime {
   font-size: 0.75rem;
   color: var(--color-muted-foreground);
   text-align: right;
+}
+
+.statusBadge {
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.success {
+  background: rgba(16, 185, 129, 0.18);
+  color: #047857;
+}
+
+.warning {
+  background: rgba(245, 158, 11, 0.18);
+  color: #92400e;
+}
+
+.danger {
+  background: rgba(239, 68, 68, 0.2);
+  color: #b91c1c;
+}
+
+.neutral {
+  background: rgba(148, 163, 184, 0.2);
+  color: #475569;
 }
 
 @media (max-width: 720px) {
