@@ -1,6 +1,7 @@
 "use server";
 
 import { generateStamp } from "@/utils/stamp";
+import { assessRisk, InMemoryVelocityStorage } from "@repo/antifraud";
 import { serializeCheckout } from "@repo/entities";
 import { BuyerSchema } from "@repo/entities/buyer.zod";
 import { PostalAddressSchema } from "@repo/entities/postal-address.zod";
@@ -8,7 +9,7 @@ import {
     PipelineTypeSchema,
     SESSION_ID_MAX_LENGTH,
     tracedStep,
-    type PipelineType,
+    type PipelineType
 } from "@repo/pipeline";
 import { Effect } from "effect";
 import { redirect } from "next/navigation";
@@ -211,7 +212,85 @@ export async function submitAddressAction(
   };
 }
 
-/* ── Payment Form Action ─────────────────────────────────── */
+/* ── Fraud Check Action ──────────────────────────────────── */
+export async function submitFraudCheckAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const raw = formDataToObject(formData);
+  const pipelineContext = resolvePipelineContext({ raw });
+
+  // Build assessment input from form data
+  const assessmentInput = {
+    session_id: pipelineContext.session_id,
+    events: [], // In a real scenario, fetch actual events from pipeline tracker
+    email: raw.buyer_email,
+    ip: raw.client_ip,
+    device_hash: raw.device_hash,
+    billing_country: raw.billing_country,
+    ip_country: raw.ip_country,
+  };
+
+  // Create an Effect that performs the risk assessment
+  const fraudCheckEffect = Effect.tryPromise({
+    try: async () => {
+      const assessment = await assessRisk({
+        input: assessmentInput,
+        config: {
+          velocityStore: new InMemoryVelocityStorage(),
+        },
+      });
+
+      // If blocked, return error to halt pipeline
+      if (assessment.decision === "block") {
+        const signals = assessment.signals
+          .map((s) => `${s.name} (${s.score})`)
+          .join(", ");
+        throw new Error(
+          `Fraud check failed: ${assessment.decision.toUpperCase()}. Signals: ${signals}`
+        );
+      }
+
+      return assessment;
+    },
+    catch: (error) => error as Error,
+  });
+
+  const traced = tracedStep({
+    session_id: pipelineContext.session_id,
+    pipeline_type: pipelineContext.pipeline_type,
+    step: "fraud_check",
+    handler: "antifraud",
+    input: assessmentInput,
+    effect: fraudCheckEffect,
+  });
+
+  const outcome = await Effect.runPromise(Effect.either(traced));
+
+  if (outcome._tag === "Left") {
+    const error = outcome.left;
+    return {
+      success: false,
+      message: error.message || "Fraud check failed. Please contact support.",
+    };
+  }
+
+  // If decision is "review", optionally flag for manual review
+  // For now, we treat review as allowing the checkout to proceed
+  const assessment = outcome.right;
+  if (assessment.decision === "review") {
+    console.warn(
+      `[FRAUD-REVIEW] Session ${pipelineContext.session_id} requires manual review. Score: ${assessment.total_score}`
+    );
+  }
+
+  return {
+    success: true,
+    message: `Fraud check completed (decision: ${assessment.decision}).`,
+  };
+}
+
+/* ── Payment Form Action ──────────────────────────────────── */
 export async function submitPaymentAction(
   _prev: FormState,
   formData: FormData
