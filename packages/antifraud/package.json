@@ -1,0 +1,16 @@
+{
+  "name": "@repo/antifraud",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./*": "./*"
+  },
+  "dependencies": {
+    "@repo/pipeline": "workspace:*",
+    "@repo/entities": "workspace:*",
+    "zod": "^3.24.1"
+  }
+}
