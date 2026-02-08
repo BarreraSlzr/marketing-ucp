@@ -1,0 +1,103 @@
+@reference "../../../theme.css";
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  color: var(--color-muted-foreground);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+}
+
+.subtitle {
+  color: var(--color-muted-foreground);
+  max-width: 520px;
+}
+
+.cardGrid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.card {
+  border-radius: 18px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  padding: 18px;
+  display: grid;
+  gap: 12px;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardHeader h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.pill {
+  background: var(--color-secondary);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.metricLabel {
+  font-size: 0.7rem;
+  color: var(--color-muted-foreground);
+}
+
+.metricValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+}
+
+.errorText {
+  font-size: 0.75rem;
+  color: var(--color-destructive);
+}
+
+.emptyState {
+  border-radius: 16px;
+  border: 1px dashed var(--color-border);
+  padding: 20px;
+  color: var(--color-muted-foreground);
+}
