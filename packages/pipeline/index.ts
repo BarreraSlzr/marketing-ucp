@@ -104,3 +104,10 @@ export {
     type TracedStepParams
 } from "./traced-effect";
 
+/* ── Handler Health ─────────────────────────────────────── */
+export {
+    computeHandlerHealth,
+    type HandlerHealth,
+    type HandlerHealthStatus
+} from "./health";
+
