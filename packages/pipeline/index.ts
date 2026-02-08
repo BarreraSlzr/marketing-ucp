@@ -39,11 +39,16 @@ export {
 /* ── Checksum ────────────────────────────────────────────── */
 export {
     PipelineChecksumSchema,
+    PipelineReceiptEntrySchema,
+    PipelineReceiptSchema,
     computeChainHash,
     computeDataChecksum,
     computePipelineChecksum,
+    computePipelineReceipt,
     computeStepHash,
-    type PipelineChecksum
+    type PipelineChecksum,
+    type PipelineReceipt,
+    type PipelineReceiptEntry
 } from "./checksum";
 
 /* ── Checksum Utils ─────────────────────────────────────── */
