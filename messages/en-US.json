@@ -133,13 +133,13 @@
     },
     "dashboard": {
       "title": "Visual Dashboard",
-      "status": "Live",
+      "status": "Available",
       "description": "Real-time pipeline monitoring, event streams, and handler health visualizations.",
       "issue": "Issues #7-10"
     },
     "distribution": {
       "title": "npm Publishing",
-      "status": "Next",
+      "status": "Planned",
       "description": "Publish @ucp/entities, @ucp/pipeline, and handler packages for easy adoption.",
       "issue": "Issue #11"
     },

@@ -382,7 +382,7 @@ export default function HomePage() {
                   <h3 className={styles.roadmapCardTitle}>
                     {t("roadmap.dashboard.title")}
                   </h3>
-                  <span className={styles.roadmapStatusPlanned}>
+                  <span className={styles.roadmapStatusComplete}>
                     {t("roadmap.dashboard.status")}
                   </span>
                 </div>

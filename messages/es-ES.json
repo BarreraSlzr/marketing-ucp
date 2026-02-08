@@ -133,13 +133,13 @@
     },
     "dashboard": {
       "title": "Dashboard Visual",
-      "status": "En vivo",
+      "status": "Disponible",
       "description": "Monitoreo en tiempo real, streams de eventos y salud de handlers.",
       "issue": "Issues #7-10"
     },
     "distribution": {
       "title": "Publicación en npm",
-      "status": "Siguiente",
+      "status": "Planificado",
       "description": "Publicar @ucp/entities, @ucp/pipeline y paquetes de handlers para fácil adopción.",
       "issue": "Issue #11"
     },
