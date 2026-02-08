@@ -1,5 +1,6 @@
+import { Link } from "@/i18n/navigation";
 import { generateDemoPipelineEvents } from "@/lib/pipeline-demo";
-import { getPipelineDefinition } from "@repo/pipeline";
+import { getPipelineDefinition, type PipelineEvent } from "@repo/pipeline";
 import { getDashboardSessionById } from "../../data";
 import styles from "./page.module.css";
 
@@ -22,6 +23,92 @@ function formatTimestamp(params: { timestamp?: string | null }): string {
     return "--";
   }
   return dateFormatter.format(ms);
+}
+
+function extractProductDetails(params: {
+  events: PipelineEvent[];
+  fallbackName: string;
+  fallbackSku: string;
+}): {
+  name: string;
+  sku: string;
+  productId: string;
+  quantity: string;
+  price: string;
+} {
+  let name: string | null = null;
+  let sku: string | null = null;
+  let productId: string | null = null;
+  let quantity: string | null = null;
+  let price: string | null = null;
+
+  for (const event of params.events) {
+    const metadata = event.metadata;
+    if (!metadata || typeof metadata !== "object") {
+      continue;
+    }
+
+    const record = metadata as Record<string, unknown>;
+    name =
+      name ??
+      (typeof record.product_name === "string"
+        ? record.product_name
+        : typeof record.title === "string"
+          ? record.title
+          : typeof record.name === "string"
+            ? record.name
+            : null);
+
+    sku =
+      sku ??
+      (typeof record.sku === "string"
+        ? record.sku
+        : typeof record.product_id === "string"
+          ? record.product_id
+          : null);
+
+    productId =
+      productId ??
+      (typeof record.product_id === "string"
+        ? record.product_id
+        : typeof record.sku === "string"
+          ? record.sku
+          : null);
+
+    if (quantity === null) {
+      const qtyValue =
+        typeof record.quantity === "number"
+          ? record.quantity
+          : typeof record.qty === "number"
+            ? record.qty
+            : null;
+      if (qtyValue !== null) {
+        quantity = `${qtyValue}`;
+      }
+    }
+
+    if (price === null) {
+      const amount =
+        typeof record.price === "number"
+          ? record.price
+          : typeof record.amount === "number"
+            ? record.amount
+            : null;
+      const currency =
+        typeof record.currency === "string" ? record.currency : null;
+      if (amount !== null) {
+        price = currency ? `${currency} ${amount}` : `${amount}`;
+      }
+    }
+  }
+
+  return {
+    name: name ?? params.fallbackName,
+    sku: sku ?? params.fallbackSku,
+    productId: productId ?? sku ?? params.fallbackSku,
+    quantity: quantity ?? "--",
+    price: price ?? "--",
+  };
 }
 
 export default async function PipelineDetailPage({
@@ -91,6 +178,12 @@ export default async function PipelineDetailPage({
     };
   });
 
+  const productDetails = extractProductDetails({
+    events: session.events,
+    fallbackName: session.pipeline_type.replace(/_/g, " "),
+    fallbackSku: session.session_id,
+  });
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -104,43 +197,79 @@ export default async function PipelineDetailPage({
         </button>
       </header>
 
-      <section className={styles.timelineCard}>
-        <div className={styles.panelHeader}>
-          <h2>Step timeline</h2>
-          <p className={styles.panelHint}>Latest event per step</p>
+      <section className={styles.productCard}>
+        <div className={styles.productHeader}>
+          <div>
+            <h2>Product</h2>
+            <p className={styles.panelHint}>Checkout payload snapshot</p>
+          </div>
+          <Link
+            className={styles.productLink}
+            href={`/dashboard/product/${productDetails.productId}`}
+          >
+            View product
+          </Link>
         </div>
-        <div className={styles.timeline}>
-          {steps.map((step, index) => (
-            <div key={step.step} className={styles.timelineStep}>
-              <div className={styles.stepTop}>
-                <div
-                  className={`${styles.stepDot} ${styles[step.status] ?? ""}`}
-                >
-                  {step.status === "success"
-                    ? "OK"
-                    : step.status === "failure"
-                      ? "ERR"
-                      : step.status === "skipped"
-                        ? "SKIP"
-                        : "WAIT"}
-                </div>
-                {index < steps.length - 1 && (
-                  <div className={styles.stepLine} />
-                )}
-              </div>
-              <div className={styles.stepBody}>
-                <p className={styles.stepName}>{step.step}</p>
-                <p className={styles.stepMeta}>
-                  {step.duration !== null ? `${step.duration}ms` : "--"} ·{" "}
-                  {formatTimestamp({ timestamp: step.lastSeen })}
-                </p>
-              </div>
-            </div>
-          ))}
+        <div className={styles.productGrid}>
+          <div className={styles.productItem}>
+            <span className={styles.productLabel}>Name</span>
+            <span className={styles.productValue}>{productDetails.name}</span>
+          </div>
+          <div className={styles.productItem}>
+            <span className={styles.productLabel}>SKU</span>
+            <span className={styles.productValue}>{productDetails.sku}</span>
+          </div>
+          <div className={styles.productItem}>
+            <span className={styles.productLabel}>Qty</span>
+            <span className={styles.productValue}>
+              {productDetails.quantity}
+            </span>
+          </div>
+          <div className={styles.productItem}>
+            <span className={styles.productLabel}>Price</span>
+            <span className={styles.productValue}>{productDetails.price}</span>
+          </div>
         </div>
       </section>
 
-      <section className={styles.grid}>
+      <section className={styles.detailGrid}>
+        <div className={styles.timelineCard}>
+          <div className={styles.panelHeader}>
+            <h2>Step timeline</h2>
+            <p className={styles.panelHint}>Latest event per step</p>
+          </div>
+          <ol className={styles.timelineList}>
+            {steps.map((step, index) => (
+              <li key={step.step} className={styles.timelineItem}>
+                <div className={styles.timelineRail}>
+                  <span
+                    className={`${styles.timelineDot} ${styles[step.status] ?? ""}`}
+                  />
+                  {index < steps.length - 1 && (
+                    <span className={styles.timelineLine} />
+                  )}
+                </div>
+                <div className={styles.timelineContent}>
+                  <div className={styles.timelineTitleRow}>
+                    <span className={styles.stepName}>{step.step}</span>
+                    <span
+                      className={`${styles.statusBadge} ${
+                        styles[step.status] ?? ""
+                      }`}
+                    >
+                      {step.status}
+                    </span>
+                  </div>
+                  <p className={styles.stepMeta}>
+                    {step.duration !== null ? `${step.duration}ms` : "--"} ·{" "}
+                    {formatTimestamp({ timestamp: step.lastSeen })}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
         <div className={styles.checksumCard}>
           <div className={styles.panelHeader}>
             <h2>Checksum verification</h2>
@@ -177,27 +306,6 @@ export default async function PipelineDetailPage({
           ) : (
             <p className={styles.emptyState}>Checksum not available.</p>
           )}
-        </div>
-
-        <div className={styles.eventsCard}>
-          <div className={styles.panelHeader}>
-            <h2>Raw events</h2>
-            <p className={styles.panelHint}>{session.events.length} events</p>
-          </div>
-          <div className={styles.rawEvents}>
-            {session.events.map((event) => (
-              <details key={event.id} className={styles.eventItem}>
-                <summary className={styles.eventSummary}>
-                  <span>{event.step}</span>
-                  <span className={styles.eventStatus}>{event.status}</span>
-                  <span className={styles.eventTime}>
-                    {formatTimestamp({ timestamp: event.timestamp })}
-                  </span>
-                </summary>
-                <pre>{JSON.stringify(event, null, 2)}</pre>
-              </details>
-            ))}
-          </div>
         </div>
       </section>
     </div>
