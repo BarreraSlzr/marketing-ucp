@@ -51,8 +51,17 @@ export interface AssessmentInput {
   previous_chain_hash?: string;
   /** Current chain hash */
   current_chain_hash?: string;
-  /** Additional custom signals from integrations */
-  custom_signals?: RiskSignal[];
+  /** Additional custom signals from integrations (partial signal objects acceptable) */
+  custom_signals?: Array<{
+    name?: string;
+    signal?: string;
+    score: number;
+    weight?: number;
+    reason?: string;
+    description?: string;
+    detected_at?: string;
+    metadata?: Record<string, unknown>;
+  }>;
 }
 
 /* ── Risk Scoring Engine ─────────────────────────────────── */
@@ -74,6 +83,23 @@ function computeWeightedScore(params: { signals: RiskSignal[] }): number {
 
   // Normalize to 0–100
   return Math.min(100, Math.round(totalWeightedScore / totalWeight));
+}
+
+function normalizeSignal(params: { signal: RiskSignal }): RiskSignal {
+  const computedSignal = params.signal.signal ?? params.signal.name ?? "unknown_signal";
+  const name = params.signal.name ?? params.signal.signal ?? "unknown_signal";
+  const reason = params.signal.reason ?? params.signal.description ?? "Signal triggered";
+  const description = params.signal.description ?? params.signal.reason ?? reason;
+  const weight = params.signal.weight ?? 1.0;
+
+  return {
+    ...params.signal,
+    signal: computedSignal,
+    name,
+    reason,
+    description,
+    weight,
+  };
 }
 
 /** Determine decision from score */
@@ -103,11 +129,11 @@ export async function assessRisk(params: {
     device_hash: input.device_hash,
     velocityStore: config.velocityStore,
   });
-  allSignals.push(...velocitySignals);
+  allSignals.push(...velocitySignals.map((signal) => normalizeSignal({ signal })));
 
   // 2. Timing anomalies
   const timingSignals = collectTimingSignals({ events: input.events });
-  allSignals.push(...timingSignals);
+  allSignals.push(...timingSignals.map((signal) => normalizeSignal({ signal })));
 
   // 3. Chain hash mutation
   if (input.current_chain_hash) {
@@ -116,29 +142,39 @@ export async function assessRisk(params: {
       current_chain_hash: input.current_chain_hash,
       events: input.events,
     });
-    allSignals.push(...mutationSignals);
+    allSignals.push(...mutationSignals.map((signal) => normalizeSignal({ signal })));
   }
 
   // 4. Input mutation
   const inputMutationSignals = collectInputMutationSignals({ events: input.events });
-  allSignals.push(...inputMutationSignals);
+  allSignals.push(...inputMutationSignals.map((signal) => normalizeSignal({ signal })));
 
   // 5. Geo mismatch
   const geoSignals = collectGeoMismatchSignals({
     billing_country: input.billing_country,
     ip_country: input.ip_country,
   });
-  allSignals.push(...geoSignals);
+  allSignals.push(...geoSignals.map((signal) => normalizeSignal({ signal })));
 
   // 6. Device anomalies
   const deviceSignals = collectDeviceAnomalySignals({
     fingerprint: input.device_fingerprint,
   });
-  allSignals.push(...deviceSignals);
+  allSignals.push(...deviceSignals.map((signal) => normalizeSignal({ signal })));
 
   // 7. Custom signals from integrations
   if (input.custom_signals) {
-    allSignals.push(...input.custom_signals);
+    allSignals.push(
+      ...input.custom_signals.map((signal) =>
+        normalizeSignal({
+          signal: {
+            ...signal,
+            score: signal.score,
+            weight: signal.weight ?? 1.0,
+          } as RiskSignal,
+        })
+      )
+    );
   }
 
   // Compute weighted total

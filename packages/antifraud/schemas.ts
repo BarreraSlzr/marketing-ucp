@@ -7,18 +7,31 @@ import { z } from "zod";
 /* ── Risk Signal ─────────────────────────────────────────── */
 
 /** A single risk signal emitted by a signal collector */
-export const RiskSignalSchema = z.object({
-  /** Signal type identifier (e.g. "velocity_email", "geo_mismatch") */
-  signal: z.string().min(1),
-  /** Raw score contribution from this signal (0–100) */
-  score: z.number().min(0).max(100),
-  /** Human-readable reason for the signal */
-  reason: z.string().min(1),
-  /** Weight multiplier applied to this signal's score */
-  weight: z.number().min(0).max(5).default(1.0),
-  /** Additional context for debugging/auditing */
-  metadata: z.record(z.unknown()).optional(),
-});
+export const RiskSignalSchema = z
+  .object({
+    /** Signal type identifier (e.g. "velocity_email", "geo_mismatch") */
+    signal: z.string().min(1).optional(),
+    /** Friendly signal name for dashboards */
+    name: z.string().min(1).optional(),
+    /** Raw score contribution from this signal (0–100) */
+    score: z.number().min(0).max(100),
+    /** Human-readable reason for the signal */
+    reason: z.string().min(1).optional(),
+    /** Legacy/alternate description field */
+    description: z.string().min(1).optional(),
+    /** Weight multiplier applied to this signal's score */
+    weight: z.number().min(0).max(5).default(1.0),
+    /** Optional detection timestamp (ISO-8601) */
+    detected_at: z.string().datetime().optional(),
+    /** Additional context for debugging/auditing */
+    metadata: z.record(z.unknown()).optional(),
+  })
+  .refine((data) => data.signal || data.name, {
+    message: "RiskSignal must include signal or name",
+  })
+  .refine((data) => data.reason || data.description, {
+    message: "RiskSignal must include reason or description",
+  });
 
 export type RiskSignal = z.infer<typeof RiskSignalSchema>;
 
