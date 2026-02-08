@@ -1,3 +1,14 @@
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
 import { Link } from "@/i18n/navigation";
 import { Space_Grotesk } from "next/font/google";
 import type { ReactNode } from "react";
@@ -10,34 +21,53 @@ const spaceGrotesk = Space_Grotesk({
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <div className={`${styles.dashboardShell} ${spaceGrotesk.variable}`}>
-      <aside className={styles.sidebar}>
-        <div className={styles.brand}>
-          <div className={styles.brandBadge}>UCP</div>
-          <div>
-            <div className={styles.brandTitle}>Pipeline Dashboard</div>
-            <div className={styles.brandSub}>Observability Console</div>
+    <SidebarProvider
+      className={`${styles.dashboardShell} ${spaceGrotesk.variable}`}
+    >
+      <div className={styles.sidebarBackground} aria-hidden="true" />
+      <Sidebar className={styles.sidebar}>
+        <SidebarHeader>
+          <div className="grid h-11 w-11 place-items-center rounded-xl bg-[var(--color-primary)] text-sm font-semibold tracking-[0.02em] text-[var(--color-primary-foreground)]">
+            UCP
           </div>
-        </div>
-        <nav className={styles.nav}>
-          <Link className={styles.navLink} href="/dashboard">
-            Overview
-          </Link>
-          <Link className={styles.navLink} href="/dashboard/events">
-            Event Stream
-          </Link>
-          <Link className={styles.navLink} href="/dashboard/handlers">
-            Handler Health
-          </Link>
-        </nav>
-        <div className={styles.sidebarFooter}>
-          <div className={styles.footerLabel}>In-memory demo</div>
-          <div className={styles.footerHint}>
+          <div>
+            <div className="text-sm font-semibold text-[var(--color-foreground)]">
+              Pipeline Dashboard
+            </div>
+            <div className="text-xs text-[var(--color-muted-foreground)]">
+              Observability Console
+            </div>
+          </div>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/dashboard">Overview</Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/dashboard/events">Event Stream</Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/dashboard/handlers">Handler Health</Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarContent>
+        <SidebarFooter>
+          <div className="text-xs font-semibold text-[var(--color-foreground)]">
+            In-memory demo
+          </div>
+          <div className="text-xs text-[var(--color-muted-foreground)]">
             Generate events via /api/pipeline/demo
           </div>
-        </div>
-      </aside>
-      <main className={styles.content}>{children}</main>
-    </div>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset className={styles.content}>{children}</SidebarInset>
+    </SidebarProvider>
   );
 }

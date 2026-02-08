@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-width: 0;
 }
 
 .header {
@@ -49,6 +50,58 @@
   box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
 }
 
+.productCard {
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-card) 96%, transparent);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+}
+
+.productHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.productLink {
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  background: var(--color-secondary);
+}
+
+.productGrid {
+  display: grid;
+  gap: 10px 16px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.productItem {
+  display: grid;
+  gap: 6px;
+}
+
+.productLabel {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+.productValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
 .panelHeader {
   display: flex;
   justify-content: space-between;
@@ -60,47 +113,54 @@
   color: var(--color-muted-foreground);
 }
 
-.timeline {
-  display: flex;
+.timelineList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
   gap: 16px;
-  overflow-x: auto;
-  padding-bottom: 6px;
 }
 
-.timelineStep {
-  min-width: 160px;
+.timelineItem {
   display: grid;
-  gap: 10px;
+  grid-template-columns: 20px 1fr;
+  gap: 16px;
+  align-items: flex-start;
 }
 
-.stepTop {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.stepDot {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+.timelineRail {
+  position: relative;
   display: grid;
-  place-items: center;
-  font-size: 0.65rem;
-  font-weight: 700;
-  background: var(--color-secondary);
-  color: var(--color-foreground);
-  border: 1px solid var(--color-border);
+  justify-items: center;
+  gap: 8px;
+  min-height: 100%;
 }
 
-.stepLine {
+.timelineDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid var(--color-border);
+  background: var(--color-card);
+}
+
+.timelineLine {
+  width: 2px;
   flex: 1;
-  height: 2px;
   background: var(--color-border);
 }
 
-.stepBody {
+.timelineContent {
   display: grid;
-  gap: 4px;
+  gap: 6px;
+  padding-bottom: 6px;
+}
+
+.timelineTitleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
 }
 
 .stepName {
@@ -136,14 +196,13 @@
   border-color: rgba(148, 163, 184, 0.4);
 }
 
-.grid {
+.detailGrid {
   display: grid;
   gap: 20px;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
-.checksumCard,
-.eventsCard {
+.checksumCard {
   border-radius: 20px;
   border: 1px solid var(--color-border);
   background: var(--color-card);
@@ -152,6 +211,7 @@
   flex-direction: column;
   gap: 16px;
   box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+  min-width: 0;
 }
 
 .checksumBody {
@@ -186,52 +246,6 @@
   word-break: break-all;
 }
 
-.rawEvents {
-  display: grid;
-  gap: 12px;
-  max-height: 420px;
-  overflow: auto;
-}
-
-.eventItem {
-  border-radius: 12px;
-  border: 1px solid var(--color-border);
-  padding: 0;
-  background: var(--color-secondary);
-}
-
-.eventSummary {
-  padding: 10px 12px;
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  cursor: pointer;
-  list-style: none;
-}
-
-.eventSummary::-webkit-details-marker {
-  display: none;
-}
-
-.eventStatus {
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  color: var(--color-muted-foreground);
-}
-
-.eventTime {
-  font-size: 0.75rem;
-  color: var(--color-muted-foreground);
-}
-
-.eventItem pre {
-  padding: 12px;
-  font-size: 0.75rem;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
 .emptyState {
   color: var(--color-muted-foreground);
 }
@@ -240,13 +254,5 @@
   .header {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .timeline {
-    flex-direction: column;
-  }
-
-  .stepLine {
-    display: none;
   }
 }
