@@ -1,0 +1,252 @@
+@reference "../../../../theme.css";
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  color: var(--color-muted-foreground);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+}
+
+.subtitle {
+  color: var(--color-muted-foreground);
+}
+
+.ghostButton {
+  border-radius: 12px;
+  border: 1px dashed var(--color-border);
+  padding: 10px 16px;
+  background: transparent;
+  color: var(--color-muted-foreground);
+}
+
+.timelineCard {
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panelHint {
+  font-size: 0.8rem;
+  color: var(--color-muted-foreground);
+}
+
+.timeline {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.timelineStep {
+  min-width: 160px;
+  display: grid;
+  gap: 10px;
+}
+
+.stepTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stepDot {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: var(--color-secondary);
+  color: var(--color-foreground);
+  border: 1px solid var(--color-border);
+}
+
+.stepLine {
+  flex: 1;
+  height: 2px;
+  background: var(--color-border);
+}
+
+.stepBody {
+  display: grid;
+  gap: 4px;
+}
+
+.stepName {
+  font-weight: 600;
+}
+
+.stepMeta {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+}
+
+.success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #047857;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.failure {
+  background: rgba(239, 68, 68, 0.2);
+  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.pending {
+  background: rgba(234, 179, 8, 0.2);
+  color: #92400e;
+  border-color: rgba(234, 179, 8, 0.4);
+}
+
+.skipped {
+  background: rgba(148, 163, 184, 0.2);
+  color: #475569;
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.checksumCard,
+.eventsCard {
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+}
+
+.checksumBody {
+  display: grid;
+  gap: 10px;
+}
+
+.checksumRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.statusBadge {
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.checksumHash {
+  display: grid;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+.checksumHash code {
+  background: var(--color-secondary);
+  padding: 8px;
+  border-radius: 12px;
+  word-break: break-all;
+}
+
+.rawEvents {
+  display: grid;
+  gap: 12px;
+  max-height: 420px;
+  overflow: auto;
+}
+
+.eventItem {
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  padding: 0;
+  background: var(--color-secondary);
+}
+
+.eventSummary {
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.eventSummary::-webkit-details-marker {
+  display: none;
+}
+
+.eventStatus {
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--color-muted-foreground);
+}
+
+.eventTime {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+}
+
+.eventItem pre {
+  padding: 12px;
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.emptyState {
+  color: var(--color-muted-foreground);
+}
+
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .timeline {
+    flex-direction: column;
+  }
+
+  .stepLine {
+    display: none;
+  }
+}
