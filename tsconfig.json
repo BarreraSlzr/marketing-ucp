@@ -35,6 +35,12 @@
       "@repo/pipeline/*": [
         "./packages/pipeline/*"
       ],
+      "@repo/antifraud": [
+        "./packages/antifraud/index.ts"
+      ],
+      "@repo/antifraud/*": [
+        "./packages/antifraud/*"
+      ],
       "@repo/tracing": [
         "./packages/tracing/index.ts"
       ],

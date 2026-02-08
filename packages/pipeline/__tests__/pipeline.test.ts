@@ -4,6 +4,7 @@ import {
     computeChainHash,
     computeDataChecksum,
     computePipelineChecksum,
+    computePipelineReceipt,
     computeStepHash,
 } from "../checksum";
 import {
@@ -308,6 +309,7 @@ describe("computeStepHash", () => {
   test("uses GENESIS seed for first step", async () => {
     const hash = await computeStepHash({
       previous_hash: null,
+      step: "buyer_validated",
       input_checksum: "aaa",
       output_checksum: "bbb",
     });
@@ -317,15 +319,21 @@ describe("computeStepHash", () => {
   });
 
   test("chains from previous hash", async () => {
-    const h1 = await computeStepHash({ previous_hash: null, input_checksum: "a", output_checksum: "b" });
-    const h2 = await computeStepHash({ previous_hash: h1, input_checksum: "c", output_checksum: "d" });
+    const h1 = await computeStepHash({ previous_hash: null, step: "buyer_validated", input_checksum: "a", output_checksum: "b" });
+    const h2 = await computeStepHash({ previous_hash: h1, step: "payment_initiated", input_checksum: "c", output_checksum: "d" });
     expect(h2).not.toBe(h1);
     expect(h2.length).toBe(64);
   });
 
   test("different inputs produce different hashes", async () => {
-    const h1 = await computeStepHash({ previous_hash: null, input_checksum: "x", output_checksum: "y" });
-    const h2 = await computeStepHash({ previous_hash: null, input_checksum: "x", output_checksum: "z" });
+    const h1 = await computeStepHash({ previous_hash: null, step: "buyer_validated", input_checksum: "x", output_checksum: "y" });
+    const h2 = await computeStepHash({ previous_hash: null, step: "buyer_validated", input_checksum: "x", output_checksum: "z" });
+    expect(h1).not.toBe(h2);
+  });
+
+  test("different steps produce different hashes", async () => {
+    const h1 = await computeStepHash({ previous_hash: null, step: "buyer_validated", input_checksum: "x", output_checksum: "y" });
+    const h2 = await computeStepHash({ previous_hash: null, step: "payment_initiated", input_checksum: "x", output_checksum: "y" });
     expect(h1).not.toBe(h2);
   });
 });
@@ -333,8 +341,8 @@ describe("computeStepHash", () => {
 describe("computeChainHash", () => {
   test("produces consistent hash for same events", async () => {
     const events = [
-      { input_checksum: "a", output_checksum: "b" },
-      { input_checksum: "c", output_checksum: "d" },
+      { step: "buyer_validated", input_checksum: "a", output_checksum: "b" },
+      { step: "payment_initiated", input_checksum: "c", output_checksum: "d" },
     ];
     const h1 = await computeChainHash({ session_id: "s1", events });
     const h2 = await computeChainHash({ session_id: "s1", events });
@@ -342,7 +350,7 @@ describe("computeChainHash", () => {
   });
 
   test("different session_id produces different hash", async () => {
-    const events = [{ input_checksum: "a", output_checksum: "b" }];
+    const events = [{ step: "buyer_validated", input_checksum: "a", output_checksum: "b" }];
     const h1 = await computeChainHash({ session_id: "s1", events });
     const h2 = await computeChainHash({ session_id: "s2", events });
     expect(h1).not.toBe(h2);
@@ -537,6 +545,47 @@ describe("computeDataChecksum", () => {
     const h1 = await computeDataChecksum({ data: { a: 1 } });
     const h2 = await computeDataChecksum({ data: { a: 2 } });
     expect(h1).not.toBe(h2);
+  });
+});
+
+describe("computePipelineReceipt", () => {
+  test("builds receipt entries with matching chain hash", async () => {
+    const events: PipelineEvent[] = [
+      makeEvent({ step: "buyer_validated" }),
+      makeEvent({ step: "payment_initiated" }),
+      makeEvent({ step: "payment_confirmed" }),
+      makeEvent({ step: "checkout_completed" }),
+    ];
+
+    const checksum = await computePipelineChecksum({
+      definition: PIPELINE_CHECKOUT_DIGITAL,
+      events,
+      session_id: SESSION,
+    });
+
+    const receipt = await computePipelineReceipt({
+      definition: PIPELINE_CHECKOUT_DIGITAL,
+      events,
+      session_id: SESSION,
+    });
+
+    expect(receipt.chain_hash).toBe(checksum.chain_hash);
+    expect(receipt.entries.length).toBe(events.length);
+    expect(receipt.missing_steps.length).toBe(0);
+  });
+
+  test("captures missing required steps", async () => {
+    const events: PipelineEvent[] = [
+      makeEvent({ step: "buyer_validated", pipeline_type: "checkout_physical" }),
+    ];
+
+    const receipt = await computePipelineReceipt({
+      definition: PIPELINE_CHECKOUT_PHYSICAL,
+      events,
+      session_id: SESSION,
+    });
+
+    expect(receipt.missing_steps).toContain("address_validated");
   });
 });
 

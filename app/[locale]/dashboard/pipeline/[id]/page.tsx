@@ -192,9 +192,17 @@ export default async function PipelineDetailPage({
           <h1 className={styles.title}>{session.session_id}</h1>
           <p className={styles.subtitle}>{session.pipeline_type}</p>
         </div>
-        <button className={styles.ghostButton} disabled>
-          Replay pipeline
-        </button>
+        <div className={styles.headerActions}>
+          <Link
+            className={styles.secondaryButton}
+            href={`/dashboard/pipeline/${session.session_id}/receipt`}
+          >
+            View receipt
+          </Link>
+          <button className={styles.ghostButton} disabled>
+            Replay pipeline
+          </button>
+        </div>
       </header>
 
       <section className={styles.productCard}>
