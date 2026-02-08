@@ -215,11 +215,14 @@ Headless fraud assessment endpoint.
 
 ### VelocityStore
 
-The system uses `InMemoryVelocityStorage` by default for development/testing. For production:
+The system uses a **shared VelocityStore singleton** so repeated attempts accumulate over time.
 
-- Replace with distributed cache (Redis, Memcached)
-- Configure time windows per signal type
-- Set rate limits per user/device/IP
+- **Local/dev**: In-memory singleton persists for the backend runtime
+- **Production**: Uses the persistent KV-backed store when `KV_REST_API_URL` and `KV_REST_API_TOKEN` are set
+
+Notes:
+- In-memory resets on server restart or cold start
+- KV storage persists across restarts for long-lived velocity tracking
 
 ### Risk Thresholds
 
