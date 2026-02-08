@@ -2,15 +2,14 @@
 // Captures browser performance metrics, long tasks, and navigation timing
 // All usage must comply with this LEGEND and the LICENSE
 
-import {
-  createSpan,
-  endSpan,
-  addEvent,
-  setAttribute,
-  type Span,
-  type SpanAttributes,
-} from "./span";
 import { getGlobalCollector } from "./collector";
+import {
+    addEvent,
+    createSpan,
+    endSpan,
+    setAttribute,
+    type Span
+} from "./span";
 
 /* ── Performance Observer Integration ────────────────────── */
 
@@ -30,6 +29,9 @@ export interface ClientTracingOptions {
   /** Enable first input delay (default: true) */
   trackFID?: boolean;
 
+  /** Enable device fingerprint collection for antifraud (default: false) */
+  trackDeviceFingerprint?: boolean;
+
   /** Long task threshold in ms (default: 50) */
   longTaskThreshold?: number;
 
@@ -41,6 +43,7 @@ export class ClientTracer {
   private options: Required<ClientTracingOptions>;
   private observers: PerformanceObserver[] = [];
   private navigationSpan?: Span;
+  private _deviceFingerprint?: Record<string, unknown>;
 
   constructor(options: ClientTracingOptions = {}) {
     this.options = {
@@ -49,6 +52,7 @@ export class ClientTracer {
       trackLayoutShift: options.trackLayoutShift ?? true,
       trackLCP: options.trackLCP ?? true,
       trackFID: options.trackFID ?? true,
+      trackDeviceFingerprint: options.trackDeviceFingerprint ?? false,
       longTaskThreshold: options.longTaskThreshold ?? 50,
       autoCollect: options.autoCollect ?? true,
     };
@@ -96,6 +100,11 @@ export class ClientTracer {
 
     // Track resource timing
     this.observeResources();
+
+    // Collect device fingerprint for antifraud
+    if (this.options.trackDeviceFingerprint) {
+      this.collectDeviceFingerprint();
+    }
   }
 
   /** Stop all observers */
@@ -347,6 +356,103 @@ export class ClientTracer {
     } catch {
       return url;
     }
+  }
+
+  /* ── Device Fingerprint (Antifraud) ────────────────────── */
+
+  /** Collect device fingerprint signals for antifraud analysis */
+  private collectDeviceFingerprint(): void {
+    if (typeof window === "undefined" || typeof navigator === "undefined") return;
+
+    const fp: Record<string, unknown> = {
+      user_agent: navigator.userAgent,
+      language: navigator.language,
+      platform: navigator.platform,
+      hardware_concurrency: navigator.hardwareConcurrency ?? undefined,
+      max_touch_points: navigator.maxTouchPoints ?? 0,
+      cookies_enabled: navigator.cookieEnabled,
+      do_not_track: navigator.doNotTrack === "1",
+    };
+
+    // Screen info
+    if (typeof screen !== "undefined") {
+      fp.screen_resolution = `${screen.width}x${screen.height}`;
+      fp.color_depth = screen.colorDepth;
+    }
+
+    // Timezone
+    try {
+      fp.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      fp.timezone_offset = new Date().getTimezoneOffset();
+    } catch { /* ignore */ }
+
+    // Device memory (Chrome/Edge)
+    if ("deviceMemory" in navigator) {
+      fp.device_memory = (navigator as Record<string, unknown>).deviceMemory as number;
+    }
+
+    // Plugin count
+    if (navigator.plugins) {
+      fp.plugin_count = navigator.plugins.length;
+    }
+
+    // WebGL renderer
+    try {
+      const canvas = document.createElement("canvas");
+      const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      if (gl && gl instanceof WebGLRenderingContext) {
+        const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+        if (debugInfo) {
+          fp.webgl_renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+        }
+      }
+    } catch { /* ignore */ }
+
+    // Canvas fingerprint hash (simple)
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = 200;
+      canvas.height = 50;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.textBaseline = "top";
+        ctx.font = "14px Arial";
+        ctx.fillStyle = "#f60";
+        ctx.fillRect(125, 1, 62, 20);
+        ctx.fillStyle = "#069";
+        ctx.fillText("antifraud:fp", 2, 15);
+        // Simple hash of the data URL
+        const dataUrl = canvas.toDataURL();
+        let hash = 0;
+        for (let i = 0; i < dataUrl.length; i++) {
+          const char = dataUrl.charCodeAt(i);
+          hash = ((hash << 5) - hash) + char;
+          hash |= 0; // Convert to 32-bit integer
+        }
+        fp.canvas_hash = Math.abs(hash).toString(16);
+      }
+    } catch { /* ignore */ }
+
+    this._deviceFingerprint = fp;
+
+    // Add fingerprint as span attributes on the navigation span
+    if (this.navigationSpan) {
+      for (const [key, value] of Object.entries(fp)) {
+        if (value !== undefined && value !== null) {
+          this.navigationSpan = setAttribute(
+            this.navigationSpan,
+            `device.${key}`,
+            value as string | number | boolean,
+          );
+        }
+      }
+      getGlobalCollector().addSpan(this.navigationSpan);
+    }
+  }
+
+  /** Get collected device fingerprint (returns undefined if not collected) */
+  getDeviceFingerprint(): Record<string, unknown> | undefined {
+    return this._deviceFingerprint;
   }
 }
 
