@@ -23,6 +23,31 @@ test("event stream renders", async ({ page }) => {
   await expect(page.getByText("Pipeline event log")).toBeVisible();
 });
 
+test("event stream replay demo seeds events", async ({ page }) => {
+  await page.goto("/dashboard/events");
+
+  const replayButton = page.getByRole("button", { name: "Replay demo" });
+  await replayButton.click();
+
+  await expect(page.getByText("Demo events generated")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Refresh events" })).toBeEnabled();
+});
+
+test("event stream filters work", async ({ page }) => {
+  await page.goto("/dashboard/events");
+
+  await page.locator("#filter-token").fill("session:demo_physical_001");
+  await page.getByRole("button", { name: "Add quick filter" }).click();
+
+  const filterPill = page.getByRole("button", {
+    name: /Remove Session demo_physical_001/,
+  });
+  await expect(filterPill).toBeVisible();
+
+  await filterPill.click();
+  await expect(filterPill).not.toBeVisible();
+});
+
 test("handler health renders", async ({ page }) => {
   await page.goto("/dashboard/handlers");
   await expect(page.getByRole("heading", { name: "Handler Health" })).toBeVisible();
