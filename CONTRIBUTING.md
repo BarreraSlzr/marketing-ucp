@@ -1,10 +1,10 @@
 # Contributing to UCP
 
-Thank you for your interest in contributing to the Universal Checkout Protocol! This document provides guidelines and information about how to contribute.
+Thank you for your interest in contributing to the Universal Commerce Protocol! This document provides guidelines and information about how to contribute.
 
 ## 🎯 Project Vision
 
-UCP aims to be a universal, URL-driven checkout protocol that works across any commerce platform. We value:
+UCP aims to be a universal, URL-driven commerce protocol that works across any commerce platform. We value:
 
 - **Transparency**: All development happens in public via GitHub issues
 - **Simplicity**: KISS (Keep It Simple, Stupid) principle guides our architecture

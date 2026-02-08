@@ -1,13 +1,13 @@
 # UCP Demo Guide
 
-This guide helps you demonstrate the Universal Checkout Protocol (UCP) to stakeholders, users, or potential contributors.
+This guide helps you demonstrate the Universal Commerce Protocol (UCP) to stakeholders, users, or potential contributors.
 
 ## Quick Demo Flow (5 minutes)
 
 ### 1. Show the Homepage (http://localhost:3000)
 
 **Key Points to Highlight**:
-- **Hero Section**: Emphasize "One checkout protocol for every service"
+- **Hero Section**: Emphasize "One commerce protocol for every service"
 - **Stats Bar**: Point out "0 Server-side sessions" - everything is stateless
 - **Templates Section**: Show pre-built checkout templates that work with URL parameters
 - **Roadmap Section**: NEW - Shows transparent development progress with links to GitHub issues

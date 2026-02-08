@@ -25,7 +25,7 @@ import { useTranslations } from "next-intl";
 import styles from "../page.module.css";
 
 export const metadata: Metadata = {
-  title: "UCP - Universal Checkout Protocol",
+  title: "UCP - Universal Commerce Protocol",
   description:
     "Pipeline-native checkout with antifraud primitives, chain-hash verification, and headless risk scoring APIs.",
 };
@@ -105,6 +105,9 @@ export default function HomePage() {
               <Link href="/checkout" className={styles.navLink}>
                 {t("nav.checkoutDemo")}
               </Link>
+              <Link href="/dashboard" className={styles.navLink}>
+                {t("nav.dashboard")}
+              </Link>
               <Link href="/products/create" className={styles.navLink}>
                 {t("nav.createProduct")}
               </Link>
@@ -137,14 +140,9 @@ export default function HomePage() {
             {t("hero.primaryCta")}
             <ArrowRight className="ml-2 inline-block h-4 w-4" />
           </Link>
-          <a
-            href="https://github.com/BarreraSlzr/marketing-ucp"
-            className={styles.heroSecondary}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Link href="/dashboard" className={styles.heroSecondary}>
             {t("hero.secondaryCta")}
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -175,18 +173,13 @@ export default function HomePage() {
               ))}
             </div>
             <div className={styles.antifraudActions}>
-              <Link href="/checkout" className={styles.heroPrimary}>
+              <Link href="/dashboard" className={styles.heroPrimary}>
                 {t("antifraud.primaryCta")}
                 <ArrowRight className="ml-2 inline-block h-4 w-4" />
               </Link>
-              <a
-                href="https://github.com/BarreraSlzr/marketing-ucp/tree/main/packages/antifraud"
-                className={styles.heroSecondary}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <Link href="/checkout" className={styles.heroSecondary}>
                 {t("antifraud.secondaryCta")}
-              </a>
+              </Link>
             </div>
           </div>
           <div className={styles.antifraudGrid}>
@@ -538,7 +531,7 @@ export default function HomePage() {
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
           <span className={styles.footerText}>
-            UCP – Universal Checkout Protocol
+            UCP – Universal Commerce Protocol
           </span>
           <div className={styles.footerLinks}>
             <Link href="/checkout" className={styles.footerLink}>

@@ -1,6 +1,6 @@
-# Universal Checkout Protocol (UCP)
+# Universal Commerce Protocol (UCP)
 
-UCP is a Next.js 16 + Turborepo monorepo for a universal, URL-driven checkout experience. It provides shared Zod schemas, reusable UI primitives, and a reference checkout app that can be embedded or extended by integrations.
+UCP is a Next.js 16 + Turborepo monorepo for a universal, URL-driven commerce experience. It provides shared Zod schemas, reusable UI primitives, and a reference checkout app that can be embedded or extended by integrations.
 
 ## North Star
 Enable any commerce system to create a portable, secure checkout that works across platforms and channels.

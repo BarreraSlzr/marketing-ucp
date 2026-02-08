@@ -2,29 +2,30 @@
   "nav": {
     "protocolBadge": "Protocolo",
     "checkoutDemo": "Demo de Checkout",
+    "dashboard": "Dashboard",
     "createProduct": "Crear Producto",
     "tryIt": "Probar",
     "github": "GitHub"
   },
   "hero": {
-    "label": "Protocolo Universal de Checkout",
+    "label": "Protocolo Universal de Comercio",
     "title": "Checkout nativo de pipelines con antifraude integrado",
     "description": "Lanza un checkout unificado que verifica cada paso con chain hash, puntua riesgo en tiempo real y se conecta con cualquier proveedor de pagos o fulfillment.",
     "primaryCta": "Probar demo de checkout",
-    "secondaryCta": "Ver en GitHub"
+    "secondaryCta": "Abrir el dashboard"
   },
   "stats": {
+    "stateless": "Sin sesiones",
+    "multiProvider": "Compatible con varios PSP",
     "chainHash": "Cadena anti-manipulacion",
-    "riskEngine": "Motor de riesgo",
-    "stateless": "Estado en URL",
-    "multiProvider": "Multiplos proveedores"
+    "riskEngine": "Motor de riesgo"
   },
   "antifraud": {
     "label": "Pipeline antifraude",
     "title": "Convierte telemetria en decisiones antifraude",
     "description": "UCP trata antifraude como un paso obligatorio del pipeline. Cada evento se hashea, se puntua y se audita antes de autorizar pagos, ya sea para equipos enterprise, marketplaces, SaaS o founders.",
-    "primaryCta": "Explorar el flujo antifraude",
-    "secondaryCta": "Ver paquete antifraude",
+    "primaryCta": "Abrir dashboard de riesgo",
+    "secondaryCta": "Probar la UI de formularios",
     "personas": [
       {
         "title": "Enterprise",
@@ -103,8 +104,8 @@
   },
   "integrations": {
     "label": "Integraciones",
-    "title": "Conecta tus servicios",
-    "description": "UCP delega a servicios especializados. Conecta pagos, storefronts y sistemas de contenido.",
+    "title": "Conecta servicios e interfaces",
+    "description": "UCP delega a servicios especializados y ya incluye dashboard + UI de formularios lista para usar.",
     "available": "Disponible",
     "comingSoon": "Pronto",
     "items": {
@@ -117,35 +118,35 @@
   "roadmap": {
     "label": "Estado de Desarrollo",
     "title": "Progreso Actual y Hoja de Ruta",
-    "description": "Sigue la evolución de UCP. Construimos públicamente con total transparencia.",
+    "description": "El dashboard + UI de formularios ya estan en vivo. Siguiente: mas observabilidad, automatizacion antifraude y paquetes npm.",
     "viewIssues": "Ver Todos los Issues",
     "core": "Características Principales",
     "foundation": {
       "title": "Fundación Completa ✅",
-      "description": "Estado manejado por URL con nuqs, esquemas de validación Zod y componentes UI componibles están listos para producción."
+      "description": "Estado por URL, esquemas Zod y el dashboard + UI de formularios estan listos para producción."
     },
     "observability": {
       "title": "Observabilidad de Pipeline",
       "status": "En Desarrollo",
-      "description": "Registro de eventos, verificación de checksums y rastreo en tiempo de ejecución para comercio sin confianza.",
+      "description": "Registro de eventos, verificación de checksums, scoring de riesgo y trazas por paso del pipeline.",
       "issue": "Issues #5-6"
     },
     "dashboard": {
       "title": "Dashboard Visual",
-      "status": "Planificado",
-      "description": "Monitoreo de pipeline en tiempo real, streams de eventos y visualización de salud de handlers.",
+      "status": "En vivo",
+      "description": "Monitoreo en tiempo real, streams de eventos y salud de handlers.",
       "issue": "Issues #7-10"
     },
     "distribution": {
       "title": "Publicación en npm",
-      "status": "Planificado",
+      "status": "Siguiente",
       "description": "Publicar @ucp/entities, @ucp/pipeline y paquetes de handlers para fácil adopción.",
       "issue": "Issue #11"
     },
     "tooling": {
       "title": "Herramientas de Desarrollo",
       "status": "Planificado",
-      "description": "CLI create-ucp para bootstrapping instantáneo de proyectos y documentación.",
+      "description": "CLI create-ucp para bootstrapping, templates y documentación.",
       "issue": "Issue #12"
     }
   },

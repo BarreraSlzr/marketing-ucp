@@ -2,29 +2,30 @@
   "nav": {
     "protocolBadge": "Protocol",
     "checkoutDemo": "Checkout Demo",
+    "dashboard": "Dashboard",
     "createProduct": "Create Product",
     "tryIt": "Try It",
     "github": "GitHub"
   },
   "hero": {
-    "label": "Universal Checkout Protocol",
+    "label": "Universal Commerce Protocol",
     "title": "Pipeline-native checkout with antifraud built in",
     "description": "Ship a unified checkout that verifies every step with chain hashes, scores risk in real time, and plugs into any payment or fulfillment provider.",
     "primaryCta": "Try the Checkout Demo",
-    "secondaryCta": "View on GitHub"
+    "secondaryCta": "Open the Dashboard"
   },
   "stats": {
+    "stateless": "No sessions",
+    "multiProvider": "Multi-PSP compatible",
     "chainHash": "Tamper-evident chain",
-    "riskEngine": "Risk scoring core",
-    "stateless": "URL-native state",
-    "multiProvider": "Provider agnostic"
+    "riskEngine": "Risk scoring core"
   },
   "antifraud": {
     "label": "Antifraud pipeline",
     "title": "Turn checkout telemetry into antifraud decisions",
     "description": "UCP treats antifraud as a first-class pipeline step. Every event is hashed, scored, and ready for audit or escalation before payment is authorized — whether you run enterprise risk teams, marketplace trust ops, SaaS billing, or founder-led commerce.",
-    "primaryCta": "Explore the antifraud flow",
-    "secondaryCta": "View antifraud package",
+    "primaryCta": "Open the risk dashboard",
+    "secondaryCta": "Try the forms UI",
     "personas": [
       {
         "title": "Enterprise",
@@ -103,8 +104,8 @@
   },
   "integrations": {
     "label": "Integrations",
-    "title": "Connect your services",
-    "description": "UCP delegates to specialized services. Plug in payment providers, storefronts, and content systems.",
+    "title": "Connect your services and interfaces",
+    "description": "UCP delegates to specialized services and ships a dashboard + forms UI you can wire in immediately.",
     "available": "Available",
     "comingSoon": "Coming soon",
     "items": {
@@ -117,35 +118,35 @@
   "roadmap": {
     "label": "Development Status",
     "title": "Current Progress & Roadmap",
-    "description": "Track the evolution of UCP. We're building in public with full transparency.",
+    "description": "Dashboard + forms UI are live. Next up: deeper pipeline observability, antifraud automation, and package distribution.",
     "viewIssues": "View All Issues",
     "core": "Core Features",
     "foundation": {
       "title": "Foundation Complete ✅",
-      "description": "URL-driven state management with nuqs, Zod validation schemas, and composable UI components are production-ready."
+      "description": "URL-driven state management, Zod schemas, and the dashboard + forms UI are production-ready."
     },
     "observability": {
       "title": "Pipeline Observability",
       "status": "In Development",
-      "description": "Event logging, checksum verification, and runtime tracing for trustless commerce.",
+      "description": "Event logging, checksum verification, risk scoring, and runtime tracing tied to every pipeline step.",
       "issue": "Issues #5-6"
     },
     "dashboard": {
       "title": "Visual Dashboard",
-      "status": "Planned",
-      "description": "Real-time pipeline monitoring, event streams, and handler health visualization.",
+      "status": "Live",
+      "description": "Real-time pipeline monitoring, event streams, and handler health visualizations.",
       "issue": "Issues #7-10"
     },
     "distribution": {
       "title": "npm Publishing",
-      "status": "Planned",
+      "status": "Next",
       "description": "Publish @ucp/entities, @ucp/pipeline, and handler packages for easy adoption.",
       "issue": "Issue #11"
     },
     "tooling": {
       "title": "Developer Tools",
       "status": "Planned",
-      "description": "create-ucp CLI for instant project bootstrapping and documentation.",
+      "description": "create-ucp CLI for instant project bootstrapping, templates, and docs.",
       "issue": "Issue #12"
     }
   },

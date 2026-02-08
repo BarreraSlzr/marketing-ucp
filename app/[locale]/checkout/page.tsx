@@ -7,7 +7,7 @@ import styles from "../../checkout/page.module.css";
 
 export const metadata: Metadata = {
   title: "Checkout - UCP",
-  description: "Complete your purchase with the Universal Checkout Protocol.",
+  description: "Complete your purchase with the Universal Commerce Protocol.",
 };
 
 export default function CheckoutPage() {
