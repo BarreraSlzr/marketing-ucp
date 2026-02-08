@@ -1,10 +1,11 @@
 import { assessRisk, InMemoryVelocityStorage } from "@repo/antifraud";
 import type { PipelineEvent } from "@repo/pipeline/event";
 import {
-    createPipelineEvent,
-    PipelineEventSchema,
+  createPipelineEvent,
+  PipelineEventSchema,
 } from "@repo/pipeline/event";
 import { beforeEach, describe, expect, it } from "bun:test";
+import { getIsoTimestampFromUnix } from "../../utils/stamp";
 
 describe("Fraud Check Pipeline Integration", () => {
   let velocityStore: InMemoryVelocityStorage;
@@ -14,6 +15,28 @@ describe("Fraud Check Pipeline Integration", () => {
     velocityStore = new InMemoryVelocityStorage();
     sessionId = `test-session-${Date.now()}`;
   });
+
+  function makeTimedEvent(params: {
+    step: Parameters<typeof createPipelineEvent>[0]["step"];
+    status?: Parameters<typeof createPipelineEvent>[0]["status"];
+    timestamp: string;
+    input_checksum?: string;
+    sequence?: number;
+  }): PipelineEvent {
+    const event = createPipelineEvent({
+      session_id: sessionId,
+      pipeline_type: "checkout_physical",
+      step: params.step,
+      status: params.status ?? "success",
+      input_checksum: params.input_checksum,
+      sequence: params.sequence,
+    });
+
+    return {
+      ...event,
+      timestamp: params.timestamp,
+    } as PipelineEvent;
+  }
 
   it("should allow low-risk transactions", async () => {
     const assessment = await assessRisk({
@@ -120,6 +143,56 @@ describe("Fraud Check Pipeline Integration", () => {
 
     expect(assessment.signals.some((s) => s.name.includes("geo"))).toBe(true);
     expect(assessment.decision).toBe("block");
+  });
+
+  it("should detect timing anomalies from event history", async () => {
+    const start = getIsoTimestampFromUnix({ seconds: 1_700_000_000 });
+    const end = getIsoTimestampFromUnix({ seconds: 1_700_000_001 });
+
+    const assessment = await assessRisk({
+      input: {
+        session_id: sessionId,
+        events: [
+          makeTimedEvent({ step: "buyer_validated", timestamp: start }),
+          makeTimedEvent({ step: "checkout_completed", timestamp: end }),
+        ],
+      },
+      config: { velocityStore },
+    });
+
+    expect(
+      assessment.signals.some((signal) => signal.signal === "timing_too_fast")
+    ).toBe(true);
+  });
+
+  it("should detect input mutation from event history", async () => {
+    const first = getIsoTimestampFromUnix({ seconds: 1_700_000_100 });
+    const second = getIsoTimestampFromUnix({ seconds: 1_700_000_110 });
+
+    const assessment = await assessRisk({
+      input: {
+        session_id: sessionId,
+        events: [
+          makeTimedEvent({
+            step: "buyer_validated",
+            timestamp: first,
+            input_checksum: "a".repeat(64),
+            sequence: 0,
+          }),
+          makeTimedEvent({
+            step: "buyer_validated",
+            timestamp: second,
+            input_checksum: "b".repeat(64),
+            sequence: 1,
+          }),
+        ],
+      },
+      config: { velocityStore },
+    });
+
+    expect(
+      assessment.signals.some((signal) => signal.signal === "input_mutation")
+    ).toBe(true);
   });
 
   it("should create fraud_check pipeline events", async () => {
