@@ -83,7 +83,7 @@ export const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement,
   SidebarMenuButtonProps
 >(({ className, asChild = false, type, ...props }, ref) => {
-  const Component = asChild ? Slot : "button";
+  const Component = (asChild ? Slot : "button") as React.ElementType;
   return (
     <Component
       ref={ref}
