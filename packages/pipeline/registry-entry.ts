@@ -4,7 +4,7 @@
 // All usage must comply with this LEGEND and the LICENSE
 
 import { z } from "zod";
-import { getIsoTimestamp } from "../../utils/stamp";
+import { generateStamp, getIsoTimestamp } from "../../utils/stamp";
 import { ChecksumHexSchema, PipelineTypeSchema, SessionIdSchema } from "./constants";
 
 /* ── Registry Entry Schema ───────────────────────────────── */
@@ -60,7 +60,7 @@ export function createChecksumRegistryEntry(params: {
   notes?: string;
   event_ids?: string[];
 }): ChecksumRegistryEntry {
-  const id = `reg_${params.session_id}_${Date.now()}`;
+  const id = `reg_${params.session_id}_${generateStamp()}`;
   
   return ChecksumRegistryEntrySchema.parse({
     id,

@@ -3,15 +3,16 @@
 // Designed for client-side polling (useSWR) and real-time status updates
 // All usage must comply with this LEGEND and the LICENSE
 
-import { computePipelineChecksum, type PipelineChecksum } from "./checksum";
+import { getIsoTimestamp } from "../../utils/stamp";
+import { type PipelineChecksum } from "./checksum";
 import { PipelineEmitter, type PipelineStorage } from "./emitter";
 import type { PipelineEvent } from "./event";
 import type { PipelineDefinition } from "./registry";
 import {
-  createChecksumRegistryEntry,
-  type ChecksumRegistryEntry,
-  type ChecksumRegistryStorage,
-  InMemoryChecksumRegistryStorage,
+    createChecksumRegistryEntry,
+    InMemoryChecksumRegistryStorage,
+    type ChecksumRegistryEntry,
+    type ChecksumRegistryStorage,
 } from "./registry-entry";
 
 /* ── Tracker Configuration ───────────────────────────────── */
@@ -226,7 +227,7 @@ export class PipelineTracker {
       missing_steps: missingSteps,
       events: summary.events,
       checksum_history: summary.registry_history,
-      report_generated_at: new Date().toISOString(),
+      report_generated_at: getIsoTimestamp(),
     };
   }
 

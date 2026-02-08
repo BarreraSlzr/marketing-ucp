@@ -1,0 +1,146 @@
+@reference "../../theme.css";
+
+.dashboardShell {
+  font-family: var(--font-dashboard), var(--font-sans);
+  display: flex;
+  min-height: 100vh;
+  background:
+    linear-gradient(160deg, rgba(29, 114, 232, 0.08), transparent 45%),
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(29, 114, 232, 0.08),
+      transparent 40%
+    ),
+    radial-gradient(circle at 80% 10%, rgba(15, 23, 42, 0.05), transparent 45%),
+    var(--color-background);
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboardShell::before {
+  content: "";
+  position: absolute;
+  inset: -40% 0 auto auto;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(
+    circle,
+    rgba(29, 114, 232, 0.18),
+    transparent 70%
+  );
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  width: 260px;
+  min-height: 100vh;
+  padding: 32px 24px;
+  background: color-mix(in srgb, var(--color-card) 90%, transparent);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  z-index: 1;
+}
+
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.brandBadge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.brandTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+}
+
+.brandSub {
+  font-size: 0.8rem;
+  color: var(--color-muted-foreground);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.navLink {
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: var(--color-foreground);
+  background: transparent;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.navLink:hover {
+  background: var(--color-secondary);
+  border-color: var(--color-border);
+  transform: translateX(2px);
+}
+
+.sidebarFooter {
+  margin-top: auto;
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+  display: grid;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--color-muted-foreground);
+}
+
+.footerLabel {
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+.footerHint {
+  color: var(--color-muted-foreground);
+}
+
+.content {
+  flex: 1;
+  padding: 32px 40px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .dashboardShell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .content {
+    padding: 24px;
+  }
+}

@@ -1,0 +1,259 @@
+@reference "../../theme.css";
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  color: var(--color-muted-foreground);
+}
+
+.title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.primaryButton {
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-weight: 600;
+  border: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 12px 24px rgba(29, 114, 232, 0.25);
+}
+
+.primaryButton:hover {
+  transform: translateY(-1px);
+}
+
+.demoControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.secondaryButton {
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--color-secondary);
+  color: var(--color-foreground);
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  transition: transform 0.2s ease;
+}
+
+.secondaryButton:hover {
+  transform: translateY(-1px);
+}
+
+.secondaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.demoStatus {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+}
+
+.metricGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.metricCard {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 16px;
+  display: grid;
+  gap: 6px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.metricLabel {
+  font-size: 0.85rem;
+  color: var(--color-muted-foreground);
+}
+
+.metricValue {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+}
+
+.metricHint {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+}
+
+.sectionGrid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.panel {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.textLink {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.cardGrid {
+  display: grid;
+  gap: 14px;
+}
+
+.handlerCard {
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  padding: 14px;
+  background: linear-gradient(
+    140deg,
+    rgba(29, 114, 232, 0.08),
+    transparent 60%
+  );
+  display: grid;
+  gap: 10px;
+}
+
+.handlerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.handlerHeader h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.pill {
+  background: var(--color-secondary);
+  color: var(--color-foreground);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.handlerStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  color: var(--color-muted-foreground);
+}
+
+.statValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.handlerFoot {
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.errorText {
+  font-size: 0.75rem;
+  color: var(--color-destructive);
+}
+
+.emptyState {
+  font-size: 0.9rem;
+  color: var(--color-muted-foreground);
+}
+
+.failureList {
+  display: grid;
+  gap: 12px;
+}
+
+.failureItem {
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-secondary);
+}
+
+.failureSession {
+  font-weight: 600;
+}
+
+.failureDetail {
+  font-size: 0.8rem;
+  color: var(--color-muted-foreground);
+}
+
+.failureTime {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .failureItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .failureTime {
+    text-align: left;
+  }
+}

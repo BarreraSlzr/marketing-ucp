@@ -26,8 +26,13 @@ App runs at http://localhost:3000.
 - `bun run build` - build the app
 - `bun run start` - run production server
 - `bun run lint` - lint the repo
-- `bun run test` - run all tests
+- `bun run test` - run Bun tests
+- `bun run test:e2e` - run Playwright smoke tests
+- `bun run test:all` - run Bun + Playwright tests
 - `bun run test:entities` - run entities tests only
+
+Playwright setup (one-time):
+- `bunx playwright install --with-deps`
 
 ## Vercel Deployment
 - Vercel Git integration is recommended for preview and production deployments.
