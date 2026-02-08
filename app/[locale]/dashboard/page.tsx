@@ -180,9 +180,6 @@ export default async function DashboardPage() {
         </div>
         <div className={styles.headerActions}>
           <DemoControls />
-          <Link className={styles.primaryButton} href="/pipeline">
-            View raw pipeline view
-          </Link>
         </div>
       </header>
 
