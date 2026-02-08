@@ -11,6 +11,8 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "bun test",
+    "test:all": "bun test && playwright test",
+    "test:e2e": "playwright test",
     "test:entities": "bun test packages/entities",
     "test:pipeline": "bun test packages/pipeline",
     "test:tracing": "bun test packages/tracing"
@@ -45,6 +47,7 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@playwright/test": "^1.49.0",
     "eslint": "^9",
     "eslint-config-next": "^15.1.0",
     "postcss": "^8.5",
