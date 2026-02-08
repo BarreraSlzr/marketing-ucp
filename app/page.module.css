@@ -2,6 +2,9 @@
 
 .main {
   @apply min-h-screen bg-background;
+  background-image:
+    radial-gradient(circle at 10% 5%, hsl(215 90% 52% / 0.12), transparent 45%),
+    radial-gradient(circle at 85% 15%, hsl(160 84% 39% / 0.08), transparent 45%);
 }
 
 /* ── Nav ─────────────────────────────────────────────────── */
@@ -51,7 +54,23 @@
 
 /* ── Hero ────────────────────────────────────────────────── */
 .hero {
-  @apply mx-auto flex max-w-5xl flex-col items-center px-6 py-20 text-center;
+  @apply relative mx-auto flex max-w-5xl flex-col items-center overflow-hidden px-6 py-20 text-center;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -20% 10% auto 10%;
+  height: 65%;
+  border-radius: 999px;
+  background: radial-gradient(circle, hsl(215 90% 52% / 0.2), transparent 70%);
+  filter: blur(10px);
+  z-index: 0;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
 }
 
 .heroLabel {
@@ -60,10 +79,73 @@
 
 .heroTitle {
   @apply mx-auto max-w-3xl text-balance text-4xl font-bold leading-tight tracking-tight text-foreground md:text-5xl;
+  font-family: var(--font-display);
 }
 
 .heroDescription {
   @apply mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground;
+}
+
+/* ── Antifraud ──────────────────────────────────────────── */
+.antifraud {
+  @apply border-y border-border bg-card/70;
+}
+
+.antifraudInner {
+  @apply mx-auto grid max-w-5xl gap-10 px-6 py-20 md:grid-cols-[1.1fr_1fr];
+}
+
+.antifraudLabel {
+  @apply mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground;
+}
+
+.antifraudTitle {
+  @apply text-3xl font-bold tracking-tight text-foreground md:text-4xl;
+  font-family: var(--font-display);
+}
+
+.antifraudDescription {
+  @apply mt-4 text-base leading-relaxed text-muted-foreground;
+}
+
+.antifraudPersonaGrid {
+  @apply mt-6 grid gap-4 sm:grid-cols-2;
+}
+
+.antifraudPersonaCard {
+  @apply rounded-lg border border-border bg-background/80 p-4;
+}
+
+.antifraudPersonaTitle {
+  @apply text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground;
+}
+
+.antifraudPersonaDescription {
+  @apply mt-2 text-sm leading-relaxed text-foreground;
+}
+
+.antifraudActions {
+  @apply mt-8 flex flex-wrap items-center gap-4;
+}
+
+.antifraudGrid {
+  @apply grid gap-4;
+}
+
+.antifraudCard {
+  @apply flex items-start gap-4 rounded-lg border border-border bg-background/80 p-5 shadow-sm;
+}
+
+.antifraudIcon {
+  @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary;
+}
+
+.antifraudCardTitle {
+  @apply text-sm font-semibold text-foreground;
+}
+
+.antifraudCardDescription {
+  @apply mt-2 text-sm leading-relaxed text-muted-foreground;
 }
 
 .heroActions {
@@ -101,6 +183,7 @@
 
 .statValue {
   @apply text-2xl font-bold tracking-tight text-foreground;
+  font-family: var(--font-display);
 }
 
 .statLabel {
@@ -167,6 +250,7 @@
 
 .featuresTitle {
   @apply text-3xl font-bold tracking-tight text-foreground;
+  font-family: var(--font-display);
 }
 
 .featuresDescription {
@@ -249,6 +333,7 @@
 
 .ctaTitle {
   @apply text-3xl font-bold tracking-tight text-foreground;
+  font-family: var(--font-display);
 }
 
 .ctaDescription {

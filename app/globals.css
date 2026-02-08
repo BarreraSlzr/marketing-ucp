@@ -1,4 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap");
 @import "./theme.css";
+
+:root {
+  --font-body: "IBM Plex Sans", "Helvetica Neue", sans-serif;
+  --font-display: "Space Grotesk", "Helvetica Neue", sans-serif;
+}
 
 @layer base {
   * {
@@ -7,6 +13,9 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+    font-family: var(--font-body);
   }
 }

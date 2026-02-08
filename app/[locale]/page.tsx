@@ -2,6 +2,7 @@ import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Link } from "@/i18n/navigation";
 import { ALL_TEMPLATES, templateToUrl } from "@repo/entities";
 import {
+  Activity,
   ArrowRight,
   CheckCircle2,
   Clock,
@@ -9,11 +10,13 @@ import {
   CreditCard,
   ExternalLink,
   FileText,
+  Fingerprint,
   Globe,
   Link2,
   Package,
   Settings,
   Shield,
+  ShieldCheck,
   ShoppingCart,
   Zap,
 } from "lucide-react";
@@ -24,7 +27,7 @@ import styles from "../page.module.css";
 export const metadata: Metadata = {
   title: "UCP - Universal Checkout Protocol",
   description:
-    "Unify your checkout experience across services. Stateless, URL-driven, and ready to integrate with Shopify, Polar, and more.",
+    "Pipeline-native checkout with antifraud primitives, chain-hash verification, and headless risk scoring APIs.",
 };
 
 type FeatureItem = {
@@ -35,6 +38,8 @@ type FeatureItem = {
 export default function HomePage() {
   const t = useTranslations();
   const featureItems = t.raw("features.items") as FeatureItem[];
+  const antifraudItems = t.raw("antifraud.items") as FeatureItem[];
+  const antifraudPersonas = t.raw("antifraud.personas") as FeatureItem[];
 
   const features = [
     { icon: Globe, ...featureItems[0] },
@@ -43,6 +48,13 @@ export default function HomePage() {
     { icon: Link2, ...featureItems[3] },
     { icon: CreditCard, ...featureItems[4] },
     { icon: ShoppingCart, ...featureItems[5] },
+  ];
+
+  const antifraudHighlights = [
+    { icon: ShieldCheck, ...antifraudItems[0] },
+    { icon: Fingerprint, ...antifraudItems[1] },
+    { icon: Activity, ...antifraudItems[2] },
+    { icon: Code2, ...antifraudItems[3] },
   ];
 
   const integrations = [
@@ -73,10 +85,10 @@ export default function HomePage() {
   ];
 
   const stats = [
-    { value: "0", label: t("stats.serverSessions") },
-    { value: "6", label: t("stats.entitySchemas") },
-    { value: "100%", label: t("stats.urlSerializable") },
-    { value: "Type-safe", label: t("stats.endToEnd") },
+    { value: "SHA-256", label: t("stats.chainHash") },
+    { value: "Risk score", label: t("stats.riskEngine") },
+    { value: "No sessions", label: t("stats.stateless") },
+    { value: "Multi-PSP", label: t("stats.multiProvider") },
   ];
 
   return (
@@ -133,6 +145,65 @@ export default function HomePage() {
           >
             {t("hero.secondaryCta")}
           </a>
+        </div>
+      </section>
+
+      {/* Antifraud */}
+      <section className={styles.antifraud}>
+        <div className={styles.antifraudInner}>
+          <div>
+            <span className={styles.antifraudLabel}>
+              {t("antifraud.label")}
+            </span>
+            <h2 className={styles.antifraudTitle}>{t("antifraud.title")}</h2>
+            <p className={styles.antifraudDescription}>
+              {t("antifraud.description")}
+            </p>
+            <div className={styles.antifraudPersonaGrid}>
+              {antifraudPersonas.map((persona) => (
+                <div
+                  key={persona.title}
+                  className={styles.antifraudPersonaCard}
+                >
+                  <h3 className={styles.antifraudPersonaTitle}>
+                    {persona.title}
+                  </h3>
+                  <p className={styles.antifraudPersonaDescription}>
+                    {persona.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className={styles.antifraudActions}>
+              <Link href="/checkout" className={styles.heroPrimary}>
+                {t("antifraud.primaryCta")}
+                <ArrowRight className="ml-2 inline-block h-4 w-4" />
+              </Link>
+              <a
+                href="https://github.com/BarreraSlzr/marketing-ucp/tree/main/packages/antifraud"
+                className={styles.heroSecondary}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("antifraud.secondaryCta")}
+              </a>
+            </div>
+          </div>
+          <div className={styles.antifraudGrid}>
+            {antifraudHighlights.map((item) => (
+              <div key={item.title} className={styles.antifraudCard}>
+                <div className={styles.antifraudIcon}>
+                  <item.icon className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className={styles.antifraudCardTitle}>{item.title}</h3>
+                  <p className={styles.antifraudCardDescription}>
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
