@@ -15,7 +15,9 @@ import {
 } from "@repo/pipeline";
 
 const usePersistentStorage = Boolean(
-  process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
+  process.env.KV_REST_API_URL &&
+    process.env.KV_REST_API_TOKEN &&
+    process.env.VERCEL
 );
 
 const sharedEventStorage: PipelineStorage = usePersistentStorage
