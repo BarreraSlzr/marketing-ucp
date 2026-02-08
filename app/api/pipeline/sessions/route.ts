@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const tracker = getGlobalTracker();
-    const sessionIdList = getAllSessionIds();
+    const sessionIdList = await getAllSessionIds();
 
     // Get events and checksums for each session
     const sessions = await Promise.all(
