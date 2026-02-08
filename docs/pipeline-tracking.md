@@ -4,6 +4,19 @@
 
 This document explains the pipeline event tracking system with checksum pattern registry, designed for real-time monitoring and issue reporting in the UCP (Unified Checkout Platform) marketing system.
 
+## Persistent Storage (Vercel KV)
+
+By default, pipeline events and registry entries are stored in-memory. In production, enable Vercel KV to persist event history across restarts.
+
+### Required Environment Variables
+
+```bash
+KV_REST_API_URL=...
+KV_REST_API_TOKEN=...
+```
+
+When these are present, UCP automatically switches the pipeline event and checksum registry storage to Vercel KV.
+
 ## Architecture
 
 ### Components

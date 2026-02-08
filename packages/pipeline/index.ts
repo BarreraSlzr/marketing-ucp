@@ -81,6 +81,12 @@ export {
     type ChecksumRegistryStorage
 } from "./registry-entry";
 
+/* ── KV Storage Helpers ─────────────────────────────────── */
+export {
+    VercelKvChecksumRegistryStorage, VercelKvPipelineStorage, getStoredSessionIds,
+    storeSessionId
+} from "./kv-storage";
+
 /* ── Tracker ─────────────────────────────────────────────── */
 export {
     PipelineTracker,

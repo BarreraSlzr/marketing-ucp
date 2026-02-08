@@ -3,12 +3,28 @@
 // All usage must comply with this LEGEND and the LICENSE
 
 import {
+    InMemoryChecksumRegistryStorage,
     InMemoryPipelineStorage,
-    PipelineTracker
+    PipelineTracker,
+    VercelKvChecksumRegistryStorage,
+    VercelKvPipelineStorage,
+    getStoredSessionIds,
+    storeSessionId,
+    type ChecksumRegistryStorage,
+    type PipelineStorage
 } from "@repo/pipeline";
 
-// Shared in-memory storage so events are visible across all emitters
-const sharedStorage = new InMemoryPipelineStorage();
+const usePersistentStorage = Boolean(
+  process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
+);
+
+const sharedEventStorage: PipelineStorage = usePersistentStorage
+  ? new VercelKvPipelineStorage()
+  : new InMemoryPipelineStorage();
+
+const sharedRegistryStorage: ChecksumRegistryStorage = usePersistentStorage
+  ? new VercelKvChecksumRegistryStorage()
+  : new InMemoryChecksumRegistryStorage();
 
 // Global singleton tracker for demo purposes
 // In production, inject persistent storage (KV, DB, etc.)
@@ -20,7 +36,8 @@ const sessionIds = new Set<string>();
 export function getGlobalTracker(): PipelineTracker {
   if (!globalTracker) {
     globalTracker = new PipelineTracker({
-      eventStorage: sharedStorage,
+      eventStorage: sharedEventStorage,
+      registryStorage: sharedRegistryStorage,
       autoSnapshot: true,
     });
   }
@@ -29,18 +46,26 @@ export function getGlobalTracker(): PipelineTracker {
 
 export function resetGlobalTracker(): void {
   globalTracker = null;
-  sharedStorage.clear();
+  void sharedEventStorage.clear();
+  void sharedRegistryStorage.clear();
   sessionIds.clear();
 }
 
-export function getSharedPipelineStorage(): InMemoryPipelineStorage {
-  return sharedStorage;
+export function getSharedPipelineStorage(): PipelineStorage {
+  return sharedEventStorage;
 }
 
 export function registerSessionId(sessionId: string): void {
+  if (usePersistentStorage) {
+    void storeSessionId({ session_id: sessionId });
+    return;
+  }
   sessionIds.add(sessionId);
 }
 
-export function getAllSessionIds(): string[] {
+export async function getAllSessionIds(): Promise<string[]> {
+  if (usePersistentStorage) {
+    return getStoredSessionIds();
+  }
   return Array.from(sessionIds);
 }
