@@ -36,6 +36,9 @@ export const PipelineTypeSchema = z.enum([
   "checkout_physical",
   "checkout_digital",
   "checkout_subscription",
+  "checkout_physical_antifraud",
+  "checkout_digital_antifraud",
+  "checkout_subscription_antifraud",
 ]).describe("Pipeline type — scopes the matrix column");
 
 export type PipelineType = z.infer<typeof PipelineTypeSchema>;

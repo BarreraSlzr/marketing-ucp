@@ -55,8 +55,11 @@ export {
 /* ── Registry ────────────────────────────────────────────── */
 export {
     PIPELINE_CHECKOUT_DIGITAL,
+    PIPELINE_CHECKOUT_DIGITAL_ANTIFRAUD,
     PIPELINE_CHECKOUT_PHYSICAL,
+    PIPELINE_CHECKOUT_PHYSICAL_ANTIFRAUD,
     PIPELINE_CHECKOUT_SUBSCRIPTION,
+    PIPELINE_CHECKOUT_SUBSCRIPTION_ANTIFRAUD,
     PIPELINE_DEFINITIONS,
     getPipelineDefinition,
     type PipelineDefinition

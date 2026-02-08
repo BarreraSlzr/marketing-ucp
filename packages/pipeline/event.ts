@@ -13,6 +13,8 @@ import { EventIdSchema, createEventId } from "./event-id";
 export const PipelineStepSchema = z.enum([
   "buyer_validated",
   "address_validated",
+  "fraud_check",
+  "fraud_review_escalated",
   "payment_initiated",
   "payment_confirmed",
   "fulfillment_delegated",
