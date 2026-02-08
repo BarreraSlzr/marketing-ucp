@@ -157,7 +157,7 @@ sequenceDiagram
     participant Handler as Payment Handler
     participant DB as Order Database
 
-    PSP->>API: POST /api/webhooks/payment
+    PSP->>API: POST /api/webhooks/payment?handler=polar
     API->>Handler: verifyWebhookSignature()
     
     alt Signature Invalid
@@ -182,9 +182,10 @@ import { WebhookEventSchema } from '@repo/entities';
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
-  const signature = req.headers.get('stripe-signature')!;
+  const handlerName = req.nextUrl.searchParams.get('handler') ?? req.headers.get('x-ucp-handler');
+  const signature = req.headers.get('x-ucp-signature') ?? req.headers.get('stripe-signature');
   
-  const handler = getPaymentHandler('stripe');
+  const handler = handlerName ? getPaymentHandler(handlerName) : undefined;
   if (!handler) return NextResponse.json({ error: 'Handler not found' }, { status: 404 });
   
   // Verify signature
