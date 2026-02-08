@@ -3,6 +3,8 @@
 // All usage must comply with this LEGEND and the LICENSE
 
 import { getSharedVelocityStore } from "@/lib/antifraud-velocity-store";
+import { getGlobalTracker } from "@/lib/pipeline-tracker";
+import { getPipelineDefinition } from "@repo/pipeline";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
@@ -74,6 +76,30 @@ export async function POST(request: Request) {
     }
 
     const data = parsed.data;
+    const tracker = getGlobalTracker();
+
+    const storedEvents =
+      data.events.length > 0
+        ? data.events
+        : await tracker.getEvents({ session_id: data.session_id });
+
+    const pipelineType = storedEvents[0]?.pipeline_type ?? null;
+    const definition = pipelineType
+      ? getPipelineDefinition({ type: pipelineType })
+      : null;
+
+    const currentChecksum =
+      !data.current_chain_hash && definition
+        ? await tracker.getCurrentChecksum({
+            session_id: data.session_id,
+            definition,
+          })
+        : null;
+
+    const latestSnapshot =
+      !data.previous_chain_hash && definition
+        ? await tracker.getLatestSnapshot({ session_id: data.session_id })
+        : null;
 
     // Auto-detect IP from request headers if not provided
     const ip = data.ip
@@ -88,15 +114,17 @@ export async function POST(request: Request) {
     const assessment = await assessRisk({
       input: {
         session_id: data.session_id,
-        events: data.events as PipelineEvent[],
+        events: storedEvents as PipelineEvent[],
         email: data.email,
         ip,
         device_hash: data.device_hash,
         device_fingerprint: data.device_fingerprint,
         billing_country: data.billing_country,
         ip_country: data.ip_country,
-        previous_chain_hash: data.previous_chain_hash,
-        current_chain_hash: data.current_chain_hash,
+        previous_chain_hash:
+          data.previous_chain_hash ?? latestSnapshot?.chain_hash ?? undefined,
+        current_chain_hash:
+          data.current_chain_hash ?? currentChecksum?.chain_hash ?? undefined,
         custom_signals: data.custom_signals,
       },
       config,

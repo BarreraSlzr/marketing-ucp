@@ -62,9 +62,11 @@ export async function submitFraudCheckAction(
 - Form data containing buyer email, IP address, device hash, billing country, etc.
 
 **Processing:**
-1. Calls `assessRisk()` with buyer and transaction context
-2. RiskEngine evaluates signals (velocity, timing, geo-mismatch, device anomalies, etc.)
-3. Computes weighted risk score and makes decision: `allow`, `review`, or `block`
+1. Loads full pipeline event history for the session from the tracker
+2. Derives current/previous chain hash from the checksum registry when available
+3. Calls `assessRisk()` with buyer context + session events
+4. RiskEngine evaluates signals (velocity, timing, geo-mismatch, device anomalies, etc.)
+5. Computes weighted risk score and makes decision: `allow`, `review`, or `block`
 
 **Output:**
 - **Block**: Returns error with signals preventing further checkout

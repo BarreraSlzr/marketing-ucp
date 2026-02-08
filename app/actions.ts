@@ -1,12 +1,19 @@
 "use server";
 
 import { getSharedVelocityStore } from "@/lib/antifraud-velocity-store";
+import {
+  getGlobalTracker,
+  getSharedPipelineStorage,
+  registerSessionId,
+} from "@/lib/pipeline-tracker";
 import { generateStamp } from "@/utils/stamp";
 import { assessRisk } from "@repo/antifraud";
 import { serializeCheckout } from "@repo/entities";
 import { BuyerSchema } from "@repo/entities/buyer.zod";
 import { PostalAddressSchema } from "@repo/entities/postal-address.zod";
 import {
+  getPipelineDefinition,
+  PipelineEmitter,
   PipelineTypeSchema,
   SESSION_ID_MAX_LENGTH,
   tracedStep,
@@ -34,6 +41,10 @@ type PipelineContext = {
   session_id: string;
   pipeline_type: PipelineType;
 };
+
+function buildSharedEmitter(): PipelineEmitter {
+  return new PipelineEmitter({ storage: getSharedPipelineStorage() });
+}
 
 function normalizeSessionId(params: { value: string }): string {
   const sanitized = params.value
@@ -102,6 +113,8 @@ export async function submitBuyerAction(
 ): Promise<FormState> {
   const raw = formDataToObject(formData);
   const pipelineContext = resolvePipelineContext({ raw });
+  registerSessionId(pipelineContext.session_id);
+  const emitter = buildSharedEmitter();
 
   const input = {
     email: raw.buyer_email,
@@ -131,6 +144,7 @@ export async function submitBuyerAction(
     handler: "zod",
     input,
     effect: validationEffect,
+    emitter,
   });
 
   const outcome = await Effect.runPromise(Effect.either(traced));
@@ -165,6 +179,8 @@ export async function submitAddressAction(
   const raw = formDataToObject(formData);
   const prefix = raw._address_type === "shipping" ? "shipping" : "billing";
   const pipelineContext = resolvePipelineContext({ raw });
+  registerSessionId(pipelineContext.session_id);
+  const emitter = buildSharedEmitter();
 
   const input = {
     line1: raw[`${prefix}_line1`],
@@ -187,6 +203,7 @@ export async function submitAddressAction(
     handler: "zod",
     input,
     effect: validationEffect,
+    emitter,
   });
 
   const outcome = await Effect.runPromise(Effect.either(traced));
@@ -220,16 +237,41 @@ export async function submitFraudCheckAction(
 ): Promise<FormState> {
   const raw = formDataToObject(formData);
   const pipelineContext = resolvePipelineContext({ raw });
+  registerSessionId(pipelineContext.session_id);
+  const emitter = buildSharedEmitter();
+
+  const tracker = getGlobalTracker();
+  const events = await tracker.getEvents({
+    session_id: pipelineContext.session_id,
+  });
+  const definition = getPipelineDefinition({
+    type: pipelineContext.pipeline_type,
+  });
+
+  const currentChecksum = definition
+    ? await tracker.getCurrentChecksum({
+        session_id: pipelineContext.session_id,
+        definition,
+      })
+    : null;
+
+  const latestSnapshot = definition
+    ? await tracker.getLatestSnapshot({
+        session_id: pipelineContext.session_id,
+      })
+    : null;
 
   // Build assessment input from form data
   const assessmentInput = {
     session_id: pipelineContext.session_id,
-    events: [], // In a real scenario, fetch actual events from pipeline tracker
+    events,
     email: raw.buyer_email,
     ip: raw.client_ip,
     device_hash: raw.device_hash,
     billing_country: raw.billing_country,
     ip_country: raw.ip_country,
+    previous_chain_hash: latestSnapshot?.chain_hash ?? undefined,
+    current_chain_hash: currentChecksum?.chain_hash ?? undefined,
   };
 
   // Create an Effect that performs the risk assessment
@@ -264,6 +306,7 @@ export async function submitFraudCheckAction(
     handler: "antifraud",
     input: assessmentInput,
     effect: fraudCheckEffect,
+    emitter,
   });
 
   const outcome = await Effect.runPromise(Effect.either(traced));
