@@ -71,12 +71,76 @@ export const PIPELINE_CHECKOUT_SUBSCRIPTION: PipelineDefinition = {
   ],
 };
 
+/* ── Antifraud-enabled: Physical product checkout ────────── */
+
+export const PIPELINE_CHECKOUT_PHYSICAL_ANTIFRAUD: PipelineDefinition = {
+  name: "Physical Product Checkout (Antifraud)",
+  type: "checkout_physical_antifraud",
+  required_steps: [
+    "buyer_validated",
+    "fraud_check",
+    "address_validated",
+    "payment_initiated",
+    "payment_confirmed",
+    "fulfillment_delegated",
+    "checkout_completed",
+  ],
+  optional_steps: [
+    "fraud_review_escalated",
+    "webhook_received",
+    "webhook_verified",
+  ],
+};
+
+/* ── Antifraud-enabled: Digital product checkout ─────────── */
+
+export const PIPELINE_CHECKOUT_DIGITAL_ANTIFRAUD: PipelineDefinition = {
+  name: "Digital Product Checkout (Antifraud)",
+  type: "checkout_digital_antifraud",
+  required_steps: [
+    "buyer_validated",
+    "fraud_check",
+    "payment_initiated",
+    "payment_confirmed",
+    "checkout_completed",
+  ],
+  optional_steps: [
+    "fraud_review_escalated",
+    "webhook_received",
+    "webhook_verified",
+    "fulfillment_delegated",
+  ],
+};
+
+/* ── Antifraud-enabled: Subscription checkout ────────────── */
+
+export const PIPELINE_CHECKOUT_SUBSCRIPTION_ANTIFRAUD: PipelineDefinition = {
+  name: "Subscription Checkout (Antifraud)",
+  type: "checkout_subscription_antifraud",
+  required_steps: [
+    "buyer_validated",
+    "fraud_check",
+    "payment_initiated",
+    "payment_confirmed",
+    "webhook_received",
+    "webhook_verified",
+    "checkout_completed",
+  ],
+  optional_steps: [
+    "fraud_review_escalated",
+    "fulfillment_delegated",
+  ],
+};
+
 /* ── Registry lookup ─────────────────────────────────────── */
 
 export const PIPELINE_DEFINITIONS: PipelineDefinition[] = [
   PIPELINE_CHECKOUT_PHYSICAL,
   PIPELINE_CHECKOUT_DIGITAL,
   PIPELINE_CHECKOUT_SUBSCRIPTION,
+  PIPELINE_CHECKOUT_PHYSICAL_ANTIFRAUD,
+  PIPELINE_CHECKOUT_DIGITAL_ANTIFRAUD,
+  PIPELINE_CHECKOUT_SUBSCRIPTION_ANTIFRAUD,
 ];
 
 export function getPipelineDefinition(params: {

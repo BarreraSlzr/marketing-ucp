@@ -106,6 +106,9 @@ describe("Constants", () => {
       "checkout_physical",
       "checkout_digital",
       "checkout_subscription",
+      "checkout_physical_antifraud",
+      "checkout_digital_antifraud",
+      "checkout_subscription_antifraud",
     ]);
   });
 
@@ -256,7 +259,9 @@ describe("PipelineStepSchema", () => {
     expect(steps).toContain("webhook_verified");
     expect(steps).toContain("checkout_completed");
     expect(steps).toContain("checkout_failed");
-    expect(steps.length).toBe(9);
+    expect(steps).toContain("fraud_check");
+    expect(steps).toContain("fraud_review_escalated");
+    expect(steps.length).toBe(11);
   });
 });
 
@@ -540,8 +545,8 @@ describe("computeDataChecksum", () => {
  * ══════════════════════════════════════════════════════════ */
 
 describe("Pipeline Registry", () => {
-  test("has 3 pipeline definitions", () => {
-    expect(PIPELINE_DEFINITIONS.length).toBe(3);
+  test("has 6 pipeline definitions", () => {
+    expect(PIPELINE_DEFINITIONS.length).toBe(6);
   });
 
   test("getPipelineDefinition returns correct definition by type", () => {

@@ -15,7 +15,8 @@
     "test:e2e": "playwright test",
     "test:entities": "bun test packages/entities",
     "test:pipeline": "bun test packages/pipeline",
-    "test:tracing": "bun test packages/tracing"
+    "test:tracing": "bun test packages/tracing",
+    "test:antifraud": "bun test packages/antifraud"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "1.1.3",

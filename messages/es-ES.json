@@ -8,16 +8,59 @@
   },
   "hero": {
     "label": "Protocolo Universal de Checkout",
-    "title": "Un protocolo de checkout para cada servicio",
-    "description": "Unifica el checkout entre Shopify, Polar y proveedores personalizados. Formularios sin estado guiados por parametros URL -- sin sesiones, sin base de datos, totalmente compartibles y reanudables.",
+    "title": "Checkout nativo de pipelines con antifraude integrado",
+    "description": "Lanza un checkout unificado que verifica cada paso con chain hash, puntua riesgo en tiempo real y se conecta con cualquier proveedor de pagos o fulfillment.",
     "primaryCta": "Probar demo de checkout",
     "secondaryCta": "Ver en GitHub"
   },
   "stats": {
-    "serverSessions": "Sesiones en servidor",
-    "entitySchemas": "Esquemas de entidad",
-    "urlSerializable": "Serializable en URL",
-    "endToEnd": "De extremo a extremo"
+    "chainHash": "Cadena anti-manipulacion",
+    "riskEngine": "Motor de riesgo",
+    "stateless": "Estado en URL",
+    "multiProvider": "Multiplos proveedores"
+  },
+  "antifraud": {
+    "label": "Pipeline antifraude",
+    "title": "Convierte telemetria en decisiones antifraude",
+    "description": "UCP trata antifraude como un paso obligatorio del pipeline. Cada evento se hashea, se puntua y se audita antes de autorizar pagos, ya sea para equipos enterprise, marketplaces, SaaS o founders.",
+    "primaryCta": "Explorar el flujo antifraude",
+    "secondaryCta": "Ver paquete antifraude",
+    "personas": [
+      {
+        "title": "Enterprise",
+        "description": "Centraliza politicas de riesgo con auditoria por chain hash y logs listos para compliance."
+      },
+      {
+        "title": "Marketplace",
+        "description": "Detecta abuso de compradores o vendedores con velocidad, fingerprints y escalamiento."
+      },
+      {
+        "title": "SaaS",
+        "description": "Previene fraude de suscripciones y toma de cuenta con scoring en tiempo real."
+      },
+      {
+        "title": "Emprendedores",
+        "description": "Activa defensas antifraude rapido con API headless y senales preconstruidas."
+      }
+    ],
+    "items": [
+      {
+        "title": "Recibos con chain hash",
+        "description": "Cada paso alimenta el siguiente hash. Cualquier cambio queda visible de forma criptografica."
+      },
+      {
+        "title": "Senales de dispositivo y conducta",
+        "description": "Fingerprinting, anomalías de tiempo y velocidad para detectar bots o secuestros."
+      },
+      {
+        "title": "Puntaje de riesgo en tiempo real",
+        "description": "Senales ponderadas se convierten en un score con decision de permitir, revisar o bloquear."
+      },
+      {
+        "title": "API antifraude sin estado",
+        "description": "Expone evaluaciones para comercios, dashboards y automatizaciones sin lock-in."
+      }
+    ]
   },
   "templates": {
     "label": "Probar ahora",
@@ -29,32 +72,32 @@
   },
   "features": {
     "label": "Como funciona",
-    "title": "Hecho para comercio moderno",
-    "description": "Cada decision esta enfocada en flujos de checkout sin estado y con tipos, listos para integrarse con cualquier servicio.",
+    "title": "Hecho para pipelines verificables",
+    "description": "Cada paso es estructurado, trazable y listo para antifraude en cualquier proveedor.",
     "items": [
       {
-        "title": "Sin estado y basado en URL",
-        "description": "Todo el estado del checkout vive en la URL. Sin sesiones, sin cookies, sin base de datos. Comparte o reanuda cualquier checkout."
+        "title": "Pasos nativos de pipeline",
+        "description": "El antifraude es un paso obligatorio junto a validacion, pagos y fulfillment."
       },
       {
-        "title": "Pipelines validados con Zod",
-        "description": "Cada seccion se valida con esquemas Zod. Tipado desde parametros URL hasta acciones del servidor."
+        "title": "Payloads validados con Zod",
+        "description": "Cada entrada, salida y senal es tipada y validada de extremo a extremo."
       },
       {
-        "title": "Mejora progresiva",
-        "description": "Los formularios funcionan sin JavaScript con FormData y acciones del servidor. nuqs sincroniza la URL en tiempo real."
+        "title": "Auditoria con chain hash",
+        "description": "Eventos del pipeline se encadenan para verificacion anti-manipulacion."
       },
       {
-        "title": "Delegacion de servicios",
-        "description": "Delegas pagos a Polar, cumplimiento a Shopify o cualquier proveedor. UCP es el pegamento entre checkout y servicios externos."
+        "title": "Colectores de senales",
+        "description": "Velocidad, anomalías de dispositivo y tiempo forman un puntaje de riesgo."
       },
       {
-        "title": "Multiples pagos",
-        "description": "Credenciales por token o tarjeta via union discriminada. Extensible a cualquier handler de pago."
+        "title": "Compatible con varios PSP",
+        "description": "Ejecuta reglas antifraude consistentes en Stripe, Polar, Shopify y handlers personalizados."
       },
       {
-        "title": "Formularios componibles",
-        "description": "Cada seccion usa formId para conectar inputs en cualquier parte del DOM. Envios independientes o como checkout completo."
+        "title": "API headless",
+        "description": "Expone evaluaciones antifraude via API, dashboards o automatizacion sin lock-in."
       }
     ]
   },

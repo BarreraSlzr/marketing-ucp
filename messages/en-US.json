@@ -8,16 +8,59 @@
   },
   "hero": {
     "label": "Universal Checkout Protocol",
-    "title": "One checkout protocol for every service",
-    "description": "Unify checkout across Shopify, Polar, and custom providers. Stateless forms driven entirely by URL parameters -- no sessions, no database, fully shareable and resumable.",
+    "title": "Pipeline-native checkout with antifraud built in",
+    "description": "Ship a unified checkout that verifies every step with chain hashes, scores risk in real time, and plugs into any payment or fulfillment provider.",
     "primaryCta": "Try the Checkout Demo",
     "secondaryCta": "View on GitHub"
   },
   "stats": {
-    "serverSessions": "Server-side sessions",
-    "entitySchemas": "Entity schemas",
-    "urlSerializable": "URL-serializable",
-    "endToEnd": "End to end"
+    "chainHash": "Tamper-evident chain",
+    "riskEngine": "Risk scoring core",
+    "stateless": "URL-native state",
+    "multiProvider": "Provider agnostic"
+  },
+  "antifraud": {
+    "label": "Antifraud pipeline",
+    "title": "Turn checkout telemetry into antifraud decisions",
+    "description": "UCP treats antifraud as a first-class pipeline step. Every event is hashed, scored, and ready for audit or escalation before payment is authorized — whether you run enterprise risk teams, marketplace trust ops, SaaS billing, or founder-led commerce.",
+    "primaryCta": "Explore the antifraud flow",
+    "secondaryCta": "View antifraud package",
+    "personas": [
+      {
+        "title": "Enterprise",
+        "description": "Centralize risk policy with chain-hash audit trails and compliance-grade event logs."
+      },
+      {
+        "title": "Marketplace",
+        "description": "Detect seller or buyer abuse with velocity checks, device fingerprints, and escalation steps."
+      },
+      {
+        "title": "SaaS",
+        "description": "Prevent account takeovers and payment fraud with real-time scoring per subscription event."
+      },
+      {
+        "title": "Entrepreneurs",
+        "description": "Launch antifraud defenses fast with a headless API and prebuilt signals out of the box."
+      }
+    ],
+    "items": [
+      {
+        "title": "Chain-hash receipts",
+        "description": "Every step feeds the next hash. Any mutation becomes cryptographically visible across the pipeline."
+      },
+      {
+        "title": "Device & behavior signals",
+        "description": "Collect fingerprinting, timing anomalies, and velocity checks to detect bots, hijacks, or abuse."
+      },
+      {
+        "title": "Risk scoring in real time",
+        "description": "Weighted signals roll into a single score with allow, review, or block decisions."
+      },
+      {
+        "title": "Headless antifraud API",
+        "description": "Expose assessments as a clean API for merchants, dashboards, and third-party automation."
+      }
+    ]
   },
   "templates": {
     "label": "Try it now",
@@ -29,32 +72,32 @@
   },
   "features": {
     "label": "How it works",
-    "title": "Built for modern commerce",
-    "description": "Every design decision serves stateless, type-safe checkout flows that integrate with any service.",
+    "title": "Built for verifiable pipelines",
+    "description": "Every step is structured, traceable, and ready for antifraud workflows across providers.",
     "items": [
       {
-        "title": "Stateless & URL-Driven",
-        "description": "Every checkout state lives in the URL. No sessions, no cookies, no database required. Share, bookmark, or resume any checkout."
+        "title": "Pipeline-native steps",
+        "description": "Fraud checks are a required step alongside validation, payments, and fulfillment."
       },
       {
-        "title": "Zod-Validated Pipelines",
-        "description": "Each form section is independently validated with Zod schemas. Type-safe from URL params through server actions."
+        "title": "Zod-validated payloads",
+        "description": "Every input, output, and signal is type-safe and validated from request to registry."
       },
       {
-        "title": "Progressive Enhancement",
-        "description": "Forms work without JavaScript via native FormData and server actions. Progressive enhancement with nuqs for real-time URL sync."
+        "title": "Chain-hash audit trail",
+        "description": "Each pipeline event is cryptographically chained for tamper-evident verification."
       },
       {
-        "title": "Service Delegation",
-        "description": "Delegate payment to Polar, fulfillment to Shopify, or any provider. UCP is the glue between your checkout and external services."
+        "title": "Signal collectors",
+        "description": "Velocity, device anomalies, and timing checks aggregate into a single risk score."
       },
       {
-        "title": "Multi-Payment Support",
-        "description": "Token-based or card-based credentials via a discriminated union schema. Extensible to any payment handler."
+        "title": "Multi-PSP compatible",
+        "description": "Run consistent antifraud rules across Stripe, Polar, Shopify, and custom handlers."
       },
       {
-        "title": "Composable Forms",
-        "description": "Each form section uses formId to wire inputs anywhere in the DOM. Sections submit independently or together as a full checkout."
+        "title": "Headless by default",
+        "description": "Expose antifraud assessments via API, dashboards, or automation without vendor lock-in."
       }
     ]
   },
