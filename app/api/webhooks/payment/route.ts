@@ -1,5 +1,9 @@
 import { registerPaymentHandlers } from "@/lib/payment-handlers";
 import { getSharedPipelineStorage, registerSessionId } from "@/lib/pipeline-tracker";
+import {
+  hasProcessedWebhookEvent,
+  markWebhookEventProcessed,
+} from "@/lib/webhook-idempotency";
 import { generateStamp, getIsoTimestamp, getIsoTimestampFromUnix } from "@/utils/stamp";
 import {
   getPaymentHandler,
@@ -11,6 +15,7 @@ import {
   PipelineEmitter,
   PipelineTypeSchema,
   tracedStep,
+  type PipelineStorage,
   type PipelineType,
 } from "@repo/pipeline";
 import { Effect } from "effect";
@@ -26,8 +31,6 @@ import { NextRequest, NextResponse } from "next/server";
  * Body: JSON webhook event from payment provider
  * Header: x-ucp-handler, x-ucp-signature, or provider-specific signature
  */
-const processedWebhookIds = new Set<string>();
-
 function getHandlerName(params: { req: NextRequest }): string | null {
   return (
     params.req.nextUrl.searchParams.get("handler") ||
@@ -45,14 +48,117 @@ function getSignature(params: { req: NextRequest }): string {
   );
 }
 
-function resolvePipelineType(params: { req: NextRequest }): PipelineType {
+function parsePipelineTypeCandidate(params: { raw?: unknown }): PipelineType | null {
+  if (typeof params.raw !== "string") {
+    return null;
+  }
+
+  const parsed = PipelineTypeSchema.safeParse(params.raw);
+  return parsed.success ? parsed.data : null;
+}
+
+function getPayloadMetadata(params: {
+  payload: Record<string, unknown>;
+}): Record<string, unknown> | undefined {
+  const data = params.payload.data as Record<string, unknown> | undefined;
+  const dataObject = data?.object as Record<string, unknown> | undefined;
+
+  return (
+    (dataObject?.metadata as Record<string, unknown> | undefined) ??
+    (data?.metadata as Record<string, unknown> | undefined) ??
+    (params.payload.metadata as Record<string, unknown> | undefined)
+  );
+}
+
+function resolvePipelineTypeFromRequest(params: { req: NextRequest }): PipelineType | null {
   const pipelineType =
     params.req.nextUrl.searchParams.get("pipeline_type") ||
-    params.req.headers.get("x-ucp-pipeline-type") ||
-    "checkout_digital";
+    params.req.headers.get("x-ucp-pipeline-type");
 
-  const parsed = PipelineTypeSchema.safeParse(pipelineType);
-  return parsed.success ? parsed.data : "checkout_digital";
+  return parsePipelineTypeCandidate({ raw: pipelineType });
+}
+
+async function resolvePipelineType(params: {
+  req: NextRequest;
+  payload: Record<string, unknown>;
+  session_id: string;
+  storage: PipelineStorage;
+}): Promise<PipelineType> {
+  const fromRequest = resolvePipelineTypeFromRequest({ req: params.req });
+  if (fromRequest) {
+    return fromRequest;
+  }
+
+  const metadata = getPayloadMetadata({ payload: params.payload });
+  const data = params.payload.data as Record<string, unknown> | undefined;
+  const dataObject = data?.object as Record<string, unknown> | undefined;
+  const candidates = [
+    params.payload.pipeline_type,
+    params.payload.checkout_pipeline_type,
+    data?.pipeline_type,
+    data?.checkout_pipeline_type,
+    metadata?.pipeline_type,
+    metadata?.checkout_pipeline_type,
+    dataObject?.pipeline_type,
+    dataObject?.checkout_pipeline_type,
+  ];
+
+  for (const candidate of candidates) {
+    const parsed = parsePipelineTypeCandidate({ raw: candidate });
+    if (parsed) {
+      return parsed;
+    }
+  }
+
+  const storedEvents = await params.storage.getBySessionId({
+    session_id: params.session_id,
+  });
+
+  for (const event of storedEvents) {
+    const parsed = parsePipelineTypeCandidate({ raw: event.pipeline_type });
+    if (parsed) {
+      return parsed;
+    }
+  }
+
+  const hasAddress = Boolean(
+    (dataObject?.shipping as Record<string, unknown> | undefined) ??
+      (dataObject?.shipping_address as Record<string, unknown> | undefined) ??
+      (data?.shipping as Record<string, unknown> | undefined) ??
+      (data?.shipping_address as Record<string, unknown> | undefined) ??
+      (metadata?.shipping_line1 as string | undefined) ??
+      (metadata?.billing_line1 as string | undefined)
+  );
+
+  const isSubscription = Boolean(
+    (dataObject?.mode as string | undefined) === "subscription" ||
+      (dataObject?.subscription as string | undefined) ||
+      (data?.subscription as string | undefined) ||
+      (metadata?.subscription_id as string | undefined) ||
+      (metadata?.subscriptionId as string | undefined)
+  );
+
+  const isAntifraud = Boolean(
+    (metadata?.antifraud_enabled as boolean | undefined) ||
+      (metadata?.fraud_check as boolean | undefined) ||
+      (metadata?.fraud_check_required as boolean | undefined) ||
+      (metadata?.antifraud as boolean | undefined) ||
+      (metadata?.fraud as boolean | undefined)
+  );
+
+  if (isSubscription) {
+    return isAntifraud
+      ? "checkout_subscription_antifraud"
+      : "checkout_subscription";
+  }
+
+  if (isAntifraud) {
+    return hasAddress
+      ? "checkout_physical_antifraud"
+      : "checkout_digital_antifraud";
+  }
+
+  return hasAddress ? "checkout_physical" : "checkout_digital";
 }
 
 function toSafeSessionId(params: { raw?: string }): string {
@@ -123,7 +229,6 @@ export async function POST(req: NextRequest) {
 
     const body = await req.text();
     const signature = getSignature({ req });
-    const pipeline_type = resolvePipelineType({ req });
 
     let rawEvent: Record<string, unknown>;
     try {
@@ -135,9 +240,15 @@ export async function POST(req: NextRequest) {
     const session_id = extractSessionId({ payload: rawEvent });
     registerSessionId(session_id);
 
-    const emitter = new PipelineEmitter({
-      storage: getSharedPipelineStorage(),
+    const storage = getSharedPipelineStorage();
+    const pipeline_type = await resolvePipelineType({
+      req,
+      payload: rawEvent,
+      session_id,
+      storage,
     });
+
+    const emitter = new PipelineEmitter({ storage });
 
     const verifyEffect = tracedStep({
       session_id,
@@ -172,7 +283,7 @@ export async function POST(req: NextRequest) {
         ? rawEvent.id
         : `${handlerName}_${generateStamp()}`;
 
-    if (processedWebhookIds.has(eventId)) {
+    if (await hasProcessedWebhookEvent({ event_id: eventId })) {
       return NextResponse.json({ success: true, event: eventId, duplicate: true });
     }
 
@@ -215,7 +326,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    processedWebhookIds.add(event.id);
+    await markWebhookEventProcessed({ event_id: event.id });
 
     return NextResponse.json({
       success: true,

@@ -1,9 +1,9 @@
+import { getGlobalTracker } from "@/lib/pipeline-tracker";
 import {
-  getPipelineDefinition,
-  type PipelineType,
+    getPipelineDefinition,
+    type PipelineType,
 } from "@repo/pipeline";
 import { NextRequest, NextResponse } from "next/server";
-import { getGlobalTracker } from "@/lib/pipeline-tracker";
 
 /**
  * GET /api/pipeline/status?session_id=chk_123&pipeline_type=checkout_digital
@@ -39,7 +39,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // TODO: In production, inject persistent storage
     const tracker = getGlobalTracker();
 
     const summary = await tracker.getStatusSummary({
@@ -77,7 +76,6 @@ export async function POST(req: NextRequest) {
     const pipelineType = body.event.pipeline_type;
     const definition = getPipelineDefinition({ type: pipelineType });
     
-    // TODO: In production, inject persistent storage
     const tracker = getGlobalTracker();
 
     const result = await tracker.trackEvent({
