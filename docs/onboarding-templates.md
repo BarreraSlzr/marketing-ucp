@@ -283,6 +283,75 @@ Document verification for KYC/KYB compliance:
 - **Corporate**: Acta Constitutiva, Poder Notarial (optional, for Persona Moral)
 - **Consent**: Data processing authorization under LFPDPPP
 
+### Payout & Reconciliation Templates
+
+| ID                             | Name                           | Category | Regions | Required Fields | Groups                                  |
+|--------------------------------|--------------------------------|----------|---------|-----------------|-----------------------------------------|
+| `merchant-payout-schedule`     | Merchant Payout Schedule       | support  | global  | 7               | merchant, schedule, notifications, consent |
+| `merchant-reconciliation-query`| Merchant Reconciliation Search | support  | global  | 5               | merchant, date_range, filters, delivery, consent |
+| `merchant-invoice-cfdi-request`| Invoice / CFDI Request         | compliance | MX    | 11              | merchant, invoice_reference, tax_identity, cfdi_details, delivery, consent |
+
+#### Merchant Payout Schedule (`merchant-payout-schedule`)
+
+Configure how and when payouts are sent to a merchant available balance.
+
+- **Schedule**: Frequency, minimum payout threshold, preferred weekday/month day
+- **Settlement**: Payout currency and settlement timezone cutoffs
+- **Notifications**: Delivery email for payout schedule confirmations
+- **Notes**: Minimum payout amount should match the settlement currency
+
+```typescript
+import { ONBOARDING_MERCHANT_PAYOUT_SCHEDULE } from "@repo/onboarding";
+
+<OnboardingForm
+  template={ONBOARDING_MERCHANT_PAYOUT_SCHEDULE}
+  onSubmit={async (data) => {
+    await updatePayoutSchedule(data);
+  }}
+/>
+```
+
+#### Merchant Reconciliation Search (`merchant-reconciliation-query`)
+
+Request a reconciliation report filtered by date range, handler, and settlement status.
+
+- **Date Range**: Start and end date (YYYY-MM-DD)
+- **Filters**: Payment handler, status, settlement or payout IDs, dispute/chargeback inclusion
+- **Delivery**: Preferred export format (CSV/PDF/JSON), delivery email, optional request notes
+- **Notes**: Reports are delivered within 1-2 business days by default; same-day delivery is available for urgent requests with a processing fee (use PDF output and include "urgent" in the request notes)
+
+```typescript
+import { ONBOARDING_MERCHANT_RECONCILIATION_QUERY } from "@repo/onboarding";
+
+<OnboardingForm
+  template={ONBOARDING_MERCHANT_RECONCILIATION_QUERY}
+  onSubmit={async (data) => {
+    await requestReconciliationReport(data);
+  }}
+/>
+```
+
+#### Invoice / CFDI Request (`merchant-invoice-cfdi-request`)
+
+Mexico SAT-compliant CFDI invoice request form for a transaction.
+
+- **Invoice Reference**: Transaction ID, optional order ID, amount and currency
+- **Tax Identity**: Fiscal name, RFC, postal code
+- **CFDI Details**: CFDI usage, payment method (PUE/PPD), optional SAT payment form code
+- **Delivery**: Email for CFDI XML/PDF delivery, optional invoice notes
+- **Notes**: RFC and postal code must match SAT records for successful issuance; PPD invoices require a payment complement (Complemento de Pago)
+
+```typescript
+import { ONBOARDING_MERCHANT_INVOICE_CFDI_REQUEST } from "@repo/onboarding";
+
+<OnboardingForm
+  template={ONBOARDING_MERCHANT_INVOICE_CFDI_REQUEST}
+  onSubmit={async (data) => {
+    await requestCfdiInvoice(data);
+  }}
+/>
+```
+
 ### Subscription Management Templates
 
 | ID                              | Name                          | Category      | Regions | Required Fields | Groups                         |

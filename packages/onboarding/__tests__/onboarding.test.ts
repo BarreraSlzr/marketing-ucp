@@ -15,7 +15,10 @@ import {
   ONBOARDING_DISPUTE_RESPONSE,
   ONBOARDING_MERCHANT_BANK_PAYOUT,
   ONBOARDING_MERCHANT_DOCUMENTS,
+  ONBOARDING_MERCHANT_INVOICE_CFDI_REQUEST,
   ONBOARDING_MERCHANT_LEGAL_KYC,
+  ONBOARDING_MERCHANT_PAYOUT_SCHEDULE,
+  ONBOARDING_MERCHANT_RECONCILIATION_QUERY,
   ONBOARDING_MERCHANT_TAX_CFDI,
   ONBOARDING_PAYPAL_MX,
   ONBOARDING_REFUND_REQUEST,
@@ -112,6 +115,14 @@ describe("Onboarding Registry", () => {
     expect(ids).toContain(ONBOARDING_SUBSCRIPTION_PLAN_CHANGE.id);
     expect(ids).toContain(ONBOARDING_SUBSCRIPTION_CANCEL.id);
     expect(ids).toContain(ONBOARDING_SUBSCRIPTION_PAYMENT_UPDATE.id);
+  });
+
+  it("filters support templates", () => {
+    const support = listOnboardingTemplatesByCategory({ category: "support" });
+    expect(support.length).toBeGreaterThanOrEqual(4);
+    const ids = support.map((t) => t.id);
+    expect(ids).toContain(ONBOARDING_MERCHANT_PAYOUT_SCHEDULE.id);
+    expect(ids).toContain(ONBOARDING_MERCHANT_RECONCILIATION_QUERY.id);
   });
 });
 
@@ -314,6 +325,7 @@ describe("KYC/KYB Onboarding Templates", () => {
       ONBOARDING_MERCHANT_BANK_PAYOUT,
       ONBOARDING_MERCHANT_TAX_CFDI,
       ONBOARDING_MERCHANT_DOCUMENTS,
+      ONBOARDING_MERCHANT_INVOICE_CFDI_REQUEST,
     ];
     for (const t of compliance) {
       expect(t.category).toBe("compliance");
@@ -326,6 +338,7 @@ describe("KYC/KYB Onboarding Templates", () => {
       ONBOARDING_MERCHANT_BANK_PAYOUT,
       ONBOARDING_MERCHANT_TAX_CFDI,
       ONBOARDING_MERCHANT_DOCUMENTS,
+      ONBOARDING_MERCHANT_INVOICE_CFDI_REQUEST,
     ];
     for (const t of compliance) {
       expect(t.regions).toContain("MX");
@@ -334,7 +347,7 @@ describe("KYC/KYB Onboarding Templates", () => {
 
   it("filters compliance templates by category", () => {
     const compliance = listOnboardingTemplatesByCategory({ category: "compliance" });
-    expect(compliance.length).toBe(4);
+    expect(compliance.length).toBe(5);
     for (const t of compliance) {
       expect(t.category).toBe("compliance");
     }
@@ -347,6 +360,13 @@ describe("KYC/KYB Onboarding Templates", () => {
     expect(ids).toContain("merchant-bank-payout");
     expect(ids).toContain("merchant-tax-cfdi");
     expect(ids).toContain("merchant-documents");
+    expect(ids).toContain("merchant-invoice-cfdi-request");
+  });
+
+  it("includes payout and reconciliation templates", () => {
+    const ids = ALL_ONBOARDING_TEMPLATES.map((t) => t.id);
+    expect(ids).toContain(ONBOARDING_MERCHANT_PAYOUT_SCHEDULE.id);
+    expect(ids).toContain(ONBOARDING_MERCHANT_RECONCILIATION_QUERY.id);
   });
 
   it("retrieves merchant-legal-kyc by id", () => {
