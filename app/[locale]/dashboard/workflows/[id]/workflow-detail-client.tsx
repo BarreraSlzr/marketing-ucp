@@ -2,6 +2,7 @@
 
 import type { WorkflowDefinition, WorkflowStep } from "@repo/workflows";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { parseAsString, useQueryStates } from "nuqs";
 import styles from "../page.module.css";
 
@@ -10,6 +11,9 @@ interface WorkflowDetailClientProps {
 }
 
 export function WorkflowDetailClient({ workflow }: WorkflowDetailClientProps) {
+  const params = useParams();
+  const locale = (params?.locale as string) || "en";
+
   const [queryState, setQueryState] = useQueryStates({
     sessionId: parseAsString.withDefault(""),
     selectedForm: parseAsString.withDefault(""),
@@ -37,12 +41,12 @@ export function WorkflowDetailClient({ workflow }: WorkflowDetailClientProps) {
 
   const getFormStepLink = (step: WorkflowStep): string => {
     if (!step.form_ids?.[0]) return "#";
-    const params = new URLSearchParams();
-    if (queryState.sessionId) params.set("sessionId", queryState.sessionId);
-    if (queryState.pipelineId) params.set("pipelineId", queryState.pipelineId);
-    params.set("formId", step.form_ids[0]);
-    params.set("workflowId", workflow.id);
-    return `/onboarding?${params.toString()}`;
+    const searchParams = new URLSearchParams();
+    if (queryState.sessionId) searchParams.set("sessionId", queryState.sessionId);
+    if (queryState.pipelineId) searchParams.set("pipelineId", queryState.pipelineId);
+    searchParams.set("formId", step.form_ids[0]);
+    searchParams.set("workflowId", workflow.id);
+    return `/${locale}/onboarding?${searchParams.toString()}`;
   };
 
   return (
@@ -105,6 +109,7 @@ export function WorkflowDetailClient({ workflow }: WorkflowDetailClientProps) {
                     <Link
                       href={getFormStepLink(step)}
                       className={styles.stepLink}
+                      prefetch={false}
                     >
                       <p className={styles.stepName}>{step.label}</p>
                       <p className={styles.stepMeta}>
