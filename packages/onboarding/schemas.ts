@@ -78,6 +78,7 @@ export const OnboardingTemplateSchema = z.object({
     "web3",
     "bank_transfer",
     "cash_payment",
+    "compliance",
   ]),
   /** Country/region applicability (ISO 3166 codes) */
   regions: z.array(z.string()).default(["global"]),

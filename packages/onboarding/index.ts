@@ -19,7 +19,7 @@ export {
 
 /* ── Adapter Templates ───────────────────────────────────── */
 export {
-    ALL_ONBOARDING_TEMPLATES, ONBOARDING_COMPROPAGO, ONBOARDING_MERCADOPAGO, ONBOARDING_PAYPAL_MX, ONBOARDING_POLAR, ONBOARDING_SHOPIFY, ONBOARDING_STP, ONBOARDING_STRIPE, ONBOARDING_THIRDWEB
+    ALL_ONBOARDING_TEMPLATES, ONBOARDING_COMPROPAGO, ONBOARDING_MERCADOPAGO, ONBOARDING_MERCHANT_BANK_PAYOUT, ONBOARDING_MERCHANT_DOCUMENTS, ONBOARDING_MERCHANT_LEGAL_KYC, ONBOARDING_MERCHANT_TAX_CFDI, ONBOARDING_PAYPAL_MX, ONBOARDING_POLAR, ONBOARDING_SHOPIFY, ONBOARDING_STP, ONBOARDING_STRIPE, ONBOARDING_THIRDWEB
 } from "./templates";
 
 /* ── nuqs Parsers ────────────────────────────────────────── */
@@ -31,6 +31,6 @@ export {
 
 /* ── Validation Utilities ────────────────────────────────── */
 export {
-    getFieldsByGroup, getRequiredFields, validateSubmission, type ValidationResult
+    getFieldsByGroup, getRequiredFields, validateClabe, validateCurp, validateRfc, validateSubmission, type ValidationResult
 } from "./validation";
 

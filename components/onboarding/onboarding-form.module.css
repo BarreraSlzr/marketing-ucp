@@ -67,3 +67,17 @@
   background: var(--accent, #f4f4f5);
   color: var(--accent-foreground, #18181b);
 }
+
+.fileUpload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.fileName {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

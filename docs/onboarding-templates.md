@@ -38,7 +38,7 @@ const ONBOARDING_MY_ADAPTER: OnboardingTemplate = {
   id: "my-adapter",
   name: "My Payment Service",
   description: "Description for legal customers",
-  category: "payment", // payment | storefront | web3 | bank_transfer | cash_payment
+  category: "payment", // payment | storefront | web3 | bank_transfer | cash_payment | compliance
   regions: ["MX"],     // ISO 3166 codes, or ["global"]
   docsUrl: "https://docs.myadapter.com",
   fields: [
@@ -229,6 +229,80 @@ If a template has a `webhookUrl`, the API will POST the following payload on sub
 | `stp`         | STP               | bank_transfer   | MX          | 5               |
 | `thirdweb`    | Thirdweb          | web3            | global      | 3               |
 | `shopify`     | Shopify Storefront| storefront      | global      | 2               |
+
+### KYC/KYB Compliance Templates
+
+| ID                      | Name                          | Category    | Regions | Required Fields | Groups                                        |
+|-------------------------|-------------------------------|-------------|---------|-----------------|-----------------------------------------------|
+| `merchant-legal-kyc`    | Merchant Legal Profile        | compliance  | MX      | 9               | legal_entity, tax_identity, representative, address |
+| `merchant-bank-payout`  | Merchant Bank Account         | compliance  | MX      | 8               | bank_account, payout_config, consent          |
+| `merchant-tax-cfdi`     | Merchant Tax & CFDI Config    | compliance  | MX      | 3               | tax_regime, tax_rates, certificates, invoicing|
+| `merchant-documents`    | Merchant Verification Docs    | compliance  | MX      | 5               | identity_documents, address_documents, tax_documents, corporate_documents, consent |
+
+#### Merchant Legal Profile (`merchant-legal-kyc`)
+
+Collects full KYC/KYB information for legal entities operating in Mexico:
+
+- **Legal Entity**: Business name, trade name, entity type (Persona Física/Moral with subtypes)
+- **Tax Identity**: RFC with format validation, CURP (optional, for Persona Física)
+- **Representative**: Full name, email, phone with international format validation
+- **Address**: Fiscal address, 5-digit postal code, Mexican state selector (32 states)
+
+```typescript
+import { ONBOARDING_MERCHANT_LEGAL_KYC } from "@repo/onboarding";
+
+// Use standalone
+<OnboardingForm template={ONBOARDING_MERCHANT_LEGAL_KYC} onSubmit={handleSubmit} />
+```
+
+#### Merchant Bank Account (`merchant-bank-payout`)
+
+Banking information for payout disbursements:
+
+- **Bank Account**: Bank selector (14 Mexican banks), CLABE with checksum validation, beneficiary name, beneficiary RFC
+- **Payout Config**: Currency (MXN/USD), frequency (daily/weekly/biweekly/monthly)
+- **Consent**: Ownership certification checkbox
+
+#### Merchant Tax & CFDI (`merchant-tax-cfdi`)
+
+Mexican tax compliance configuration per SAT regulations:
+
+- **Tax Regime**: 18 SAT regime codes (601–626)
+- **CFDI Usage**: 11 official CFDI use codes (G01–CP01)
+- **Tax Rates**: IVA rate selector (16%/8%/0%/exempt), IVA/ISR withholding toggles
+- **Certificates**: CSD serial number (20 digits), CSD password
+- **Invoicing**: Series prefix, default invoice notes
+
+#### Merchant Documents (`merchant-documents`)
+
+Document verification for KYC/KYB compliance:
+
+- **Identity**: INE/IFE front and back (required)
+- **Address**: Proof of address (required, max 3 months old)
+- **Tax**: Constancia de Situación Fiscal (required), CSD certificate (.cer), CSD private key (.key)
+- **Corporate**: Acta Constitutiva, Poder Notarial (optional, for Persona Moral)
+- **Consent**: Data processing authorization under LFPDPPP
+
+### Mexico Compliance Validation
+
+The validation module includes specialized Mexico compliance validators:
+
+```typescript
+import { validateRfc, validateCurp, validateClabe } from "@repo/onboarding";
+
+// RFC validation (structure check)
+validateRfc({ rfc: "ABC010101AB0" });    // true (Persona Moral)
+validateRfc({ rfc: "BADD110313AB9" });   // true (Persona Física)
+
+// CURP validation (18-char format)
+validateCurp({ curp: "BADD110313HCMLNS09" }); // true
+
+// CLABE validation (18 digits + Luhn-style checksum)
+validateClabe({ clabe: "646180110400000007" }); // true (checksum verified)
+validateClabe({ clabe: "646180110400000001" }); // false (bad checksum)
+```
+
+These validators are automatically applied during `validateSubmission()` for fields with keys: `rfc`, `curp`, `clabe`, `beneficiaryRfc`.
 
 ## Using the Components
 

@@ -261,6 +261,23 @@ function OnboardingFieldRenderer(props: FieldRendererProps) {
           onCheckedChange={handleCheckboxChange}
           disabled={readOnly}
         />
+      ) : field.type === "file" ? (
+        <div className={styles.fileUpload}>
+          <Input
+            id={field.key}
+            name={field.key}
+            type="file"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const file = e.target.files?.[0];
+              onChange({ key: field.key, value: file ? file.name : "" });
+            }}
+            required={field.required}
+            disabled={readOnly}
+            accept=".pdf,.jpg,.jpeg,.png,.cer,.key"
+            hasError={!!error}
+          />
+          {value && <span className={styles.fileName}>{value}</span>}
+        </div>
       ) : field.type === "textarea" ? (
         <textarea
           id={field.key}
