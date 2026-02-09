@@ -62,12 +62,16 @@ export async function POST(request: NextRequest) {
     };
 
     if (template.webhookUrl) {
+      const event = resolveWebhookEvent({
+        templateId: submission.templateId,
+        category: template.category,
+      });
       try {
         const webhookRes = await fetch(template.webhookUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            event: "onboarding.submitted",
+            event,
             templateId: submission.templateId,
             adapterName: template.name,
             category: template.category,
@@ -117,4 +121,21 @@ export async function GET() {
       docsUrl: t.docsUrl,
     })),
   });
+}
+
+function resolveWebhookEvent(params: {
+  templateId: string;
+  category: string;
+}): string {
+  if (params.category !== "subscription") {
+    return "onboarding.submitted";
+  }
+
+  const map: Record<string, string> = {
+    "subscription-plan-change": "subscription.plan_changed",
+    "subscription-cancel": "subscription.canceled",
+    "subscription-payment-update": "subscription.payment_updated",
+  };
+
+  return map[params.templateId] ?? "subscription.updated";
 }

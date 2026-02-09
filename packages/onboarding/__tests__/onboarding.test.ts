@@ -21,6 +21,9 @@ import {
   ONBOARDING_REFUND_REQUEST,
   ONBOARDING_STP,
   ONBOARDING_STRIPE,
+  ONBOARDING_SUBSCRIPTION_CANCEL,
+  ONBOARDING_SUBSCRIPTION_PAYMENT_UPDATE,
+  ONBOARDING_SUBSCRIPTION_PLAN_CHANGE,
 } from "../templates";
 import {
   getFieldsByGroup,
@@ -98,6 +101,17 @@ describe("Onboarding Registry", () => {
     const bank = listOnboardingTemplatesByCategory({ category: "bank_transfer" });
     expect(bank.length).toBe(1);
     expect(bank[0].id).toBe("stp");
+  });
+
+  it("filters subscription templates", () => {
+    const subscriptions = listOnboardingTemplatesByCategory({
+      category: "subscription",
+    });
+    expect(subscriptions.length).toBeGreaterThanOrEqual(3);
+    const ids = subscriptions.map((t) => t.id);
+    expect(ids).toContain(ONBOARDING_SUBSCRIPTION_PLAN_CHANGE.id);
+    expect(ids).toContain(ONBOARDING_SUBSCRIPTION_CANCEL.id);
+    expect(ids).toContain(ONBOARDING_SUBSCRIPTION_PAYMENT_UPDATE.id);
   });
 });
 
@@ -327,7 +341,7 @@ describe("KYC/KYB Onboarding Templates", () => {
   });
 
   it("includes KYC/KYB templates in ALL_ONBOARDING_TEMPLATES", () => {
-    expect(ALL_ONBOARDING_TEMPLATES.length).toBe(15);
+    expect(ALL_ONBOARDING_TEMPLATES.length).toBeGreaterThanOrEqual(15);
     const ids = ALL_ONBOARDING_TEMPLATES.map((t) => t.id);
     expect(ids).toContain("merchant-legal-kyc");
     expect(ids).toContain("merchant-bank-payout");

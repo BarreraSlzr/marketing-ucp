@@ -79,6 +79,7 @@ export const OnboardingTemplateSchema = z.object({
     "bank_transfer",
     "cash_payment",
     "compliance",
+    "subscription",
     "dispute",
     "refund",
   ]),

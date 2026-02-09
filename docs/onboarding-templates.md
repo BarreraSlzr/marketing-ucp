@@ -38,7 +38,7 @@ const ONBOARDING_MY_ADAPTER: OnboardingTemplate = {
   id: "my-adapter",
   name: "My Payment Service",
   description: "Description for legal customers",
-  category: "payment", // payment | storefront | web3 | bank_transfer | cash_payment | compliance
+  category: "payment", // payment | storefront | web3 | bank_transfer | cash_payment | compliance | subscription
   regions: ["MX"],     // ISO 3166 codes, or ["global"]
   docsUrl: "https://docs.myadapter.com",
   fields: [
@@ -282,6 +282,91 @@ Document verification for KYC/KYB compliance:
 - **Tax**: Constancia de Situación Fiscal (required), CSD certificate (.cer), CSD private key (.key)
 - **Corporate**: Acta Constitutiva, Poder Notarial (optional, for Persona Moral)
 - **Consent**: Data processing authorization under LFPDPPP
+
+### Subscription Management Templates
+
+| ID                              | Name                          | Category      | Regions | Required Fields | Groups                         |
+|---------------------------------|-------------------------------|---------------|---------|-----------------|--------------------------------|
+| `subscription-plan-change`      | Subscription Plan Change      | subscription  | global  | 9               | subscription, plan, timing, requester, consent |
+| `subscription-cancel`           | Subscription Cancellation     | subscription  | global  | 6               | subscription, timing, churn, requester, consent |
+| `subscription-payment-update`   | Subscription Payment Update   | subscription  | global  | 7               | subscription, payment_method, billing, consent |
+
+#### Subscription Plan Change (`subscription-plan-change`)
+
+Self-service form for upgrades or downgrades with timing and proration controls.
+
+**Fields:**
+- **Subscription**: Subscription ID, optional customer ID
+- **Plan Change**: Current plan, new plan, change type
+- **Timing**: Immediate/next cycle/custom date, proration toggle
+- **Requester**: Role, email, notes
+- **Consent**: Authorization to modify the subscription
+
+**Usage:**
+```typescript
+import { ONBOARDING_SUBSCRIPTION_PLAN_CHANGE } from "@repo/onboarding";
+
+<OnboardingForm
+  template={ONBOARDING_SUBSCRIPTION_PLAN_CHANGE}
+  onSubmit={async (data) => {
+    // handle plan change
+  }}
+/>
+```
+
+**Webhook Events:**
+- `subscription.plan_changed`
+
+#### Subscription Cancellation (`subscription-cancel`)
+
+Cancellation form with churn reason capture and timing selection.
+
+**Fields:**
+- **Subscription**: Subscription ID
+- **Timing**: End of period or immediate
+- **Churn**: Reason and optional feedback
+- **Requester**: Role, email, follow-up consent
+- **Consent**: Authorization to cancel
+
+**Usage:**
+```typescript
+import { ONBOARDING_SUBSCRIPTION_CANCEL } from "@repo/onboarding";
+
+<OnboardingForm
+  template={ONBOARDING_SUBSCRIPTION_CANCEL}
+  onSubmit={async (data) => {
+    // handle cancellation
+  }}
+/>
+```
+
+**Webhook Events:**
+- `subscription.canceled`
+
+#### Subscription Payment Update (`subscription-payment-update`)
+
+Updates payment method credentials for an active subscription.
+
+**Fields:**
+- **Subscription**: Subscription ID
+- **Payment Method**: Provider, type, token, optional card last 4
+- **Billing**: Billing name, email, postal code, default toggle
+- **Consent**: Authorization to update billing
+
+**Usage:**
+```typescript
+import { ONBOARDING_SUBSCRIPTION_PAYMENT_UPDATE } from "@repo/onboarding";
+
+<OnboardingForm
+  template={ONBOARDING_SUBSCRIPTION_PAYMENT_UPDATE}
+  onSubmit={async (data) => {
+    // handle payment update
+  }}
+/>
+```
+
+**Webhook Events:**
+- `subscription.payment_updated`
 
 ### Dispute & Refund Resolution Templates
 
