@@ -79,6 +79,10 @@ export function OnboardingForm(props: OnboardingFormProps) {
 
   const [submitted, setSubmitted] = React.useState(false);
 
+  const pendingChangeRef = React.useRef<{ key: string; value: string } | null>(
+    null,
+  );
+
   const fieldGroups = React.useMemo(
     () => getFieldsByGroup({ template }),
     [template],
@@ -89,7 +93,7 @@ export function OnboardingForm(props: OnboardingFormProps) {
     (params: { key: string; value: string }) => {
       setValues((prev) => {
         const next = { ...prev, [params.key]: params.value };
-        onChange?.({ key: params.key, value: params.value, allValues: next });
+        pendingChangeRef.current = { key: params.key, value: params.value };
         return next;
       });
       // Clear error on change
@@ -101,8 +105,15 @@ export function OnboardingForm(props: OnboardingFormProps) {
         });
       }
     },
-    [errors, onChange],
+    [errors],
   );
+
+  React.useEffect(() => {
+    if (!pendingChangeRef.current) return;
+    const change = pendingChangeRef.current;
+    pendingChangeRef.current = null;
+    onChange?.({ key: change.key, value: change.value, allValues: values });
+  }, [values, onChange]);
 
   const handleSubmit = React.useCallback(
     async (e: React.FormEvent) => {
