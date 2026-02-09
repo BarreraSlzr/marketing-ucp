@@ -27,6 +27,20 @@ export {
     PaymentSchema, type Payment, type PaymentCredential
 } from "./payment.zod";
 export { PostalAddressSchema, type PostalAddress } from "./postal-address.zod";
+export {
+    FeedbackRecordSchema,
+    SupportTicketSchema,
+    TicketMessageSchema,
+    TicketPrioritySchema,
+    TicketRoleSchema,
+    TicketStatusSchema,
+    type FeedbackRecord,
+    type SupportTicket,
+    type TicketMessage,
+    type TicketPriority,
+    type TicketRole,
+    type TicketStatus
+} from "./support-ticket.zod";
 export { TotalSchema, type Total } from "./total.zod";
 export {
     CapabilitySchema,
