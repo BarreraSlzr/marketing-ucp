@@ -32,6 +32,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   subscription: "Subscriptions",
   dispute: "Disputes & Chargebacks",
   refund: "Refunds",
+  support: "Support & Tickets",
+  feedback: "Feedback & Reviews",
 };
 
 export function AdapterSelector(props: AdapterSelectorProps) {
