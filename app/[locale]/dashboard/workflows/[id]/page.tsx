@@ -1,8 +1,8 @@
 import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { getWorkflowById } from "../data";
-import { WorkflowDetailClient } from "./workflow-detail-client";
 import styles from "../page.module.css";
+import { WorkflowDetailClient } from "./workflow-detail-client";
 
 export const dynamic = "force-dynamic";
 

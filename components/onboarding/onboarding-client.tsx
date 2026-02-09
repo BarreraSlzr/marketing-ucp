@@ -10,7 +10,7 @@ import {
   onboardingParsers,
   type OnboardingFormStatus,
 } from "@repo/onboarding";
-import { useQueryStates, parseAsString } from "nuqs";
+import { parseAsString, useQueryStates } from "nuqs";
 import * as React from "react";
 import { AdapterSelector } from "./adapter-selector";
 import styles from "./onboarding-client.module.css";
@@ -52,11 +52,15 @@ export function OnboardingClient(props: OnboardingClientProps) {
     ok: boolean;
     message: string;
   } | null>(null);
+  const [isInitializing, setIsInitializing] = React.useState(false);
 
   const selectedTemplate = React.useMemo(() => {
     if (!params.onboarding_template) return undefined;
     return getOnboardingTemplate({ id: params.onboarding_template });
   }, [params.onboarding_template]);
+
+  // Check if we're in workflow context
+  const isWorkflowContext = Boolean(workflowParams.sessionId);
 
   // Auto-select template if formId is provided in URL
   React.useEffect(() => {
@@ -65,6 +69,7 @@ export function OnboardingClient(props: OnboardingClientProps) {
       !params.onboarding_template &&
       !submitting
     ) {
+      setIsInitializing(true);
       const formToTemplateMap: Record<string, string> = {
         "buyer-form": "stripe",
         "payment-form": "stripe",
@@ -79,6 +84,8 @@ export function OnboardingClient(props: OnboardingClientProps) {
           onboarding_values: {},
           onboarding_group: "credentials",
         });
+        // Simulate brief syncing delay for UX feedback
+        setTimeout(() => setIsInitializing(false), 600);
       }
     }
   }, [workflowParams.formId, params.onboarding_template, submitting, setParams]);
@@ -164,7 +171,7 @@ export function OnboardingClient(props: OnboardingClientProps) {
   return (
     <div className={styles.container}>
       {/* Workflow Context Header */}
-      {workflowParams.sessionId && (
+      {isWorkflowContext && (
         <div className={styles.workflowContextBanner}>
           <div className={styles.contextInfo}>
             <span className={styles.contextLabel}>Workflow Session</span>
@@ -179,21 +186,53 @@ export function OnboardingClient(props: OnboardingClientProps) {
         </div>
       )}
 
-      <div className={styles.header}>
-        <h1 className={styles.title}>Adapter Onboarding</h1>
-        <p className={styles.subtitle}>
-          Select a payment adapter or service to configure, then fill in the
-          required credentials. All data is validated before submission.
-        </p>
-      </div>
+      {/* Show different header based on context */}
+      {isWorkflowContext ? (
+        <div className={styles.header}>
+          <h1 className={styles.title}>Payment Setup</h1>
+          <p className={styles.subtitle}>
+            Complete your payment handler configuration to proceed.
+          </p>
+        </div>
+      ) : (
+        <div className={styles.header}>
+          <h1 className={styles.title}>Adapter Onboarding</h1>
+          <p className={styles.subtitle}>
+            Select a payment adapter or service to configure, then fill in the
+            required credentials. All data is validated before submission.
+          </p>
+        </div>
+      )}
 
-      <AdapterSelector
-        templates={templates}
-        selectedId={params.onboarding_template}
-        onSelect={handleSelect}
-      />
+      {/* Only show adapter selector if NOT in workflow context */}
+      {!isWorkflowContext && (
+        <AdapterSelector
+          templates={templates}
+          selectedId={params.onboarding_template}
+          onSelect={handleSelect}
+        />
+      )}
 
-      {selectedTemplate && (
+      {/* Show syncing state while initializing in workflow context */}
+      {isWorkflowContext && isInitializing && (
+        <div className={styles.syncingCard}>
+          <div className={styles.syncingSpinner}></div>
+          <div className={styles.syncingContent}>
+            <h3 className={styles.syncingTitle}>Syncing Payment Handler</h3>
+            <p className={styles.syncingDescription}>
+              Configuring {selectedTemplate?.name || "payment processor"} integration...
+            </p>
+            {workflowParams.formId && (
+              <p className={styles.syncingFormType}>
+                Form: <code>{workflowParams.formId}</code>
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Show form once ready */}
+      {selectedTemplate && !isInitializing && (
         <div className={styles.formSection}>
           <OnboardingForm
             template={selectedTemplate}
