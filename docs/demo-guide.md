@@ -47,7 +47,18 @@ Navigate to "Create Product" to demonstrate:
 - Works without JavaScript but enhanced with it
 - Type-safe from URL → Zod schema → TypeScript types
 
-### 5. Highlight the Roadmap (NEW)
+### 5. Show the Observability Dashboard
+
+Visit `/dashboard` and replay the demo events to show the event matrix:
+- **Antifraud allow/review/block** flows with fraud check metadata
+- **Webhook failure** and **address retry** scenarios
+- **Degraded handler** latency and error patterns
+- **Subscription antifraud** pipeline coverage
+
+**Demo Script**:
+> "The dashboard is seeded with a full matrix of pipeline sessions, so we can show every scenario: clean fraud checks, reviews, blocks, webhook failures, address retries, and slow handlers. Each session has a complete history so we can trace what happened and when."
+
+### 6. Highlight the Roadmap (NEW)
 
 Scroll to the "Current Progress & Roadmap" section:
 
@@ -70,7 +81,7 @@ Scroll to the "Current Progress & Roadmap" section:
 **Demo Script**:
 > "We're building in public with full transparency. Each feature links to its GitHub issue where you can see discussions, technical decisions, and progress. Click any issue link to dive deeper."
 
-### 6. Show the Development Section
+### 7. Show the Development Section
 
 Highlight the new "Built with transparency" section:
 - Link to contribution guide
