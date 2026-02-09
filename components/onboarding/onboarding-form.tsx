@@ -79,6 +79,10 @@ export function OnboardingForm(props: OnboardingFormProps) {
 
   const [submitted, setSubmitted] = React.useState(false);
 
+  const pendingChangeRef = React.useRef<{ key: string; value: string } | null>(
+    null,
+  );
+
   const fieldGroups = React.useMemo(
     () => getFieldsByGroup({ template }),
     [template],
@@ -89,7 +93,7 @@ export function OnboardingForm(props: OnboardingFormProps) {
     (params: { key: string; value: string }) => {
       setValues((prev) => {
         const next = { ...prev, [params.key]: params.value };
-        onChange?.({ key: params.key, value: params.value, allValues: next });
+        pendingChangeRef.current = { key: params.key, value: params.value };
         return next;
       });
       // Clear error on change
@@ -101,8 +105,15 @@ export function OnboardingForm(props: OnboardingFormProps) {
         });
       }
     },
-    [errors, onChange],
+    [errors],
   );
+
+  React.useEffect(() => {
+    if (!pendingChangeRef.current) return;
+    const change = pendingChangeRef.current;
+    pendingChangeRef.current = null;
+    onChange?.({ key: change.key, value: change.value, allValues: values });
+  }, [values, onChange]);
 
   const handleSubmit = React.useCallback(
     async (e: React.FormEvent) => {
@@ -220,6 +231,13 @@ interface FieldRendererProps {
 function OnboardingFieldRenderer(props: FieldRendererProps) {
   const { field, value, error, onChange, readOnly } = props;
 
+  const description = [
+    field.description,
+    field.envVar && `Env var: ${field.envVar}`,
+  ]
+    .filter(Boolean)
+    .join(" • ");
+
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -240,7 +258,7 @@ function OnboardingFieldRenderer(props: FieldRendererProps) {
     <FormField
       name={field.key}
       label={field.label}
-      description={field.description}
+      description={description}
       error={error}
     >
       {field.type === "select" && field.options ? (
@@ -252,6 +270,25 @@ function OnboardingFieldRenderer(props: FieldRendererProps) {
           onChange={handleInputChange}
           disabled={readOnly}
           placeholder={field.placeholder}
+        />
+      ) : field.type === "multi_select" && field.options ? (
+        <NativeSelect
+          id={field.key}
+          name={field.key}
+          options={field.options}
+          value={value
+            .split(",")
+            .map((entry) => entry.trim())
+            .filter((entry) => entry.length > 0)}
+          onChange={(e) => {
+            const selected = Array.from(
+              (e.target as HTMLSelectElement).selectedOptions,
+            ).map((option) => option.value);
+            onChange({ key: field.key, value: selected.join(",") });
+          }}
+          disabled={readOnly}
+          multiple
+          size={Math.min(Math.max(field.options.length, 3), 6)}
         />
       ) : field.type === "checkbox" ? (
         <Checkbox

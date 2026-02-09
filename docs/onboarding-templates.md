@@ -38,7 +38,7 @@ const ONBOARDING_MY_ADAPTER: OnboardingTemplate = {
   id: "my-adapter",
   name: "My Payment Service",
   description: "Description for legal customers",
-  category: "payment", // payment | storefront | web3 | bank_transfer | cash_payment | compliance | subscription
+  category: "payment", // payment | storefront | web3 | bank_transfer | cash_payment | compliance | subscription | integration | automation
   regions: ["MX"],     // ISO 3166 codes, or ["global"]
   docsUrl: "https://docs.myadapter.com",
   fields: [
@@ -83,6 +83,7 @@ const ONBOARDING_MY_ADAPTER: OnboardingTemplate = {
 | `url`      | `<Input type="url">`       | Required, URL format    |
 | `tel`      | `<Input type="tel">`       | Required, pattern       |
 | `select`   | `<NativeSelect>`           | Required, in-options    |
+| `multi_select` | `<select multiple>`    | Required, in-options    |
 | `checkbox` | `<Checkbox>`               | —                       |
 | `textarea` | `<textarea>`               | Required                |
 | `file`     | `<Input type="file">`      | Required                |
@@ -99,12 +100,14 @@ const ONBOARDING_MY_ADAPTER: OnboardingTemplate = {
 | `description`    | `string`                          | no       | Help text below the field                |
 | `required`       | `boolean`                         | no       | Whether field must be filled (default: `true`) |
 | `defaultValue`   | `string`                          | no       | Pre-filled value                         |
-| `options`        | `{label, value}[]`                | no       | For `select` fields only                 |
+| `options`        | `{label, value}[]`                | no       | For `select` and `multi_select` fields   |
 | `pattern`        | `string`                          | no       | Regex validation pattern                 |
 | `patternMessage` | `string`                          | no       | Custom error for pattern mismatch        |
 | `group`          | `string`                          | no       | Visual grouping key (default: `"general"`) |
 | `envVar`         | `string`                          | no       | Corresponding env var name (informational) |
 | `order`          | `number`                          | no       | Sort order within group (default: `0`)   |
+
+`multi_select` values are submitted as a comma-separated string (for example: `order.created,order.paid`).
 
 ## Registering a Template
 
@@ -217,6 +220,13 @@ If a template has a `webhookUrl`, the API will POST the following payload on sub
 }
 ```
 
+Integration and automation templates emit category-specific events:
+
+- `integration.config_updated`
+- `integration.webhooks.updated`
+- `integration.api_keys.updated`
+- `automation.config_updated`
+
 ## Built-in Templates
 
 | ID            | Name              | Category        | Regions     | Required Fields |
@@ -229,6 +239,14 @@ If a template has a `webhookUrl`, the API will POST the following payload on sub
 | `stp`         | STP               | bank_transfer   | MX          | 5               |
 | `thirdweb`    | Thirdweb          | web3            | global      | 3               |
 | `shopify`     | Shopify Storefront| storefront      | global      | 2               |
+
+### Integration & Automation Templates
+
+| ID                   | Name                     | Category     | Regions | Required Fields |
+|----------------------|--------------------------|--------------|---------|-----------------|
+| `webhook-config`      | Webhook Configuration    | integration  | global  | 5               |
+| `api-key-management`  | API Key Management       | integration  | global  | 4               |
+| `automation-endpoints`| Automation Endpoints     | automation   | global  | 3               |
 
 ### KYC/KYB Compliance Templates
 
