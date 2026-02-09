@@ -38,6 +38,8 @@ export interface WorkflowDefinition {
 | Payment details | `payment-form` | `submitPaymentAction` | Payment authorization |
 | Checkout submit | `checkout-form` | `submitCheckoutAction` | Final submit + redirect |
 
+Reminder: use `formId` wiring (`form` attribute) for inputs and buttons instead of relying on form children so steps remain decoupled and traceable.
+
 ## Checkout Baseline Workflow (Canonical)
 
 The baseline workflow maps the UI steps above to pipeline observability steps (see `@repo/pipeline`).
