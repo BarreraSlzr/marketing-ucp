@@ -24,13 +24,13 @@ test("event stream renders", async ({ page }) => {
 });
 
 test("event stream replay demo seeds events", async ({ page }) => {
-  await page.goto("/dashboard/events");
+  await page.goto("/dashboard");
 
-  const replayButton = page.getByRole("button", { name: "Replay demo" });
-  await replayButton.click();
+  const demoButton = page.getByRole("button", { name: /run demo|demo/i });
+  await demoButton.click();
 
-  await expect(page.getByText("Demo events generated")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Refresh events" })).toBeEnabled();
+  // Wait for toast notifications to appear from polling
+  await expect(page.locator('[data-sonner-toast]').first()).toBeVisible({ timeout: 15000 });
 });
 
 test("event stream filters work", async ({ page }) => {

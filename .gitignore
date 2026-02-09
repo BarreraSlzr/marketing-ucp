@@ -10,6 +10,10 @@ dist/
 playwright-report/
 test-results/
 
+# Temporary directories
+tmp/
+marketing-ucp/
+
 # OS files
 .DS_Store
 Thumbs.db

@@ -1,3 +1,4 @@
+import { ServiceWorkerGuard } from "@/components/sw-guard";
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { cookies } from "next/headers";
@@ -42,6 +43,7 @@ export default async function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
+        <ServiceWorkerGuard />
         <NuqsAdapter>{children}</NuqsAdapter>
       </body>
     </html>
