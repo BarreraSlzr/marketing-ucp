@@ -1,15 +1,18 @@
-import type { Order } from "../order.zod";
-import type { WebhookEvent } from "../webhook.zod";
-import type { PaymentHandler } from "../payment-handler";
-
 /**
- * Thirdweb Payment Handler Adapter
- * 
- * Integrates Thirdweb as a UCP payment handler for web3 payments (crypto, NFT settlements).
- * 
- * Thirdweb: https://thirdweb.com
- * Pay API: https://thirdweb.com/pay
+ * @deprecated Use `@repo/thirdweb` package instead.
+ *
+ * The production-grade Thirdweb adapter lives in `packages/thirdweb/`.
+ * Use `createThirdwebPaymentHandler()` from `@repo/thirdweb` for:
+ * - HMAC-SHA256 webhook signature verification with timing-safe comparison
+ * - Thirdweb Pay API checkout session creation
+ * - On-chain transaction status queries
+ *
+ * This stub is kept for reference only.
  */
+
+import type { Order } from "../order.zod";
+import type { PaymentHandler } from "../payment-handler";
+import type { WebhookEvent } from "../webhook.zod";
 export class ThirdwebPaymentHandler implements PaymentHandler {
   private apiKey: string;
   private webhookSecret: string;

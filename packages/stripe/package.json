@@ -1,0 +1,18 @@
+{
+  "name": "@repo/stripe",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./*": "./*"
+  },
+  "dependencies": {
+    "@repo/entities": "workspace:*",
+    "@repo/pipeline": "workspace:*",
+    "effect": "^3.17.5",
+    "stripe": "^17.5.0",
+    "zod": "^3.24.1"
+  }
+}

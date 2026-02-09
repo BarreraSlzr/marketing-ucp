@@ -59,6 +59,18 @@
       "@repo/shopify/*": [
         "./packages/shopify/*"
       ],
+      "@repo/stripe": [
+        "./packages/stripe/index.ts"
+      ],
+      "@repo/stripe/*": [
+        "./packages/stripe/*"
+      ],
+      "@repo/thirdweb": [
+        "./packages/thirdweb/index.ts"
+      ],
+      "@repo/thirdweb/*": [
+        "./packages/thirdweb/*"
+      ],
       "@repo/ui": [
         "./packages/ui/index.ts"
       ],

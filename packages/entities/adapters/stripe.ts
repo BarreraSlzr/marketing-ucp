@@ -1,14 +1,19 @@
-import type { Order } from "../order.zod";
-import type { WebhookEvent } from "../webhook.zod";
-import type { PaymentHandler } from "../payment-handler";
-
 /**
- * Stripe Payment Handler Adapter
- * 
- * Integrates Stripe as a UCP payment handler for web2 card payments.
- * 
- * Stripe Webhooks: https://stripe.com/docs/webhooks
+ * @deprecated Use `@repo/stripe` package instead.
+ *
+ * The production-grade Stripe adapter lives in `packages/stripe/`.
+ * Use `createStripePaymentHandler()` from `@repo/stripe` for:
+ * - Real Stripe SDK webhook signature verification
+ * - Stripe Checkout session creation
+ * - Refund processing via Stripe API
+ * - Payment intent status queries
+ *
+ * This stub is kept for reference only.
  */
+
+import type { Order } from "../order.zod";
+import type { PaymentHandler } from "../payment-handler";
+import type { WebhookEvent } from "../webhook.zod";
 export class StripePaymentHandler implements PaymentHandler {
   private apiKey: string;
   private webhookSecret: string;
