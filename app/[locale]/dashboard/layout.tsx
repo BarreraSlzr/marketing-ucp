@@ -1,3 +1,4 @@
+import { DashboardActivityToasts } from "@/components/dashboard/activity-toasts";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +13,7 @@ import {
 import { Link } from "@/i18n/navigation";
 import { Space_Grotesk } from "next/font/google";
 import type { ReactNode } from "react";
+import { Toaster } from "sonner";
 import styles from "./dashboard.module.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -68,6 +70,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset className={styles.content}>{children}</SidebarInset>
+      <DashboardActivityToasts pollIntervalMs={10_000} />
+      <Toaster
+        position="bottom-right"
+        visibleToasts={4}
+        className={styles.toastRoot}
+        toastOptions={{ className: styles.toastItem }}
+      />
     </SidebarProvider>
   );
 }
