@@ -55,11 +55,41 @@
         "zod": "^3.24.1",
       },
     },
+    "packages/compropago": {
+      "name": "@repo/compropago",
+      "version": "0.0.0",
+      "dependencies": {
+        "@repo/entities": "workspace:*",
+        "@repo/pipeline": "workspace:*",
+        "effect": "^3.17.5",
+        "zod": "^3.24.1",
+      },
+    },
     "packages/entities": {
       "name": "@repo/entities",
       "version": "0.0.0",
       "dependencies": {
         "nuqs": "^2.4.1",
+        "zod": "^3.24.1",
+      },
+    },
+    "packages/mercadopago": {
+      "name": "@repo/mercadopago",
+      "version": "0.0.0",
+      "dependencies": {
+        "@repo/entities": "workspace:*",
+        "@repo/pipeline": "workspace:*",
+        "effect": "^3.17.5",
+        "zod": "^3.24.1",
+      },
+    },
+    "packages/paypal-mx": {
+      "name": "@repo/paypal-mx",
+      "version": "0.0.0",
+      "dependencies": {
+        "@repo/entities": "workspace:*",
+        "@repo/pipeline": "workspace:*",
+        "effect": "^3.17.5",
         "zod": "^3.24.1",
       },
     },
@@ -86,6 +116,16 @@
       "name": "@repo/shopify",
       "version": "0.0.0",
       "dependencies": {
+        "@repo/pipeline": "workspace:*",
+        "effect": "^3.17.5",
+        "zod": "^3.24.1",
+      },
+    },
+    "packages/stp": {
+      "name": "@repo/stp",
+      "version": "0.0.0",
+      "dependencies": {
+        "@repo/entities": "workspace:*",
         "@repo/pipeline": "workspace:*",
         "effect": "^3.17.5",
         "zod": "^3.24.1",
@@ -386,13 +426,21 @@
 
     "@repo/antifraud": ["@repo/antifraud@workspace:packages/antifraud"],
 
+    "@repo/compropago": ["@repo/compropago@workspace:packages/compropago"],
+
     "@repo/entities": ["@repo/entities@workspace:packages/entities"],
+
+    "@repo/mercadopago": ["@repo/mercadopago@workspace:packages/mercadopago"],
+
+    "@repo/paypal-mx": ["@repo/paypal-mx@workspace:packages/paypal-mx"],
 
     "@repo/pipeline": ["@repo/pipeline@workspace:packages/pipeline"],
 
     "@repo/polar": ["@repo/polar@workspace:packages/polar"],
 
     "@repo/shopify": ["@repo/shopify@workspace:packages/shopify"],
+
+    "@repo/stp": ["@repo/stp@workspace:packages/stp"],
 
     "@repo/stripe": ["@repo/stripe@workspace:packages/stripe"],
 
