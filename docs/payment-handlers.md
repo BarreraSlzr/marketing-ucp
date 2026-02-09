@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document explains how to integrate payment handlers and process webhooks within UCP, enabling seamless payment processing across web2 (Stripe, Polar) and web3 (Thirdweb) providers.
+This document explains how to integrate payment handlers and process webhooks within UCP, enabling seamless payment processing across web2 (Stripe, Polar), web3 (Thirdweb), and Mexican IFPE (PayPal MX, MercadoPago, Compropago, STP SPEI) providers.
 
 ## UCP Payment Architecture
 
@@ -16,9 +16,17 @@ graph LR
         Adapter1["Stripe Adapter"]
         Adapter2["Polar Adapter"]
         Adapter3["Thirdweb Adapter"]
+        Adapter4["PayPal MX Adapter"]
+        Adapter5["MercadoPago Adapter"]
+        Adapter6["Compropago Adapter"]
+        Adapter7["STP SPEI Adapter"]
         Interface -.->|"implements"| Adapter1
         Interface -.->|"implements"| Adapter2
         Interface -.->|"implements"| Adapter3
+        Interface -.->|"implements"| Adapter4
+        Interface -.->|"implements"| Adapter5
+        Interface -.->|"implements"| Adapter6
+        Interface -.->|"implements"| Adapter7
     end
     
     subgraph PSP["Payment Service Provider"]
@@ -146,6 +154,176 @@ registerPaymentHandler('thirdweb', handler);
 - Ethereum (1), Polygon (137), Arbitrum (42161), Optimism (10), Base (8453)
 
 **Reference:** [Thirdweb Pay API](https://thirdweb.com/pay)
+
+### 4. PayPal México (IFPE - Online Payments)
+
+**Use case:** Credit/debit cards, PayPal wallet, MXN payments in Mexico.
+
+**Package:** `@repo/paypal-mx`
+
+```typescript
+import {
+  createPayPalMxClient,
+  createPayPalMxPaymentHandler,
+  getPayPalMxEnv,
+  getPayPalBaseUrl,
+} from '@repo/paypal-mx';
+
+const env = getPayPalMxEnv();
+const client = createPayPalMxClient({
+  clientId: env.clientId,
+  clientSecret: env.clientSecret,
+  baseUrl: getPayPalBaseUrl(env.environment),
+});
+const handler = createPayPalMxPaymentHandler({
+  client,
+  webhookId: env.webhookId,
+});
+registerPaymentHandler('paypal-mx', handler);
+```
+
+**Environment variables:**
+- `PAYPAL_MX_CLIENT_ID` — PayPal app client ID
+- `PAYPAL_MX_CLIENT_SECRET` — PayPal app secret
+- `PAYPAL_MX_WEBHOOK_ID` — PayPal webhook ID for signature verification
+- `PAYPAL_MX_ENVIRONMENT` — `sandbox` or `live`
+
+**Webhook events:**
+- `CHECKOUT.ORDER.APPROVED` → Order status: `confirmed`
+- `PAYMENT.CAPTURE.COMPLETED` → Order status: `confirmed`
+- `PAYMENT.CAPTURE.DENIED` → Order status: `failed`
+- `PAYMENT.CAPTURE.REFUNDED` → Order status: `refunded`
+- `CUSTOMER.DISPUTE.CREATED` → Order status: `failed`
+
+**Reference:** [PayPal REST API](https://developer.paypal.com/docs/api/orders/v2/)
+
+### 5. MercadoPago (IFPE - Checkout Pro)
+
+**Use case:** Cards, wallet, installments (meses sin intereses), offline payments in Mexico.
+
+**Package:** `@repo/mercadopago`
+
+```typescript
+import {
+  createMercadoPagoClient,
+  createMercadoPagoPaymentHandler,
+  getMercadoPagoEnv,
+} from '@repo/mercadopago';
+
+const env = getMercadoPagoEnv();
+const client = createMercadoPagoClient({ accessToken: env.accessToken });
+const handler = createMercadoPagoPaymentHandler({
+  client,
+  webhookSecret: env.webhookSecret,
+  environment: env.environment,
+});
+registerPaymentHandler('mercadopago', handler);
+```
+
+**Environment variables:**
+- `MERCADOPAGO_ACCESS_TOKEN` — Production or test access token
+- `MERCADOPAGO_WEBHOOK_SECRET` — Secret for HMAC-SHA256 verification
+- `MERCADOPAGO_ENVIRONMENT` — `sandbox` or `production`
+
+**Webhook events (actions):**
+- `payment.created` → Order status: `pending`
+- `payment.updated` → Order status: `confirmed`
+- `payment.refunded` → Order status: `refunded`
+- `chargebacks` → Order status: `failed`
+
+**Installments:** Configure `payment_methods.installments` in the preference input to enable meses sin intereses.
+
+**Reference:** [MercadoPago Developers](https://www.mercadopago.com.mx/developers/es/docs/checkout-pro/landing)
+
+### 6. Compropago (IFPE - Cash & SPEI Payments)
+
+**Use case:** Cash payments at OXXO, 7-Eleven, Coppel; SPEI bank transfers.
+
+**Package:** `@repo/compropago`
+
+```typescript
+import {
+  createCompropagoClient,
+  createCompropagoPaymentHandler,
+  getCompropagoEnv,
+} from '@repo/compropago';
+
+const env = getCompropagoEnv();
+const client = createCompropagoClient({
+  apiKey: env.apiKey,
+  publicKey: env.publicKey,
+});
+const handler = createCompropagoPaymentHandler({
+  client,
+  webhookSecret: env.webhookSecret,
+});
+registerPaymentHandler('compropago', handler);
+```
+
+**Environment variables:**
+- `COMPROPAGO_API_KEY` — Private API key
+- `COMPROPAGO_PUBLIC_KEY` — Public key
+- `COMPROPAGO_WEBHOOK_SECRET` — HMAC-SHA256 secret
+- `COMPROPAGO_ENVIRONMENT` — `sandbox` or `live`
+
+**Webhook events:**
+- `charge.pending` → Order status: `pending`
+- `charge.success` → Order status: `confirmed`
+- `charge.expired` → Order status: `canceled`
+- `charge.declined` → Order status: `failed`
+
+**Note:** Cash payments cannot be refunded programmatically. `cancelPayment()` returns `status: 'pending'` indicating manual processing is required.
+
+**Reference:** [Compropago API](https://compropago.com/documentacion/api)
+
+### 7. STP SPEI (IFPE - Bank Infrastructure)
+
+**Use case:** Direct SPEI interbank transfers (cobros and dispersiones) via Banxico infrastructure.
+
+**Package:** `@repo/stp`
+
+```typescript
+import {
+  createStpClient,
+  createStpPaymentHandler,
+  getStpEnv,
+  getStpBaseUrl,
+} from '@repo/stp';
+
+const env = getStpEnv();
+const client = createStpClient({
+  empresa: env.empresa,
+  apiKey: env.apiKey,
+  baseUrl: getStpBaseUrl(env.environment),
+  clabe: env.clabe,
+});
+const handler = createStpPaymentHandler({
+  client,
+  webhookSecret: env.webhookSecret,
+  empresa: env.empresa,
+  clabe: env.clabe,
+});
+registerPaymentHandler('stp', handler);
+```
+
+**Environment variables:**
+- `STP_EMPRESA` — Company alias registered in STP
+- `STP_API_KEY` — API key / private key for signing
+- `STP_WEBHOOK_SECRET` — HMAC-SHA256 secret for notifications
+- `STP_CLABE` — CLABE account to receive funds
+- `STP_ENVIRONMENT` — `sandbox` or `production`
+
+**Webhook events (estado):**
+- `Liquidada` → Order status: `confirmed`
+- `Devuelta` → Order status: `refunded`
+- `En proceso` → Order status: `pending`
+- `Cancelada` → Order status: `canceled`
+
+**Refunds:** STP refunds are executed as reverse SPEI outbound transfers. Requires the original payer's CLABE for reconciliation.
+
+**Currency:** MXN only (SPEI is domestic Mexican infrastructure).
+
+**Reference:** [STP Documentation](https://stpmex.com/documentacion)
 
 ## Webhook Processing Pipeline
 
@@ -293,12 +471,42 @@ Store all secrets in environment variables:
 
 ```bash
 # .env.local
+
+# Stripe
 STRIPE_API_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_test_...
+
+# Polar
 POLAR_API_KEY=...
 POLAR_WEBHOOK_SECRET=...
+
+# Thirdweb
 THIRDWEB_API_KEY=...
 THIRDWEB_WEBHOOK_SECRET=...
+
+# PayPal México (IFPE)
+PAYPAL_MX_CLIENT_ID=...
+PAYPAL_MX_CLIENT_SECRET=...
+PAYPAL_MX_WEBHOOK_ID=...
+PAYPAL_MX_ENVIRONMENT=sandbox
+
+# MercadoPago (IFPE)
+MERCADOPAGO_ACCESS_TOKEN=TEST-...
+MERCADOPAGO_WEBHOOK_SECRET=...
+MERCADOPAGO_ENVIRONMENT=sandbox
+
+# Compropago (IFPE)
+COMPROPAGO_API_KEY=...
+COMPROPAGO_PUBLIC_KEY=...
+COMPROPAGO_WEBHOOK_SECRET=...
+COMPROPAGO_ENVIRONMENT=sandbox
+
+# STP SPEI (IFPE)
+STP_EMPRESA=MIEMPRESA
+STP_API_KEY=...
+STP_WEBHOOK_SECRET=...
+STP_CLABE=012345678901234567
+STP_ENVIRONMENT=sandbox
 ```
 
 ## Testing Webhook Events
@@ -358,4 +566,10 @@ registerPaymentHandler('custom', new CustomPaymentHandler(...));
 - [Stripe Webhooks](https://stripe.com/docs/webhooks)
 - [Polar Webhooks](https://docs.polar.sh/api-reference/webhooks)
 - [Thirdweb Pay](https://thirdweb.com/pay)
+- [PayPal REST API - Orders v2](https://developer.paypal.com/docs/api/orders/v2/)
+- [MercadoPago Developers - Checkout Pro](https://www.mercadopago.com.mx/developers/es/docs/checkout-pro/landing)
+- [Compropago API Docs](https://compropago.com/documentacion/api)
+- [STP SPEI Documentation](https://stpmex.com/documentacion)
+- [Banxico SPEI](https://www.banxico.org.mx/sistemas-de-pago/sistema-pagos-electronicos-.html)
+- [CNBV IFPE Registry](https://www.cnbv.gob.mx/SECTORES-SUPERVISADOS/SECTOR-POPULAR/Paginas/Instituciones-de-Fondos-de-Pago-Electr%C3%B3nico.aspx)
 - [Agent Payments Protocol (AP2)](https://agentpayments.com)
