@@ -6,6 +6,9 @@ import type { PipelineStep, PipelineType } from "@repo/pipeline";
 
 export type WorkflowStepKind = "page" | "form" | "action" | "api";
 
+/** Who resolves this step: customer (interactive form) or internal (backend pipeline) */
+export type WorkflowStepAudience = "customer" | "internal";
+
 export interface WorkflowStepEndpoint {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   path: string;
@@ -15,6 +18,8 @@ export interface WorkflowStep {
   id: string;
   label: string;
   kind: WorkflowStepKind;
+  /** Who resolves this step: customer-facing form or internal backend process */
+  audience: WorkflowStepAudience;
   required: boolean;
   description?: string;
   form_ids?: string[];
@@ -48,6 +53,7 @@ export const WORKFLOW_CHECKOUT_BASELINE: WorkflowDefinition = {
       id: "select_product",
       label: "Select product",
       kind: "page",
+      audience: "customer",
       required: true,
       description: "Choose a demo template or product before checkout.",
       endpoint: { method: "GET", path: "/checkout" },
@@ -56,6 +62,7 @@ export const WORKFLOW_CHECKOUT_BASELINE: WorkflowDefinition = {
       id: "buyer_details",
       label: "Buyer details",
       kind: "form",
+      audience: "customer",
       required: true,
       description: "Capture buyer identity and contact details.",
       form_ids: ["buyer-form"],
@@ -66,6 +73,7 @@ export const WORKFLOW_CHECKOUT_BASELINE: WorkflowDefinition = {
       id: "address_details",
       label: "Billing + shipping address",
       kind: "form",
+      audience: "customer",
       required: true,
       description: "Collect billing and shipping address data.",
       form_ids: ["billing-form", "shipping-form"],
@@ -76,6 +84,7 @@ export const WORKFLOW_CHECKOUT_BASELINE: WorkflowDefinition = {
       id: "payment_details",
       label: "Payment details",
       kind: "form",
+      audience: "customer",
       required: true,
       description: "Collect payment details for authorization.",
       form_ids: ["payment-form"],
@@ -86,6 +95,7 @@ export const WORKFLOW_CHECKOUT_BASELINE: WorkflowDefinition = {
       id: "submit_checkout",
       label: "Submit checkout",
       kind: "action",
+      audience: "internal",
       required: true,
       description: "Finalize checkout and redirect to confirmation.",
       action_ids: ["submitCheckoutAction"],
@@ -95,6 +105,7 @@ export const WORKFLOW_CHECKOUT_BASELINE: WorkflowDefinition = {
       id: "confirmation",
       label: "Confirmation",
       kind: "page",
+      audience: "customer",
       required: true,
       description: "Show the confirmation state returned by the checkout flow.",
       endpoint: { method: "GET", path: "/checkout/confirm" },
@@ -117,6 +128,7 @@ export const WORKFLOW_CHECKOUT_DIGITAL: WorkflowDefinition = {
       id: "select_product",
       label: "Select product",
       kind: "page",
+      audience: "customer",
       required: true,
       description: "Choose a digital product or demo template before checkout.",
       endpoint: { method: "GET", path: "/checkout" },
@@ -125,6 +137,7 @@ export const WORKFLOW_CHECKOUT_DIGITAL: WorkflowDefinition = {
       id: "buyer_details",
       label: "Buyer details",
       kind: "form",
+      audience: "customer",
       required: true,
       description: "Capture buyer identity and contact details.",
       form_ids: ["buyer-form"],
@@ -135,6 +148,7 @@ export const WORKFLOW_CHECKOUT_DIGITAL: WorkflowDefinition = {
       id: "payment_details",
       label: "Payment details",
       kind: "form",
+      audience: "customer",
       required: true,
       description: "Collect payment details for authorization.",
       form_ids: ["payment-form"],
@@ -145,6 +159,7 @@ export const WORKFLOW_CHECKOUT_DIGITAL: WorkflowDefinition = {
       id: "submit_checkout",
       label: "Submit checkout",
       kind: "action",
+      audience: "internal",
       required: true,
       description: "Finalize checkout and redirect to confirmation.",
       action_ids: ["submitCheckoutAction"],
@@ -154,6 +169,7 @@ export const WORKFLOW_CHECKOUT_DIGITAL: WorkflowDefinition = {
       id: "confirmation",
       label: "Confirmation",
       kind: "page",
+      audience: "customer",
       required: true,
       description: "Show the confirmation state returned by the checkout flow.",
       endpoint: { method: "GET", path: "/checkout/confirm" },
@@ -176,6 +192,7 @@ export const WORKFLOW_CHECKOUT_SUBSCRIPTION: WorkflowDefinition = {
       id: "select_plan",
       label: "Select plan",
       kind: "page",
+      audience: "customer",
       required: true,
       description: "Choose a subscription plan before checkout.",
       endpoint: { method: "GET", path: "/checkout" },
@@ -184,6 +201,7 @@ export const WORKFLOW_CHECKOUT_SUBSCRIPTION: WorkflowDefinition = {
       id: "buyer_details",
       label: "Buyer details",
       kind: "form",
+      audience: "customer",
       required: true,
       description: "Capture buyer identity and contact details.",
       form_ids: ["buyer-form"],
@@ -194,6 +212,7 @@ export const WORKFLOW_CHECKOUT_SUBSCRIPTION: WorkflowDefinition = {
       id: "payment_details",
       label: "Payment details",
       kind: "form",
+      audience: "customer",
       required: true,
       description: "Collect payment details for subscription authorization.",
       form_ids: ["payment-form"],
@@ -204,6 +223,7 @@ export const WORKFLOW_CHECKOUT_SUBSCRIPTION: WorkflowDefinition = {
       id: "submit_checkout",
       label: "Submit checkout",
       kind: "action",
+      audience: "internal",
       required: true,
       description: "Submit the subscription checkout and await confirmation.",
       action_ids: ["submitCheckoutAction"],
@@ -213,6 +233,7 @@ export const WORKFLOW_CHECKOUT_SUBSCRIPTION: WorkflowDefinition = {
       id: "payment_webhook",
       label: "Payment webhook confirmation",
       kind: "api",
+      audience: "internal",
       required: true,
       description: "Process webhook confirmation for subscription payments.",
       endpoint: { method: "POST", path: "/api/webhooks/payment" },
@@ -222,6 +243,7 @@ export const WORKFLOW_CHECKOUT_SUBSCRIPTION: WorkflowDefinition = {
       id: "confirmation",
       label: "Confirmation",
       kind: "page",
+      audience: "customer",
       required: true,
       description: "Show the confirmation state returned by the checkout flow.",
       endpoint: { method: "GET", path: "/checkout/confirm" },

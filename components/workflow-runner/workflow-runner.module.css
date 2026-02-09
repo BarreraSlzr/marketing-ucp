@@ -1,0 +1,228 @@
+/* WorkflowRunner — step-by-step runner for workflow sessions */
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Session bar */
+.sessionBar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.sessionLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted-foreground);
+}
+
+.sessionCode {
+  font-size: 0.8rem;
+  font-family: var(--font-mono, "SF Mono", monospace);
+  background: var(--color-muted);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* Step content area */
+.stepArea {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  background: var(--color-card);
+  min-height: 300px;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.stepNumber {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+.stepTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+.stepSubtitle {
+  font-size: 0.85rem;
+  color: var(--color-muted-foreground);
+  margin-top: 0.15rem;
+}
+
+.audienceTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  margin-left: auto;
+}
+
+.tagCustomer {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.tagInternal {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+/* Form container within steps */
+.formContainer {
+  margin: 1rem 0;
+}
+
+.formTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin-bottom: 0.75rem;
+  text-transform: capitalize;
+}
+
+.formSection {
+  margin-bottom: 1.5rem;
+}
+
+/* Action bar (Next / Previous) */
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.navBtn {
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.navBtn:hover {
+  background: var(--color-muted);
+}
+
+.navBtnPrimary {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  border-color: var(--color-primary);
+}
+
+.navBtnPrimary:hover {
+  opacity: 0.9;
+}
+
+.navBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Status message */
+.statusMessage {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+}
+
+.statusSuccess {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  color: #166534;
+}
+
+.statusError {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+}
+
+/* Page step placeholder */
+.pageStepCard {
+  padding: 2rem;
+  text-align: center;
+  background: var(--color-muted);
+  border-radius: 12px;
+}
+
+.pageStepTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.pageStepDescription {
+  font-size: 0.85rem;
+  color: var(--color-muted-foreground);
+}
+
+.pageStepLink {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* Completion card */
+.completionCard {
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.completionIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.completionTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.completionText {
+  font-size: 0.9rem;
+  color: var(--color-muted-foreground);
+}

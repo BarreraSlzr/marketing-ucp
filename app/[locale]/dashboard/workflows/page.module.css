@@ -165,7 +165,9 @@
   );
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .workflowCard:hover {
@@ -205,6 +207,26 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  align-items: center;
+}
+
+.runLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: auto;
+  transition: opacity 0.15s;
+}
+
+.runLink:hover {
+  opacity: 0.9;
 }
 
 .stepSection {
@@ -431,4 +453,5 @@
 }
 
 .sessionHelper li {
-  margin-bottom: 6px;}
+  margin-bottom: 6px;
+}

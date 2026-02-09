@@ -38,6 +38,12 @@ export default async function WorkflowDetailPage({
           <span className={styles.pill}>{workflow.pipeline_type}</span>
         )}
         <span className={styles.pill}>v{workflow.version}</span>
+        <Link
+          className={styles.runLink}
+          href={`/dashboard/workflows/run/${workflow.id}`}
+        >
+          ▶ Run Workflow
+        </Link>
       </div>
 
       <WorkflowDetailClient workflow={workflow} />
