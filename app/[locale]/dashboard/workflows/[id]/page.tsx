@@ -1,8 +1,9 @@
 import { Link } from "@/i18n/navigation";
+import { ALL_TEMPLATES } from "@repo/entities/templates";
 import { notFound } from "next/navigation";
 import { getWorkflowById } from "../data";
 import styles from "../page.module.css";
-import { WorkflowDetailClient } from "./workflow-detail-client";
+import { WorkflowRunnerClient } from "./workflow-runner-client";
 
 export const dynamic = "force-dynamic";
 
@@ -18,11 +19,21 @@ export default async function WorkflowDetailPage({
     notFound();
   }
 
+  // Pick the best template for pre-filling mock data
+  const templateMap: Record<string, string> = {
+    checkout_baseline: "flower-shop",
+    checkout_digital: "digital-product",
+    checkout_subscription: "polar-sub",
+  };
+  const templateId = templateMap[workflow.id] ?? "flower-shop";
+  const template =
+    ALL_TEMPLATES.find((t) => t.id === templateId) ?? ALL_TEMPLATES[0];
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
         <div>
-          <p className={styles.kicker}>Workflow detail</p>
+          <p className={styles.kicker}>Workflow Runner</p>
           <h1 className={styles.title}>{workflow.name}</h1>
           <p className={styles.subtitle}>{workflow.description}</p>
         </div>
@@ -38,15 +49,12 @@ export default async function WorkflowDetailPage({
           <span className={styles.pill}>{workflow.pipeline_type}</span>
         )}
         <span className={styles.pill}>v{workflow.version}</span>
-        <Link
-          className={styles.runLink}
-          href={`/dashboard/workflows/run/${workflow.id}`}
-        >
-          ▶ Run Workflow
-        </Link>
       </div>
 
-      <WorkflowDetailClient workflow={workflow} />
+      <WorkflowRunnerClient
+        workflow={workflow}
+        templateParams={template.params as Record<string, unknown>}
+      />
     </div>
   );
 }
