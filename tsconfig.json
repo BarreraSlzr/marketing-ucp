@@ -95,6 +95,12 @@
       "@repo/thirdweb/*": [
         "./packages/thirdweb/*"
       ],
+      "@repo/onboarding": [
+        "./packages/onboarding/index.ts"
+      ],
+      "@repo/onboarding/*": [
+        "./packages/onboarding/*"
+      ],
       "@repo/ui": [
         "./packages/ui/index.ts"
       ],
