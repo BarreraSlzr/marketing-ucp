@@ -6,10 +6,11 @@ import styles from "../page.module.css";
 export const dynamic = "force-dynamic";
 
 export default async function WorkflowDetailPage({
-  params,
+  params: paramPromise,
 }: {
-  params: { id: string };
+  params: Promise<{ locale: string; id: string }>;
 }) {
+  const params = await paramPromise;
   const workflow = await getWorkflowById({ workflowId: params.id });
 
   if (!workflow) {
