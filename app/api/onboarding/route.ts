@@ -128,7 +128,18 @@ function resolveWebhookEvent(params: {
   category: string;
 }): string {
   if (params.category !== "subscription") {
-    return "onboarding.submitted";
+    const integrationMap: Record<string, string> = {
+      "webhook-config": "integration.webhooks.updated",
+      "api-key-management": "integration.api_keys.updated",
+      "automation-endpoints": "automation.config_updated",
+    };
+
+    return integrationMap[params.templateId] ??
+      (params.category === "integration"
+        ? "integration.config_updated"
+        : params.category === "automation"
+          ? "automation.config_updated"
+          : "onboarding.submitted");
   }
 
   const map: Record<string, string> = {
