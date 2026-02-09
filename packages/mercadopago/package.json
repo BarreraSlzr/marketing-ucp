@@ -1,0 +1,17 @@
+{
+  "name": "@repo/mercadopago",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./*": "./*"
+  },
+  "dependencies": {
+    "@repo/entities": "workspace:*",
+    "@repo/pipeline": "workspace:*",
+    "effect": "^3.17.5",
+    "zod": "^3.24.1"
+  }
+}
