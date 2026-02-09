@@ -101,6 +101,12 @@
       "@repo/onboarding/*": [
         "./packages/onboarding/*"
       ],
+      "@repo/workflows": [
+        "./packages/workflows/index.ts"
+      ],
+      "@repo/workflows/*": [
+        "./packages/workflows/*"
+      ],
       "@repo/ui": [
         "./packages/ui/index.ts"
       ],
