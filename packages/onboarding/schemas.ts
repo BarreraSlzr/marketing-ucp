@@ -82,6 +82,8 @@ export const OnboardingTemplateSchema = z.object({
     "subscription",
     "dispute",
     "refund",
+    "support",
+    "feedback",
   ]),
   /** Country/region applicability (ISO 3166 codes) */
   regions: z.array(z.string()).default(["global"]),
