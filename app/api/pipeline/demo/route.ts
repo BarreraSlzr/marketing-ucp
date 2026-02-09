@@ -1,4 +1,7 @@
-import { generateDemoPipelineEvents } from "@/lib/pipeline-demo";
+import {
+    abortDemoGeneration,
+    generateDemoPipelineEvents,
+} from "@/lib/pipeline-demo";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -20,12 +23,32 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const { sessions } = await generateDemoPipelineEvents();
+    const action = req.nextUrl.searchParams.get("action");
+    if (action === "stop") {
+      const stopped = abortDemoGeneration();
+      return NextResponse.json({
+        success: stopped,
+        message: stopped ? "Demo generation stopped" : "No demo is running",
+      });
+    }
+
+    const mode = req.nextUrl.searchParams.get("mode") ?? "live";
+    const paceParam = req.nextUrl.searchParams.get("paceMs");
+    const paceMs = paceParam ? Number.parseInt(paceParam, 10) : undefined;
+    const safePace = Number.isFinite(paceMs)
+      ? Math.min(Math.max(paceMs as number, 80), 1500)
+      : undefined;
+
+    const { sessions, aborted } = await generateDemoPipelineEvents({
+      mode: mode === "batch" ? "batch" : "live",
+      stepDelayMs: safePace,
+    });
 
     return NextResponse.json({
       success: true,
       message: "Demo pipeline events generated successfully",
       sessions,
+      aborted,
     });
   } catch (error) {
     console.error("Pipeline demo generation error:", error);
