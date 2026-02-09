@@ -1,31 +1,34 @@
 import { describe, expect, it } from "bun:test";
 import {
-    getOnboardingTemplate,
-    listOnboardingTemplates,
-    listOnboardingTemplatesByCategory,
+  getOnboardingTemplate,
+  listOnboardingTemplates,
+  listOnboardingTemplatesByCategory,
 } from "../registry";
 import {
-    OnboardingFieldSchema,
-    OnboardingSubmissionSchema,
-    OnboardingTemplateSchema,
+  OnboardingFieldSchema,
+  OnboardingSubmissionSchema,
+  OnboardingTemplateSchema,
 } from "../schemas";
 import {
-    ALL_ONBOARDING_TEMPLATES,
-    ONBOARDING_MERCHANT_BANK_PAYOUT,
-    ONBOARDING_MERCHANT_DOCUMENTS,
-    ONBOARDING_MERCHANT_LEGAL_KYC,
-    ONBOARDING_MERCHANT_TAX_CFDI,
-    ONBOARDING_PAYPAL_MX,
-    ONBOARDING_STP,
-    ONBOARDING_STRIPE,
+  ALL_ONBOARDING_TEMPLATES,
+  ONBOARDING_DISPUTE_MERCHANT_OPS,
+  ONBOARDING_DISPUTE_RESPONSE,
+  ONBOARDING_MERCHANT_BANK_PAYOUT,
+  ONBOARDING_MERCHANT_DOCUMENTS,
+  ONBOARDING_MERCHANT_LEGAL_KYC,
+  ONBOARDING_MERCHANT_TAX_CFDI,
+  ONBOARDING_PAYPAL_MX,
+  ONBOARDING_REFUND_REQUEST,
+  ONBOARDING_STP,
+  ONBOARDING_STRIPE,
 } from "../templates";
 import {
-    getFieldsByGroup,
-    getRequiredFields,
-    validateClabe,
-    validateCurp,
-    validateRfc,
-    validateSubmission,
+  getFieldsByGroup,
+  getRequiredFields,
+  validateClabe,
+  validateCurp,
+  validateRfc,
+  validateSubmission,
 } from "../validation";
 
 describe("Onboarding Schemas", () => {
@@ -324,7 +327,7 @@ describe("KYC/KYB Onboarding Templates", () => {
   });
 
   it("includes KYC/KYB templates in ALL_ONBOARDING_TEMPLATES", () => {
-    expect(ALL_ONBOARDING_TEMPLATES.length).toBe(12);
+    expect(ALL_ONBOARDING_TEMPLATES.length).toBe(15);
     const ids = ALL_ONBOARDING_TEMPLATES.map((t) => t.id);
     expect(ids).toContain("merchant-legal-kyc");
     expect(ids).toContain("merchant-bank-payout");
@@ -494,3 +497,342 @@ describe("KYC/KYB Validation", () => {
     expect(groups.has("address")).toBe(true);
   });
 });
+
+/* ── Dispute & Refund Templates ──────────────────────────── */
+describe("Dispute & Refund Onboarding Templates", () => {
+  it("validates dispute-response template against schema", () => {
+    const result = OnboardingTemplateSchema.safeParse(ONBOARDING_DISPUTE_RESPONSE);
+    expect(result.success).toBe(true);
+  });
+
+  it("validates refund-request template against schema", () => {
+    const result = OnboardingTemplateSchema.safeParse(ONBOARDING_REFUND_REQUEST);
+    expect(result.success).toBe(true);
+  });
+
+  it("validates dispute-merchant-ops template against schema", () => {
+    const result = OnboardingTemplateSchema.safeParse(ONBOARDING_DISPUTE_MERCHANT_OPS);
+    expect(result.success).toBe(true);
+  });
+
+  it("dispute-response has dispute category", () => {
+    expect(ONBOARDING_DISPUTE_RESPONSE.category).toBe("dispute");
+  });
+
+  it("refund-request has refund category", () => {
+    expect(ONBOARDING_REFUND_REQUEST.category).toBe("refund");
+  });
+
+  it("dispute-merchant-ops has dispute category", () => {
+    expect(ONBOARDING_DISPUTE_MERCHANT_OPS.category).toBe("dispute");
+  });
+
+  it("dispute and refund templates have global regions", () => {
+    expect(ONBOARDING_DISPUTE_RESPONSE.regions).toContain("global");
+    expect(ONBOARDING_REFUND_REQUEST.regions).toContain("global");
+    expect(ONBOARDING_DISPUTE_MERCHANT_OPS.regions).toContain("global");
+  });
+
+  it("filters dispute templates by category", () => {
+    const disputes = listOnboardingTemplatesByCategory({ category: "dispute" });
+    expect(disputes.length).toBe(2);
+    for (const t of disputes) {
+      expect(t.category).toBe("dispute");
+    }
+  });
+
+  it("filters refund templates by category", () => {
+    const refunds = listOnboardingTemplatesByCategory({ category: "refund" });
+    expect(refunds.length).toBe(1);
+    expect(refunds[0].id).toBe("refund-request");
+  });
+
+  it("includes dispute templates in ALL_ONBOARDING_TEMPLATES", () => {
+    const ids = ALL_ONBOARDING_TEMPLATES.map((t) => t.id);
+    expect(ids).toContain("dispute-response");
+    expect(ids).toContain("dispute-merchant-ops");
+    expect(ids).toContain("refund-request");
+  });
+
+  it("retrieves dispute-response by id", () => {
+    const template = getOnboardingTemplate({ id: "dispute-response" });
+    expect(template).toBeDefined();
+    expect(template?.category).toBe("dispute");
+  });
+
+  it("retrieves refund-request by id", () => {
+    const template = getOnboardingTemplate({ id: "refund-request" });
+    expect(template).toBeDefined();
+    expect(template?.category).toBe("refund");
+  });
+
+  it("retrieves dispute-merchant-ops by id", () => {
+    const template = getOnboardingTemplate({ id: "dispute-merchant-ops" });
+    expect(template).toBeDefined();
+    expect(template?.category).toBe("dispute");
+  });
+});
+
+/* ── Dispute Response Validation ──────────────────────────– */
+describe("Dispute Response Validation", () => {
+  it("validates a complete dispute response submission", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_DISPUTE_RESPONSE,
+      values: {
+        disputeId: "dp_abc123",
+        orderId: "ord_xyz789",
+        disputeType: "chargeback",
+        disputeAmount: "150.00",
+        disputeCurrency: "MXN",
+        responseDescription: "Customer received the product as described. Shipping tracking confirms delivery.",
+        customerContactEvidence: "Previous emails show customer confirmed receipt.",
+        trackingNumber: "1Z999AA10123456784",
+        invoiceReceipt: "invoice.pdf",
+        merchantEmail: "disputes@mybusiness.com",
+        disputeConsent: "true",
+      },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it("fails dispute response with missing required fields", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_DISPUTE_RESPONSE,
+      values: {},
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.length).toBeGreaterThan(0);
+  });
+
+  it("fails dispute response with invalid amount format", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_DISPUTE_RESPONSE,
+      values: {
+        disputeId: "dp_abc123",
+        orderId: "ord_xyz789",
+        disputeType: "chargeback",
+        disputeAmount: "invalid_amount",
+        disputeCurrency: "MXN",
+        responseDescription: "Test",
+        invoiceReceipt: "invoice.pdf",
+        merchantEmail: "test@test.com",
+        disputeConsent: "true",
+      },
+    });
+    expect(result.valid).toBe(false);
+    const amountError = result.errors.find((e) => e.key === "disputeAmount");
+    expect(amountError).toBeDefined();
+  });
+
+  it("fails dispute response with invalid email", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_DISPUTE_RESPONSE,
+      values: {
+        disputeId: "dp_abc123",
+        orderId: "ord_xyz789",
+        disputeType: "fraud",
+        disputeAmount: "100.00",
+        disputeCurrency: "USD",
+        responseDescription: "Test",
+        invoiceReceipt: "invoice.pdf",
+        merchantEmail: "not-an-email",
+        disputeConsent: "true",
+      },
+    });
+    expect(result.valid).toBe(false);
+    const emailError = result.errors.find((e) => e.key === "merchantEmail");
+    expect(emailError).toBeDefined();
+  });
+
+  it("dispute-response has file upload fields", () => {
+    const fileFields = ONBOARDING_DISPUTE_RESPONSE.fields.filter((f) => f.type === "file");
+    expect(fileFields.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("dispute-response groups are structured correctly", () => {
+    const groups = getFieldsByGroup({ template: ONBOARDING_DISPUTE_RESPONSE });
+    expect(groups.has("dispute_details")).toBe(true);
+    expect(groups.has("response")).toBe(true);
+    expect(groups.has("evidence")).toBe(true);
+    expect(groups.has("contact")).toBe(true);
+    expect(groups.has("consent")).toBe(true);
+  });
+});
+
+/* ── Refund Request Validation ───────────────────────────– */
+describe("Refund Request Validation", () => {
+  it("validates a complete full refund request", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_REFUND_REQUEST,
+      values: {
+        orderId: "ord_abc123",
+        transactionId: "pi_xyz789",
+        refundType: "full",
+        refundCurrency: "MXN",
+        refundReason: "customer_cancellation",
+        refundDescription: "Customer requested cancellation on 2026-02-08",
+        requesterName: "Jane Doe",
+        requesterEmail: "customer@example.com",
+        requesterRole: "customer",
+        refundConsent: "true",
+      },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it("validates a partial refund request with amount", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_REFUND_REQUEST,
+      values: {
+        orderId: "ord_abc123",
+        transactionId: "pi_xyz789",
+        refundType: "partial",
+        refundAmount: "75.50",
+        refundCurrency: "USD",
+        refundReason: "product_damaged",
+        refundDescription: "Customer reported damaged product",
+        requesterName: "John Merchant",
+        requesterEmail: "merchant@business.com",
+        requesterRole: "merchant",
+        refundConsent: "true",
+      },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("fails refund request with invalid amount", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_REFUND_REQUEST,
+      values: {
+        orderId: "ord_abc123",
+        transactionId: "pi_xyz789",
+        refundType: "partial",
+        refundAmount: "not_a_number",
+        refundCurrency: "MXN",
+        refundReason: "customer_cancellation",
+        requesterName: "Jane Doe",
+        requesterEmail: "customer@example.com",
+        requesterRole: "customer",
+        refundConsent: "true",
+      },
+    });
+    expect(result.valid).toBe(false);
+    const amountError = result.errors.find((e) => e.key === "refundAmount");
+    expect(amountError).toBeDefined();
+  });
+
+  it("fails refund request with invalid requester email", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_REFUND_REQUEST,
+      values: {
+        orderId: "ord_abc123",
+        refundType: "full",
+        refundCurrency: "MXN",
+        refundReason: "customer_cancellation",
+        requesterName: "Jane Doe",
+        requesterEmail: "invalid-email",
+        requesterRole: "customer",
+        refundConsent: "true",
+      },
+    });
+    expect(result.valid).toBe(false);
+    const emailError = result.errors.find((e) => e.key === "requesterEmail");
+    expect(emailError).toBeDefined();
+  });
+
+  it("refund-request has file upload field for evidence", () => {
+    const fileFields = ONBOARDING_REFUND_REQUEST.fields.filter((f) => f.type === "file");
+    expect(fileFields.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("refund-request groups are structured correctly", () => {
+    const groups = getFieldsByGroup({ template: ONBOARDING_REFUND_REQUEST });
+    expect(groups.has("refund_details")).toBe(true);
+    expect(groups.has("reason")).toBe(true);
+    expect(groups.has("requester")).toBe(true);
+    expect(groups.has("consent")).toBe(true);
+  });
+});
+
+/* ── Dispute Merchant Operations Validation ───────────────– */
+describe("Dispute Merchant Operations Validation", () => {
+  it("validates a complete case tracking submission", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_DISPUTE_MERCHANT_OPS,
+      values: {
+        caseId: "CASE-2026-001",
+        relatedDisputeId: "dp_abc123",
+        caseType: "dispute",
+        caseStatus: "investigating",
+        priority: "high",
+        assignedTo: "agent@mybusiness.com",
+        escalationContact: "manager@mybusiness.com",
+        internalNotes: "Initial investigation shows documentation supports our case.",
+        financialImpact: "150.00",
+        opsConsent: "true",
+      },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it("fails case tracking with missing required fields", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_DISPUTE_MERCHANT_OPS,
+      values: {},
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.length).toBeGreaterThan(0);
+  });
+
+  it("fails case tracking with invalid assigned email", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_DISPUTE_MERCHANT_OPS,
+      values: {
+        caseId: "CASE-2026-001",
+        caseType: "refund",
+        caseStatus: "open",
+        priority: "medium",
+        assignedTo: "not-an-email",
+        opsConsent: "true",
+      },
+    });
+    expect(result.valid).toBe(false);
+    const assignedError = result.errors.find((e) => e.key === "assignedTo");
+    expect(assignedError).toBeDefined();
+  });
+
+  it("fails case tracking with invalid financial impact", () => {
+    const result = validateSubmission({
+      template: ONBOARDING_DISPUTE_MERCHANT_OPS,
+      values: {
+        caseId: "CASE-2026-001",
+        caseType: "fraud_investigation",
+        caseStatus: "open",
+        priority: "critical",
+        assignedTo: "agent@test.com",
+        financialImpact: "five-hundred",
+        opsConsent: "true",
+      },
+    });
+    expect(result.valid).toBe(false);
+    const financialError = result.errors.find((e) => e.key === "financialImpact");
+    expect(financialError).toBeDefined();
+  });
+
+  it("dispute-merchant-ops has file upload for evidence", () => {
+    const fileFields = ONBOARDING_DISPUTE_MERCHANT_OPS.fields.filter((f) => f.type === "file");
+    expect(fileFields.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("dispute-merchant-ops groups are structured correctly", () => {
+    const groups = getFieldsByGroup({ template: ONBOARDING_DISPUTE_MERCHANT_OPS });
+    expect(groups.has("case_tracking")).toBe(true);
+    expect(groups.has("assignment")).toBe(true);
+    expect(groups.has("resolution")).toBe(true);
+    expect(groups.has("consent")).toBe(true);
+  });
+});
+

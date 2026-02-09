@@ -79,6 +79,8 @@ export const OnboardingTemplateSchema = z.object({
     "bank_transfer",
     "cash_payment",
     "compliance",
+    "dispute",
+    "refund",
   ]),
   /** Country/region applicability (ISO 3166 codes) */
   regions: z.array(z.string()).default(["global"]),

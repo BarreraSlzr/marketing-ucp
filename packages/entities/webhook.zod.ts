@@ -14,6 +14,15 @@ export const WebhookEventTypeSchema = z.enum([
   "payment.refunded",
   "discount.applied",
   "tax.calculated",
+  "dispute.opened",
+  "dispute.evidence_submitted",
+  "dispute.escalated",
+  "dispute.resolved",
+  "dispute.closed",
+  "refund.requested",
+  "refund.approved",
+  "refund.processed",
+  "refund.rejected",
 ]);
 
 export const WebhookEventSchema = z.object({

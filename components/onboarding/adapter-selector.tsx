@@ -29,6 +29,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   bank_transfer: "Bank Transfers",
   cash_payment: "Cash Payment Networks",
   compliance: "KYC/KYB Compliance",
+  dispute: "Disputes & Chargebacks",
+  refund: "Refunds",
 };
 
 export function AdapterSelector(props: AdapterSelectorProps) {

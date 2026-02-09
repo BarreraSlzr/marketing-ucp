@@ -283,6 +283,119 @@ Document verification for KYC/KYB compliance:
 - **Corporate**: Acta Constitutiva, Poder Notarial (optional, for Persona Moral)
 - **Consent**: Data processing authorization under LFPDPPP
 
+### Dispute & Refund Resolution Templates
+
+| ID                      | Name                          | Category    | Regions | Required Fields | Groups                                        |
+|-------------------------|-------------------------------|-------------|---------|-----------------|-----------------------------------------------|
+| `dispute-response`      | Dispute Response              | dispute     | global  | 9               | dispute_details, response, evidence, contact, consent |
+| `refund-request`        | Refund Request                | refund      | global  | 6               | refund_details, reason, requester, consent    |
+| `dispute-merchant-ops`  | Dispute Resolution & Tracking | dispute     | global  | 6               | case_tracking, assignment, resolution, consent |
+
+#### Dispute Response (`dispute-response`)
+
+Merchant response form for payment disputes and chargebacks. Merchants submit evidence and explanations to defend against disputes.
+
+**Fields:**
+- **Dispute Details**: Dispute/chargeback ID, order ID, dispute type (chargeback, pre-arbitration, inquiry, fraud, product not received, product not as described), disputed amount, currency
+- **Response**: Merchant narrative, customer communication log
+- **Evidence**: Tracking number, delivery confirmation, invoice/receipt, additional supporting documents (file uploads)
+- **Contact**: Merchant email for dispute communications
+- **Consent**: Certification that information is accurate
+
+**Usage:**
+```typescript
+import { ONBOARDING_DISPUTE_RESPONSE } from "@repo/onboarding";
+
+<OnboardingForm 
+  template={ONBOARDING_DISPUTE_RESPONSE}
+  onSubmit={async (data) => {
+    // Submit dispute response with evidence
+    await submitDisputeResponse(data);
+  }}
+/>
+```
+
+**Webhook Events:**
+When configured with `webhookUrl`, the form submission emits:
+- `dispute.opened` — New dispute case created
+- `dispute.evidence_submitted` — Evidence uploaded
+
+#### Refund Request (`refund-request`)
+
+Multi-role refund request form for customers, merchants, and operations teams. Supports full and partial refunds with evidence attachment.
+
+**Fields:**
+- **Refund Details**: Order ID, transaction ID, refund type (full/partial), refund amount (for partial), currency
+- **Reason**: Refund reason (customer cancellation, product not received, damaged, not as described, duplicate charge, fraud, service not provided), additional details
+- **Evidence**: Supporting documents (photos, communication screenshots, damage proof)
+- **Requester**: Name, email, role (customer/merchant/ops)
+- **Consent**: Authorization to process refund
+
+**Usage:**
+```typescript
+import { ONBOARDING_REFUND_REQUEST } from "@repo/onboarding";
+
+// Customer-initiated refund
+<OnboardingForm 
+  template={ONBOARDING_REFUND_REQUEST}
+  initialValues={{ requesterRole: "customer" }}
+/>
+
+// Merchant-initiated refund
+<OnboardingForm 
+  template={ONBOARDING_REFUND_REQUEST}
+  initialValues={{ requesterRole: "merchant" }}
+/>
+```
+
+**Webhook Events:**
+When configured with `webhookUrl`, the form submission emits:
+- `refund.requested` — Refund request created
+- `refund.approved` — Refund approved by merchant/ops
+- `refund.processed` — Refund completed
+- `refund.rejected` — Refund denied
+
+#### Dispute Merchant Operations (`dispute-merchant-ops`)
+
+Internal case tracking and resolution form for merchant/operations teams. Manages dispute lifecycle from investigation through resolution.
+
+**Fields:**
+- **Case Tracking**: Case ID, related dispute/refund ID, case type (dispute/refund/fraud investigation/compliance review), status (open/investigating/evidence submitted/awaiting customer/escalated/resolved/closed), priority
+- **Assignment**: Assigned agent email, escalation contact
+- **Resolution**: Internal notes, resolution summary, resolution evidence, financial impact
+- **Consent**: Authorization to update case
+
+**Available Statuses:**
+- `open` — Case just created
+- `investigating` — Initial investigation underway
+- `evidence_submitted` — Evidence received from merchant
+- `awaiting_customer` — Waiting for customer/cardholder response
+- `escalated` — Case escalated to higher authority (payment processor, bank)
+- `resolved_won` — Case resolved in merchant's favor
+- `resolved_lost` — Case resolved against merchant
+- `resolved_refunded` — Case resolved with refund issued
+- `closed` — Case closed and archived
+
+**Usage:**
+```typescript
+import { ONBOARDING_DISPUTE_MERCHANT_OPS } from "@repo/onboarding";
+
+const handleStatusUpdate = async (caseData) => {
+  await updateDisputeCase(caseData);
+  // Trigger webhooks based on status transition
+};
+
+<OnboardingForm 
+  template={ONBOARDING_DISPUTE_MERCHANT_OPS}
+  onSubmit={handleStatusUpdate}
+/>
+```
+
+**Webhook Events:**
+- `dispute.escalated` — Case escalated
+- `dispute.resolved` — Case resolution recorded
+- `dispute.closed` — Case closed by ops team
+
 ### Mexico Compliance Validation
 
 The validation module includes specialized Mexico compliance validators:
@@ -365,7 +478,8 @@ const result = validateSubmission({
 1. Define the `OnboardingTemplate` in `packages/onboarding/templates.ts`
 2. Add it to `ALL_ONBOARDING_TEMPLATES`
 3. Export it from `packages/onboarding/index.ts`
-4. It will automatically appear in the UI
+4. For new categories, add them to the `category` enum in `schemas.ts` and add labels in `components/onboarding/adapter-selector.tsx`
+5. It will automatically appear in the UI
 
 ### 2. Add legal/compliance fields
 
@@ -384,11 +498,32 @@ Add fields with `group: "legal"` or `group: "compliance"`:
 }
 ```
 
-### 3. Custom webhook handler
+### 3. Add dispute/refund resolution flows
+
+Use the `dispute` and `refund` categories for issue resolution workflows:
+
+```typescript
+const ONBOARDING_MY_DISPUTE_FORM: OnboardingTemplate = {
+  id: "my-dispute-form",
+  name: "My Dispute Form",
+  category: "dispute", // or "refund"
+  regions: ["global"],
+  fields: [
+    // Evidence, tracking, narrative, etc.
+  ],
+  webhookUrl: "https://my-service.com/webhooks/disputes", // optional
+};
+```
+
+Available webhook events:
+- `dispute.opened`, `dispute.evidence_submitted`, `dispute.escalated`, `dispute.resolved`, `dispute.closed`
+- `refund.requested`, `refund.approved`, `refund.processed`, `refund.rejected`
+
+### 4. Custom webhook handler
 
 Set `webhookUrl` on any template to receive submission events at your endpoint.
 
-### 4. Persist submissions
+### 5. Persist submissions
 
 The current API is stateless. To persist, add a KV/DB write in `app/api/onboarding/route.ts`:
 
