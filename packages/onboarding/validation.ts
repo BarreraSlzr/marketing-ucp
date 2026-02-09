@@ -73,6 +73,12 @@ export function validateSubmission(params: {
   const { template, values } = params;
   const errors: ValidationResult["errors"] = [];
 
+  const parseMultiSelectValues = (raw: string): string[] =>
+    raw
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter((entry) => entry.length > 0);
+
   for (const field of template.fields) {
     const value = values[field.key]?.trim() ?? "";
 
@@ -89,8 +95,10 @@ export function validateSubmission(params: {
     // Skip further validation for empty optional fields
     if (!value) continue;
 
-    // Pattern validation
-    if (field.pattern) {
+    const isMultiSelect = field.type === "multi_select";
+
+    // Pattern validation (not applicable for multi-select values)
+    if (field.pattern && !isMultiSelect) {
       const regex = new RegExp(field.pattern);
       if (!regex.test(value)) {
         errors.push({
@@ -102,9 +110,25 @@ export function validateSubmission(params: {
     }
 
     // Select field: value must be one of the options
-    if (field.type === "select" && field.options) {
+    if ((field.type === "select" || isMultiSelect) && field.options) {
       const validValues = field.options.map((o) => o.value);
-      if (!validValues.includes(value)) {
+      const selectedValues = isMultiSelect
+        ? parseMultiSelectValues(value)
+        : [value];
+
+      if (isMultiSelect && field.required && selectedValues.length === 0) {
+        errors.push({
+          key: field.key,
+          label: field.label,
+          message: `${field.label} requires at least one selection`,
+        });
+        continue;
+      }
+
+      const invalid = selectedValues.filter(
+        (entry) => !validValues.includes(entry),
+      );
+      if (invalid.length > 0) {
         errors.push({
           key: field.key,
           label: field.label,
