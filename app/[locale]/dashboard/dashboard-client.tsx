@@ -9,6 +9,11 @@ import {
   type PipelineChecksum,
   type PipelineSessionSummary,
 } from "@/lib/dashboard-sessions";
+import {
+  fetchWorkflows,
+  workflowsEndpoint,
+  type WorkflowsResponse,
+} from "@/lib/workflows";
 import { getIsoTimestamp } from "@/utils/stamp";
 import { computeHandlerHealth } from "@repo/pipeline";
 import { useMemo } from "react";
@@ -34,7 +39,6 @@ type ActivityEntry = {
 };
 
 const defaultPollIntervalMs = 10_000;
-
 function isPipelineCompleted(params: {
   events: DashboardPipelineEvent[];
 }): boolean {
@@ -398,10 +402,18 @@ export function DashboardClient(params: {
       revalidateOnFocus: true,
     },
   );
+  const { data: workflowsData } = useSWR<WorkflowsResponse>(
+    workflowsEndpoint,
+    fetchWorkflows,
+  );
 
   const sessions = useMemo(
     () => (Array.isArray(data?.sessions) ? data?.sessions : []),
     [data?.sessions],
+  );
+  const workflows = useMemo(
+    () => (Array.isArray(workflowsData?.workflows) ? workflowsData.workflows : []),
+    [workflowsData?.workflows],
   );
 
   const {
@@ -524,6 +536,48 @@ export function DashboardClient(params: {
               ))
             )}
           </div>
+        </div>
+
+        <div className={styles.panel}>
+          <div className={styles.panelHeader}>
+            <h2>Workflow registry</h2>
+            <Link className={styles.textLink} href="/dashboard/workflows">
+              Explore workflows
+            </Link>
+          </div>
+          {workflows.length === 0 ? (
+            <p className={styles.emptyState}>
+              No workflow definitions available.
+            </p>
+          ) : (
+            <div className={styles.workflowList}>
+              {workflows.map((workflow) => (
+                <Link
+                  key={workflow.id}
+                  className={styles.workflowItem}
+                  href={`/dashboard/workflows/${workflow.id}`}
+                >
+                  <div>
+                    <p className={styles.workflowName}>{workflow.name}</p>
+                    <p className={styles.workflowDescription}>
+                      {workflow.description}
+                    </p>
+                  </div>
+                  <div className={styles.workflowMeta}>
+                    <span className={styles.pill}>{workflow.category}</span>
+                    {workflow.pipeline_type && (
+                      <span className={styles.pill}>
+                        {workflow.pipeline_type}
+                      </span>
+                    )}
+                    <span className={styles.pill}>
+                      {workflow.steps.length} steps
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className={styles.panel}>
