@@ -21,7 +21,7 @@ export const WebhookEventSchema = z.object({
   type: WebhookEventTypeSchema.describe("Event type"),
   timestamp: z.string().datetime().describe("Event occurrence time"),
   source: z
-    .enum(["stripe", "polar", "shopify", "thirdweb", "custom"])
+    .enum(["stripe", "polar", "shopify", "thirdweb", "paypal-mx", "mercadopago", "compropago", "stp", "custom"])
     .describe("Event source / payment handler"),
   order: OrderSchema.optional().describe("Related order (if applicable)"),
   data: z.record(z.any()).describe("Event-specific payload"),
