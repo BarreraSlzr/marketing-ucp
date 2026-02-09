@@ -55,6 +55,36 @@
   gap: 8px;
 }
 
+.demoToggleButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--color-secondary);
+  color: var(--color-foreground);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  transition: transform 0.2s ease;
+}
+
+.demoToggleButton:hover {
+  transform: translateY(-1px);
+}
+
+.demoToggleButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.demoToggleButtonActive {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  border: none;
+}
+
 .secondaryButton {
   padding: 10px 16px;
   border-radius: 12px;
