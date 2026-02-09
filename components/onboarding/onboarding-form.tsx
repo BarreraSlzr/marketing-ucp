@@ -220,6 +220,13 @@ interface FieldRendererProps {
 function OnboardingFieldRenderer(props: FieldRendererProps) {
   const { field, value, error, onChange, readOnly } = props;
 
+  const description = [
+    field.description,
+    field.envVar && `Env var: ${field.envVar}`,
+  ]
+    .filter(Boolean)
+    .join(" • ");
+
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -240,7 +247,7 @@ function OnboardingFieldRenderer(props: FieldRendererProps) {
     <FormField
       name={field.key}
       label={field.label}
-      description={field.description}
+      description={description}
       error={error}
     >
       {field.type === "select" && field.options ? (
@@ -252,6 +259,25 @@ function OnboardingFieldRenderer(props: FieldRendererProps) {
           onChange={handleInputChange}
           disabled={readOnly}
           placeholder={field.placeholder}
+        />
+      ) : field.type === "multi_select" && field.options ? (
+        <NativeSelect
+          id={field.key}
+          name={field.key}
+          options={field.options}
+          value={value
+            .split(",")
+            .map((entry) => entry.trim())
+            .filter((entry) => entry.length > 0)}
+          onChange={(e) => {
+            const selected = Array.from(
+              (e.target as HTMLSelectElement).selectedOptions,
+            ).map((option) => option.value);
+            onChange({ key: field.key, value: selected.join(",") });
+          }}
+          disabled={readOnly}
+          multiple
+          size={Math.min(Math.max(field.options.length, 3), 6)}
         />
       ) : field.type === "checkbox" ? (
         <Checkbox
