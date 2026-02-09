@@ -28,6 +28,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   web3: "Web3 / Crypto",
   bank_transfer: "Bank Transfers",
   cash_payment: "Cash Payment Networks",
+  compliance: "KYC/KYB Compliance",
 };
 
 export function AdapterSelector(props: AdapterSelectorProps) {
