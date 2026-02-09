@@ -1,5 +1,6 @@
 // LEGEND: Validation utilities for onboarding submissions
 // Validates form data against template field requirements
+// Includes Mexico-specific compliance validation (RFC, CURP, CLABE)
 // All usage must comply with this LEGEND and the LICENSE
 
 import type { OnboardingField, OnboardingTemplate } from "./schemas";
@@ -12,6 +13,55 @@ export interface ValidationResult {
     message: string;
   }>;
 }
+
+/* ── Mexico Compliance Validators ────────────────────────── */
+
+/**
+ * Validate a Mexican CLABE (18 digits) with Luhn-style checksum.
+ * The control digit (18th) must satisfy the CLABE verification algorithm.
+ */
+export function validateClabe(params: { clabe: string }): boolean {
+  const { clabe } = params;
+  if (!/^\d{18}$/.test(clabe)) return false;
+
+  const weights = [3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7];
+  let sum = 0;
+  for (let i = 0; i < 17; i++) {
+    sum += (parseInt(clabe[i], 10) * weights[i]) % 10;
+  }
+  const control = (10 - (sum % 10)) % 10;
+  return control === parseInt(clabe[17], 10);
+}
+
+/**
+ * Validate Mexican RFC format (basic structure check).
+ * Persona Física: 4 letters + 6 digits + 3 homoclave = 13 chars
+ * Persona Moral: 3 letters + 6 digits + 3 homoclave = 12 chars
+ */
+export function validateRfc(params: { rfc: string }): boolean {
+  const { rfc } = params;
+  return /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/.test(rfc);
+}
+
+/**
+ * Validate Mexican CURP format (18 characters).
+ */
+export function validateCurp(params: { curp: string }): boolean {
+  const { curp } = params;
+  return /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/.test(curp);
+}
+
+/* ── Enhanced Validation Keys ────────────────────────────── */
+const MEXICO_FIELD_VALIDATORS: Record<string, (value: string) => string | null> = {
+  clabe: (value) =>
+    validateClabe({ clabe: value }) ? null : "Invalid CLABE: checksum verification failed",
+  rfc: (value) =>
+    validateRfc({ rfc: value }) ? null : "Invalid RFC format",
+  curp: (value) =>
+    validateCurp({ curp: value }) ? null : "Invalid CURP format",
+  beneficiaryRfc: (value) =>
+    validateRfc({ rfc: value }) ? null : "Invalid beneficiary RFC format",
+};
 
 /**
  * Validate submission values against a template's field definitions.
@@ -82,6 +132,14 @@ export function validateSubmission(params: {
           label: field.label,
           message: `${field.label} must be a valid URL`,
         });
+      }
+    }
+
+    // Mexico compliance field validators (CLABE checksum, RFC, CURP)
+    if (field.key in MEXICO_FIELD_VALIDATORS) {
+      const mx = MEXICO_FIELD_VALIDATORS[field.key](value);
+      if (mx) {
+        errors.push({ key: field.key, label: field.label, message: mx });
       }
     }
   }
