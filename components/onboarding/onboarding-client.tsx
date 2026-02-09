@@ -10,7 +10,7 @@ import {
   onboardingParsers,
   type OnboardingFormStatus,
 } from "@repo/onboarding";
-import { useQueryStates } from "nuqs";
+import { useQueryStates, parseAsString } from "nuqs";
 import * as React from "react";
 import { AdapterSelector } from "./adapter-selector";
 import styles from "./onboarding-client.module.css";
@@ -39,6 +39,14 @@ export function OnboardingClient(props: OnboardingClientProps) {
     shallow: false,
   });
 
+  // Workflow context parameters
+  const [workflowParams] = useQueryStates({
+    sessionId: parseAsString.withDefault(""),
+    formId: parseAsString.withDefault(""),
+    pipelineId: parseAsString.withDefault(""),
+    workflowId: parseAsString.withDefault(""),
+  });
+
   const [submitting, setSubmitting] = React.useState(false);
   const [submitResult, setSubmitResult] = React.useState<{
     ok: boolean;
@@ -49,6 +57,31 @@ export function OnboardingClient(props: OnboardingClientProps) {
     if (!params.onboarding_template) return undefined;
     return getOnboardingTemplate({ id: params.onboarding_template });
   }, [params.onboarding_template]);
+
+  // Auto-select template if formId is provided in URL
+  React.useEffect(() => {
+    if (
+      workflowParams.formId &&
+      !params.onboarding_template &&
+      !submitting
+    ) {
+      const formToTemplateMap: Record<string, string> = {
+        "buyer-form": "stripe",
+        "payment-form": "stripe",
+        "billing-form": "stripe",
+        "shipping-form": "stripe",
+      };
+      const templateId = formToTemplateMap[workflowParams.formId];
+      if (templateId) {
+        setParams({
+          onboarding_template: templateId,
+          onboarding_status: "draft" as const,
+          onboarding_values: {},
+          onboarding_group: "credentials",
+        });
+      }
+    }
+  }, [workflowParams.formId, params.onboarding_template, submitting, setParams]);
 
   /* ── Select adapter ──────────────────────────────────────── */
   const handleSelect = React.useCallback(
@@ -92,6 +125,13 @@ export function OnboardingClient(props: OnboardingClientProps) {
             values: p.values,
             status: p.status,
             updatedAt: p.updatedAt,
+            // Include workflow context in submission
+            workflowContext: workflowParams.sessionId ? {
+              sessionId: workflowParams.sessionId,
+              formId: workflowParams.formId,
+              pipelineId: workflowParams.pipelineId,
+              workflowId: workflowParams.workflowId,
+            } : undefined,
           }),
         });
 
@@ -118,11 +158,27 @@ export function OnboardingClient(props: OnboardingClientProps) {
         setSubmitting(false);
       }
     },
-    [setParams, submitEndpoint, onSuccess],
+    [setParams, submitEndpoint, onSuccess, workflowParams],
   );
 
   return (
     <div className={styles.container}>
+      {/* Workflow Context Header */}
+      {workflowParams.sessionId && (
+        <div className={styles.workflowContextBanner}>
+          <div className={styles.contextInfo}>
+            <span className={styles.contextLabel}>Workflow Session</span>
+            <code className={styles.contextValue}>{workflowParams.sessionId}</code>
+            {workflowParams.workflowId && (
+              <>
+                <span className={styles.contextLabel}>Workflow</span>
+                <code className={styles.contextValue}>{workflowParams.workflowId}</code>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className={styles.header}>
         <h1 className={styles.title}>Adapter Onboarding</h1>
         <p className={styles.subtitle}>
@@ -163,3 +219,4 @@ export function OnboardingClient(props: OnboardingClientProps) {
     </div>
   );
 }
+
