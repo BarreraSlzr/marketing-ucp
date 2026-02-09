@@ -2,6 +2,8 @@
 
 import type { WorkflowDefinition } from "@repo/workflows";
 import { Plus, X } from "lucide-react";
+import { useQueryStates } from "nuqs";
+import { parseAsJson, parseAsString } from "nuqs/server";
 import { useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import styles from "./page.module.css";
@@ -15,17 +17,52 @@ const filterLabels: Record<FilterKey, string> = {
   required: "Required",
 };
 
+type WorkflowFilter = { key: FilterKey; value: string };
+
+function parseWorkflowFilters(value: unknown): WorkflowFilter[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  const keys: FilterKey[] = ["category", "pipeline", "step_kind", "required"];
+
+  return value
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") {
+        return null;
+      }
+      const record = entry as Record<string, unknown>;
+      const key = record.key;
+      const filterValue = record.value;
+      if (!keys.includes(key as FilterKey)) {
+        return null;
+      }
+      if (typeof filterValue !== "string") {
+        return null;
+      }
+      return { key: key as FilterKey, value: filterValue };
+    })
+    .filter((entry): entry is WorkflowFilter => Boolean(entry));
+}
+
+const workflowParsers = {
+  wf_search: parseAsString.withDefault(""),
+  wf_filters: parseAsJson(parseWorkflowFilters).withDefault([]),
+};
+
 export function WorkflowListClient({
   workflows,
 }: {
   workflows: WorkflowDefinition[];
 }) {
-  const [filters, setFilters] = useState<
-    Array<{ key: FilterKey; value: string }>
-  >([]);
+  const [query, setQuery] = useQueryStates(workflowParsers, {
+    shallow: false,
+  });
   const [activeKey, setActiveKey] = useState<FilterKey>("category");
   const [activeValue, setActiveValue] = useState<string>("");
-  const [search, setSearch] = useState("");
+
+  const filters = query.wf_filters ?? [];
+  const search = query.wf_search ?? "";
 
   const filterOptions = useMemo(() => {
     const categories = Array.from(
@@ -97,25 +134,24 @@ export function WorkflowListClient({
     if (!activeValue) {
       return;
     }
-    setFilters((current) => {
-      const exists = current.some(
-        (filter) => filter.key === activeKey && filter.value === activeValue,
-      );
-      if (exists) {
-        return current;
-      }
-      return [...current, { key: activeKey, value: activeValue }];
-    });
+    const exists = filters.some(
+      (filter) => filter.key === activeKey && filter.value === activeValue,
+    );
+    if (exists) {
+      return;
+    }
+    setQuery({ wf_filters: [...filters, { key: activeKey, value: activeValue }] });
     setActiveValue("");
   };
 
   const removeFilter = (index: number) => {
-    setFilters((current) => current.filter((_, idx) => idx !== index));
+    setQuery({
+      wf_filters: filters.filter((_, idx) => idx !== index),
+    });
   };
 
   const clearFilters = () => {
-    setFilters([]);
-    setSearch("");
+    setQuery({ wf_filters: [], wf_search: "" });
   };
 
   return (
@@ -127,7 +163,7 @@ export function WorkflowListClient({
             className={styles.filterInput}
             placeholder="Search by name, id, or pipeline"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => setQuery({ wf_search: event.target.value })}
           />
         </div>
         <div className={styles.filterGroup}>
