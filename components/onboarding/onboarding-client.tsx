@@ -78,10 +78,29 @@ export function OnboardingClient(props: OnboardingClientProps) {
       };
       const templateId = formToTemplateMap[workflowParams.formId];
       if (templateId) {
+        // Mock credentials for development/testing (no real secrets required)
+        const mockCredentials: Record<string, Record<string, string>> = {
+          stripe: {
+            secretKey: "sk_test_mock_development_key_12345",
+            webhookSecret: "whsec_test_mock_webhook_secret_67890",
+          },
+          polar: {
+            apiKey: "polar_test_mock_api_key_12345",
+            webhookSecret: "whsec_test_mock_webhook_secret_67890",
+            baseUrl: "https://api.polar.sh",
+          },
+          "paypal-mx": {
+            clientId: "AV_mock_client_id_test",
+            clientSecret: "EKj_mock_client_secret_test",
+            webhookId: "WH_mock_webhook_id_test",
+            environment: "sandbox",
+          },
+        };
+
         setParams({
           onboarding_template: templateId,
           onboarding_status: "draft" as const,
-          onboarding_values: {},
+          onboarding_values: mockCredentials[templateId] || {},
           onboarding_group: "credentials",
         });
         // Simulate brief syncing delay for UX feedback
