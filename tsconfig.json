@@ -65,6 +65,30 @@
       "@repo/stripe/*": [
         "./packages/stripe/*"
       ],
+      "@repo/paypal-mx": [
+        "./packages/paypal-mx/index.ts"
+      ],
+      "@repo/paypal-mx/*": [
+        "./packages/paypal-mx/*"
+      ],
+      "@repo/mercadopago": [
+        "./packages/mercadopago/index.ts"
+      ],
+      "@repo/mercadopago/*": [
+        "./packages/mercadopago/*"
+      ],
+      "@repo/compropago": [
+        "./packages/compropago/index.ts"
+      ],
+      "@repo/compropago/*": [
+        "./packages/compropago/*"
+      ],
+      "@repo/stp": [
+        "./packages/stp/index.ts"
+      ],
+      "@repo/stp/*": [
+        "./packages/stp/*"
+      ],
       "@repo/thirdweb": [
         "./packages/thirdweb/index.ts"
       ],
