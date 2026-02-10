@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ScopedEventStream } from "../components/scoped-event-stream";
 import { getWorkflowById } from "../data";
 import styles from "../page.module.css";
+import { CrossPlatformData } from "./components/cross-platform-data";
 import { WorkflowRunnerClient } from "./workflow-runner-client";
 
 export const dynamic = "force-dynamic";
@@ -63,6 +64,14 @@ export default async function WorkflowDetailPage({
           Real-time events from this workflow execution
         </p>
         <ScopedEventStream workflowId={workflow.id} />
+      </section>
+
+      <section className={styles.crossPlatformSection}>
+        <h2 className={styles.sectionTitle}>External Platform Links</h2>
+        <p className={styles.sectionSubtitle}>
+          Connected payment providers and fulfillment platforms
+        </p>
+        <CrossPlatformData />
       </section>
     </div>
   );

@@ -1,15 +1,16 @@
 "use client";
 
 import type { CrossPlatformSessionData } from "@/packages/pipeline/cross-platform-bridge";
+import { parseAsString, useQueryState } from "nuqs";
 import useSWR from "swr";
 import styles from "./cross-platform-data.module.css";
 
 // LEGEND: CrossPlatformData component
 // Displays unified view of internal and external platform data
+// Reads sessionId from URL state to sync with event stream filters
 // All usage must comply with this LEGEND and the LICENSE
 
 interface CrossPlatformDataProps {
-  sessionId: string;
   platforms?: string[];
 }
 
@@ -34,7 +35,21 @@ async function fetchCrossPlatformData(params: {
 }
 
 export function CrossPlatformData(props: CrossPlatformDataProps) {
-  const { sessionId, platforms } = props;
+  const { platforms } = props;
+  
+  // Read sessionId from URL state (syncs with ScopedEventStream filters)
+  const [sessionId] = useQueryState("sessionId", parseAsString);
+
+  // Don't render if no session is selected
+  if (!sessionId) {
+    return (
+      <div className={styles.placeholder}>
+        <p className={styles.placeholderText}>
+          Filter events by Session ID to view external platform links
+        </p>
+      </div>
+    );
+  }
 
   const { data, error, isLoading } = useSWR(
     { sessionId, platforms },

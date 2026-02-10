@@ -445,6 +445,14 @@
   border-top: 2px solid var(--color-border);
 }
 
+.crossPlatformSection {
+  display: grid;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 2px solid var(--color-border);
+}
+
 .sectionTitle {
   font-size: 1.3rem;
   font-weight: 700;

@@ -1,5 +1,19 @@
 @reference "../../../../../theme.css";
 
+.placeholder {
+  padding: 2rem;
+  text-align: center;
+  border: 1px dashed var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-muted);
+}
+
+.placeholderText {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+}
+
 .container {
   display: flex;
   flex-direction: column;
