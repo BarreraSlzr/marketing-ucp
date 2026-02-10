@@ -1,7 +1,7 @@
 "use client";
 
-import useSWR from "swr";
 import type { CrossPlatformSessionData } from "@/packages/pipeline/cross-platform-bridge";
+import useSWR from "swr";
 import styles from "./cross-platform-data.module.css";
 
 // LEGEND: CrossPlatformData component
