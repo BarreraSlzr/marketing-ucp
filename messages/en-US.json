@@ -4,13 +4,14 @@
     "checkoutDemo": "Checkout Demo",
     "dashboard": "Dashboard",
     "createProduct": "Create Product",
+    "docs": "Docs",
     "tryIt": "Try It",
     "github": "GitHub"
   },
   "hero": {
     "label": "Universal Commerce Protocol",
     "title": "Pipeline-native checkout with antifraud built in",
-    "description": "Ship a unified checkout that verifies every step with chain hashes, scores risk in real time, and plugs into any payment or fulfillment provider.",
+    "description": "Ship a unified checkout that verifies every step with chain hashes, scores risk in real time, and streams audit-ready events into workflows.",
     "primaryCta": "Try the Checkout Demo",
     "secondaryCta": "Open the Dashboard"
   },
@@ -74,7 +75,7 @@
   "features": {
     "label": "How it works",
     "title": "Built for verifiable pipelines",
-    "description": "Every step is structured, traceable, and ready for antifraud workflows across providers.",
+    "description": "Every step is structured, traceable, and wired into workflow-ready audit streams.",
     "items": [
       {
         "title": "Pipeline-native steps",
@@ -85,8 +86,8 @@
         "description": "Every input, output, and signal is type-safe and validated from request to registry."
       },
       {
-        "title": "Chain-hash audit trail",
-        "description": "Each pipeline event is cryptographically chained for tamper-evident verification."
+        "title": "Real-time audit trail",
+        "description": "Each pipeline event is cryptographically chained and streamed for verification."
       },
       {
         "title": "Signal collectors",
@@ -94,11 +95,11 @@
       },
       {
         "title": "Multi-PSP compatible",
-        "description": "Run consistent antifraud rules across Stripe, Polar, Shopify, and custom handlers."
+        "description": "Run consistent antifraud rules across Stripe, Thirdweb, Shopify, Polar, and custom handlers."
       },
       {
         "title": "Headless by default",
-        "description": "Expose antifraud assessments via API, dashboards, or automation without vendor lock-in."
+        "description": "Expose antifraud assessments via API, dashboards, or workflow runners without vendor lock-in."
       }
     ]
   },
@@ -109,45 +110,45 @@
     "available": "Available",
     "comingSoon": "Coming soon",
     "items": {
+      "stripe": "Run card, wallet, or subscription flows through Stripe with audit-ready antifraud steps.",
+      "thirdweb": "Bridge onchain commerce with Thirdweb checkout and keep the same fraud pipeline.",
+      "ifpe": "Plug in IFPE adapters for enterprise payment rails with deterministic pipeline events.",
       "shopify": "Sync products, manage inventory, and fulfill orders through the Shopify Storefront API.",
-      "polar": "Accept payments and manage subscriptions with Polar. Delegate payment processing seamlessly.",
-      "cms": "Create SEO-optimized product pages. Publish content that ranks and converts.",
-      "effect": "Typed, composable server-side business logic with EffectTS. Governs validation, enrichment, and processing pipelines."
+      "polar": "Accept payments and manage subscriptions with Polar. Delegate payment processing seamlessly."
     }
   },
   "roadmap": {
     "label": "Development Status",
     "title": "Current Progress & Roadmap",
-    "description": "Dashboard + forms UI are live. Next up: deeper pipeline observability, antifraud automation, and package distribution.",
+    "description": "Antifraud + audit are live. Next up: workflow definitions, real-time event streams, and session replay.",
     "viewIssues": "View All Issues",
     "core": "Core Features",
     "foundation": {
       "title": "Foundation Complete ✅",
       "description": "URL-driven state management, Zod schemas, and the dashboard + forms UI are production-ready."
     },
-    "observability": {
-      "title": "Pipeline Observability",
-      "status": "In Development",
-      "description": "Event logging, checksum verification, risk scoring, and runtime tracing tied to every pipeline step.",
-      "issue": "Issues #5-6"
+    "antifraud": {
+      "title": "Antifraud + Real-time Audit",
+      "status": "Complete",
+      "description": "Risk scoring, chain-hash verification, and audit-ready event logs are fully live."
     },
-    "dashboard": {
-      "title": "Visual Dashboard",
-      "status": "Available",
-      "description": "Real-time pipeline monitoring, event streams, and handler health visualizations.",
-      "issue": "Issues #7-10"
+    "workflows": {
+      "title": "Workflow Definitions Registry",
+      "status": "In Progress",
+      "description": "Define workflow schemas, checkpoints, and validation contracts for every pipeline step.",
+      "issue": "Issue #33"
     },
-    "distribution": {
-      "title": "npm Publishing",
+    "eventStream": {
+      "title": "Real-time Event Stream",
+      "status": "In Progress",
+      "description": "Stream pipeline events live in the dashboard with audit metadata and session linking.",
+      "issue": "Issue #35"
+    },
+    "runner": {
+      "title": "Workflow Runner + Session Replay",
       "status": "Planned",
-      "description": "Publish @ucp/entities, @ucp/pipeline, and handler packages for easy adoption.",
-      "issue": "Issue #11"
-    },
-    "tooling": {
-      "title": "Developer Tools",
-      "status": "Planned",
-      "description": "create-ucp CLI for instant project bootstrapping, templates, and docs.",
-      "issue": "Issue #12"
+      "description": "Replay mock sessions through workflows for audit, demos, and QA automation.",
+      "issue": "Issue #34"
     }
   },
   "development": {
@@ -157,6 +158,88 @@
     "contribute": "How to Contribute",
     "viewSource": "View Source Code",
     "documentation": "Read the Docs"
+  },
+  "docs": {
+    "kicker": "Docs",
+    "title": "Guides for workflows, antifraud, and audit trails",
+    "description": "Use these docs to wire UCP into your stack, validate workflows, and ship real-time audit streams.",
+    "primaryCta": "Open docs on GitHub",
+    "secondaryCta": "Run the checkout demo",
+    "sections": {
+      "start": {
+        "title": "Start here",
+        "description": "Fast paths into the product, demos, and onboarding surfaces."
+      },
+      "guides": {
+        "title": "Guides & references",
+        "description": "Architecture, pipeline tracking, and integration specs."
+      },
+      "active": {
+        "title": "Active builds",
+        "description": "What is shipping right now and where to follow along."
+      }
+    },
+    "start": {
+      "checkout": {
+        "title": "Checkout demo",
+        "description": "Launch the stateless checkout and see URL-driven state in action.",
+        "cta": "Open demo"
+      },
+      "dashboard": {
+        "title": "Risk dashboard",
+        "description": "Inspect pipeline telemetry and antifraud outcomes in real time.",
+        "cta": "View dashboard"
+      },
+      "onboarding": {
+        "title": "Onboarding templates",
+        "description": "Review onboarding flows that map directly to workflow steps.",
+        "cta": "Review templates"
+      }
+    },
+    "guides": {
+      "architecture": {
+        "title": "System architecture",
+        "description": "Understand the pipeline, antifraud layers, and audit primitives.",
+        "cta": "Read architecture"
+      },
+      "workflows": {
+        "title": "Workflow definitions",
+        "description": "Learn how workflows are modeled, validated, and exposed to runners.",
+        "cta": "Open workflow docs"
+      },
+      "pipeline": {
+        "title": "Pipeline tracking",
+        "description": "See how telemetry and chain-hash logs flow through the platform.",
+        "cta": "Explore pipeline tracking"
+      },
+      "webhooks": {
+        "title": "Webhook + idempotency",
+        "description": "Configure webhook ingestion, replay protection, and persistence.",
+        "cta": "Review webhook guide"
+      },
+      "payments": {
+        "title": "Payment handlers",
+        "description": "Implement adapters for Stripe, Thirdweb, IFPE, and beyond.",
+        "cta": "Browse payment handlers"
+      }
+    },
+    "active": {
+      "definitions": {
+        "title": "Workflow definitions registry",
+        "description": "Schema layer for workflow types, checkpoints, and validations.",
+        "cta": "Issue #33"
+      },
+      "stream": {
+        "title": "Real-time event stream",
+        "description": "Live audit event stream powering the dashboard timeline.",
+        "cta": "Issue #35"
+      },
+      "runner": {
+        "title": "Workflow runner + session replay",
+        "description": "Mock sessions for demos, audits, and regression tests.",
+        "cta": "Issue #34"
+      }
+    }
   },
   "cta": {
     "title": "Ready to unify your checkout?",

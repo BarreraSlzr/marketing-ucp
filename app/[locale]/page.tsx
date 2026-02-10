@@ -5,7 +5,6 @@ import {
   Activity,
   ArrowRight,
   CheckCircle2,
-  Clock,
   Code2,
   CreditCard,
   ExternalLink,
@@ -59,6 +58,24 @@ export default function HomePage() {
 
   const integrations = [
     {
+      code: "ST",
+      name: "Stripe Payments",
+      description: t("integrations.items.stripe"),
+      status: t("integrations.available"),
+    },
+    {
+      code: "TH",
+      name: "Thirdweb Commerce",
+      description: t("integrations.items.thirdweb"),
+      status: t("integrations.available"),
+    },
+    {
+      code: "IF",
+      name: "IFPE Adapters",
+      description: t("integrations.items.ifpe"),
+      status: t("integrations.available"),
+    },
+    {
       code: "SH",
       name: "Shopify Storefront",
       description: t("integrations.items.shopify"),
@@ -69,18 +86,6 @@ export default function HomePage() {
       name: "Polar Payments",
       description: t("integrations.items.polar"),
       status: t("integrations.available"),
-    },
-    {
-      code: "CMS",
-      name: "Content Publishing",
-      description: t("integrations.items.cms"),
-      status: t("integrations.comingSoon"),
-    },
-    {
-      code: "FX",
-      name: "EffectTS Logic Layer",
-      description: t("integrations.items.effect"),
-      status: t("integrations.comingSoon"),
     },
   ];
 
@@ -110,6 +115,9 @@ export default function HomePage() {
               </Link>
               <Link href="/products/create" className={styles.navLink}>
                 {t("nav.createProduct")}
+              </Link>
+              <Link href="/docs" className={styles.navLink}>
+                {t("nav.docs")}
               </Link>
               <a
                 href="https://github.com/BarreraSlzr/marketing-ucp"
@@ -347,90 +355,81 @@ export default function HomePage() {
             <div className={styles.roadmapCard}>
               <div className={styles.roadmapCardHeader}>
                 <div className={styles.roadmapIcon}>
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div className={styles.roadmapCardTitleGroup}>
+                  <h3 className={styles.roadmapCardTitle}>
+                    {t("roadmap.antifraud.title")}
+                  </h3>
+                  <span className={styles.roadmapStatusComplete}>
+                    {t("roadmap.antifraud.status")}
+                  </span>
+                </div>
+              </div>
+              <p className={styles.roadmapCardDescription}>
+                {t("roadmap.antifraud.description")}
+              </p>
+            </div>
+
+            {/* Workflow definitions */}
+            <div className={styles.roadmapCard}>
+              <div className={styles.roadmapCardHeader}>
+                <div className={styles.roadmapIcon}>
                   <Settings className="h-5 w-5" />
                 </div>
                 <div className={styles.roadmapCardTitleGroup}>
                   <h3 className={styles.roadmapCardTitle}>
-                    {t("roadmap.observability.title")}
+                    {t("roadmap.workflows.title")}
                   </h3>
                   <span className={styles.roadmapStatusProgress}>
-                    {t("roadmap.observability.status")}
+                    {t("roadmap.workflows.status")}
                   </span>
                 </div>
               </div>
               <p className={styles.roadmapCardDescription}>
-                {t("roadmap.observability.description")}
+                {t("roadmap.workflows.description")}
               </p>
               <a
-                href="https://github.com/BarreraSlzr/marketing-ucp/issues/5"
+                href="https://github.com/BarreraSlzr/marketing-ucp/issues/33"
                 className={styles.roadmapLink}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {t("roadmap.observability.issue")}
+                {t("roadmap.workflows.issue")}
                 <ExternalLink className="ml-1 inline-block h-3 w-3" />
               </a>
             </div>
 
-            {/* Dashboard */}
+            {/* Real-time event stream */}
             <div className={styles.roadmapCard}>
               <div className={styles.roadmapCardHeader}>
                 <div className={styles.roadmapIcon}>
-                  <Clock className="h-5 w-5" />
+                  <Activity className="h-5 w-5" />
                 </div>
                 <div className={styles.roadmapCardTitleGroup}>
                   <h3 className={styles.roadmapCardTitle}>
-                    {t("roadmap.dashboard.title")}
+                    {t("roadmap.eventStream.title")}
                   </h3>
-                  <span className={styles.roadmapStatusComplete}>
-                    {t("roadmap.dashboard.status")}
+                  <span className={styles.roadmapStatusProgress}>
+                    {t("roadmap.eventStream.status")}
                   </span>
                 </div>
               </div>
               <p className={styles.roadmapCardDescription}>
-                {t("roadmap.dashboard.description")}
+                {t("roadmap.eventStream.description")}
               </p>
               <a
-                href="https://github.com/BarreraSlzr/marketing-ucp/issues/7"
+                href="https://github.com/BarreraSlzr/marketing-ucp/issues/35"
                 className={styles.roadmapLink}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {t("roadmap.dashboard.issue")}
+                {t("roadmap.eventStream.issue")}
                 <ExternalLink className="ml-1 inline-block h-3 w-3" />
               </a>
             </div>
 
-            {/* Distribution */}
-            <div className={styles.roadmapCard}>
-              <div className={styles.roadmapCardHeader}>
-                <div className={styles.roadmapIcon}>
-                  <Package className="h-5 w-5" />
-                </div>
-                <div className={styles.roadmapCardTitleGroup}>
-                  <h3 className={styles.roadmapCardTitle}>
-                    {t("roadmap.distribution.title")}
-                  </h3>
-                  <span className={styles.roadmapStatusPlanned}>
-                    {t("roadmap.distribution.status")}
-                  </span>
-                </div>
-              </div>
-              <p className={styles.roadmapCardDescription}>
-                {t("roadmap.distribution.description")}
-              </p>
-              <a
-                href="https://github.com/BarreraSlzr/marketing-ucp/issues/11"
-                className={styles.roadmapLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("roadmap.distribution.issue")}
-                <ExternalLink className="ml-1 inline-block h-3 w-3" />
-              </a>
-            </div>
-
-            {/* Developer Tools */}
+            {/* Workflow runner */}
             <div className={styles.roadmapCard}>
               <div className={styles.roadmapCardHeader}>
                 <div className={styles.roadmapIcon}>
@@ -438,23 +437,23 @@ export default function HomePage() {
                 </div>
                 <div className={styles.roadmapCardTitleGroup}>
                   <h3 className={styles.roadmapCardTitle}>
-                    {t("roadmap.tooling.title")}
+                    {t("roadmap.runner.title")}
                   </h3>
                   <span className={styles.roadmapStatusPlanned}>
-                    {t("roadmap.tooling.status")}
+                    {t("roadmap.runner.status")}
                   </span>
                 </div>
               </div>
               <p className={styles.roadmapCardDescription}>
-                {t("roadmap.tooling.description")}
+                {t("roadmap.runner.description")}
               </p>
               <a
-                href="https://github.com/BarreraSlzr/marketing-ucp/issues/12"
+                href="https://github.com/BarreraSlzr/marketing-ucp/issues/34"
                 className={styles.roadmapLink}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {t("roadmap.tooling.issue")}
+                {t("roadmap.runner.issue")}
                 <ExternalLink className="ml-1 inline-block h-3 w-3" />
               </a>
             </div>
@@ -502,15 +501,10 @@ export default function HomePage() {
               <Code2 className="mr-2 inline-block h-4 w-4" />
               {t("development.viewSource")}
             </a>
-            <a
-              href="https://github.com/BarreraSlzr/marketing-ucp/tree/main/docs"
-              className={styles.heroSecondary}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Link href="/docs" className={styles.heroSecondary}>
               <FileText className="mr-2 inline-block h-4 w-4" />
               {t("development.documentation")}
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -539,6 +533,9 @@ export default function HomePage() {
             </Link>
             <Link href="/products/create" className={styles.footerLink}>
               {t("footer.products")}
+            </Link>
+            <Link href="/docs" className={styles.footerLink}>
+              {t("nav.docs")}
             </Link>
             <a
               href="https://github.com/BarreraSlzr/marketing-ucp"
