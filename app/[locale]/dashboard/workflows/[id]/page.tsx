@@ -1,9 +1,10 @@
-import { WorkflowEventStream } from "@/components/pipeline/workflow-event-stream";
 import { Link } from "@/i18n/navigation";
 import { ALL_TEMPLATES } from "@repo/entities/templates";
 import { notFound } from "next/navigation";
 import { getWorkflowById } from "../data";
 import styles from "../page.module.css";
+import { WorkflowEventStream } from "./components/workflow-event-stream";
+import { WorkflowFilters } from "./components/workflow-filters";
 import { WorkflowRunnerClient } from "./workflow-runner-client";
 
 export const dynamic = "force-dynamic";
@@ -58,6 +59,8 @@ export default async function WorkflowDetailPage({
       />
 
       <section className={styles.eventStreamSection}>
+        <h2 className={styles.sectionTitle}>Live Event Stream</h2>
+        <WorkflowFilters workflowId={workflow.id} />
         <WorkflowEventStream workflowId={workflow.id} />
       </section>
     </div>
