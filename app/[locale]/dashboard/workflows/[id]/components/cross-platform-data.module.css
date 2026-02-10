@@ -1,0 +1,148 @@
+@reference "../../../../../theme.css";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.infoLabel {
+  color: var(--color-muted-foreground);
+  font-weight: 500;
+}
+
+.infoValue {
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--color-secondary);
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--color-foreground);
+}
+
+.platformList {
+  display: grid;
+  gap: 12px;
+}
+
+.platformCard {
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.platformHeader {
+  display: flex;
+  align-items: center;
+}
+
+.platformName {
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 2px solid currentColor;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.platformData {
+  margin-top: 4px;
+}
+
+.platformDataSummary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  user-select: none;
+}
+
+.platformDataSummary:hover {
+  opacity: 0.8;
+}
+
+.platformDataContent {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--color-secondary);
+  font-family: monospace;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  color: var(--color-foreground);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.loading,
+.error,
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-muted-foreground);
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  color: #ef4444;
+}
+
+.errorDetail {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
