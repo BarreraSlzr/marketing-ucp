@@ -1,10 +1,9 @@
 import { Link } from "@/i18n/navigation";
 import { ALL_TEMPLATES } from "@repo/entities/templates";
 import { notFound } from "next/navigation";
+import { ScopedEventStream } from "../components/scoped-event-stream";
 import { getWorkflowById } from "../data";
 import styles from "../page.module.css";
-import { WorkflowEventStream } from "./components/workflow-event-stream";
-import { WorkflowFilters } from "./components/workflow-filters";
 import { WorkflowRunnerClient } from "./workflow-runner-client";
 
 export const dynamic = "force-dynamic";
@@ -59,9 +58,11 @@ export default async function WorkflowDetailPage({
       />
 
       <section className={styles.eventStreamSection}>
-        <h2 className={styles.sectionTitle}>Live Event Stream</h2>
-        <WorkflowFilters workflowId={workflow.id} />
-        <WorkflowEventStream workflowId={workflow.id} />
+        <h2 className={styles.sectionTitle}>Live Event Monitoring</h2>
+        <p className={styles.sectionSubtitle}>
+          Real-time events from this workflow execution
+        </p>
+        <ScopedEventStream workflowId={workflow.id} />
       </section>
     </div>
   );

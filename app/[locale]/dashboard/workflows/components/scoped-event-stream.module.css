@@ -1,225 +1,12 @@
-/* LEGEND: WorkflowStream styles
- * Unified workflow monitoring with registry templates and live event stream
+/* LEGEND: ScopedEventStream styles
+ * Reusable event stream component styles
  * All usage must comply with this LEGEND and the LICENSE
  */
 
-.stream {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-/* Registry Section */
-.registrySection {
+.container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-}
-
-.registryHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.registryTitle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0;
-}
-
-.registrySubtitle {
-  margin: 0.25rem 0 0;
-  color: var(--color-muted-foreground);
-  font-size: 0.875rem;
-}
-
-.workflowGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1rem;
-}
-
-.workflowCard {
-  padding: 1.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  background: var(--color-card);
-  transition: all 0.2s ease;
-}
-
-.workflowCard:hover {
-  border-color: var(--color-primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.workflowCardHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.workflowName {
-  margin: 0;
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-
-.workflowCategory {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  color: var(--color-muted-foreground);
-  background: var(--color-muted);
-  border-radius: 0.25rem;
-  white-space: nowrap;
-}
-
-.workflowDescription {
-  margin: 0 0 1rem;
-  font-size: 0.875rem;
-  color: var(--color-muted-foreground);
-  line-height: 1.5;
-}
-
-.workflowMeta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.metaPill {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  font-family: var(--font-mono);
-  color: var(--color-foreground);
-  background: var(--color-muted);
-  border-radius: 0.25rem;
-}
-
-.workflowActions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.playButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: white;
-  background: var(--color-primary);
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.playButton:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-.viewButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-foreground);
-  text-decoration: none;
-  background: var(--color-muted);
-  border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
-  transition: all 0.2s ease;
-}
-
-.viewButton:hover {
-  border-color: var(--color-primary);
-  background: var(--color-card);
-}
-
-/* Selector Section */
-.selectorSection {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  background: var(--color-card);
-}
-
-.selectorHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.selectorTitle {
-  margin: 0;
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-
-.selectorSubtitle {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--color-muted-foreground);
-}
-
-.selectorControl {
-  display: flex;
-  align-items: end;
-  gap: 1rem;
-}
-
-.selectorLabel {
-  display: none;
-}
-
-.selectorSelect {
-  flex: 1;
-  padding: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--color-foreground);
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
-  transition: border-color 0.2s ease;
-}
-
-.selectorSelect:focus {
-  outline: none;
-  border-color: var(--color-primary);
-}
-
-.clearSelectorButton {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-destructive-foreground);
-  background: var(--color-destructive);
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.clearSelectorButton:hover {
-  opacity: 0.9;
 }
 
 /* Filters Section */
@@ -237,7 +24,7 @@
 
 .filtersTitle {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
 }
 
@@ -332,7 +119,7 @@
 
 .eventsTitle {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
 }
 
@@ -530,7 +317,6 @@
   overflow-x: auto;
 }
 
-.icon,
 .buttonIcon {
   width: 1rem;
   height: 1rem;
