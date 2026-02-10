@@ -1,7 +1,9 @@
 import { Link } from "@/i18n/navigation";
 import { getWorkflowDefinitions } from "./data";
-import { WorkflowListClient } from "./workflow-list";
 import styles from "./page.module.css";
+import { WorkflowListClient } from "./workflow-list";
+import { WorkflowsEventStream } from "./workflows-event-stream";
+import { WorkflowsFilters } from "./workflows-filters";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +26,15 @@ export default async function WorkflowsPage() {
       </header>
 
       <WorkflowListClient workflows={workflows} />
+
+      <section className={styles.monitoringSection}>
+        <h2 className={styles.sectionTitle}>Live Workflow Monitoring</h2>
+        <p className={styles.sectionSubtitle}>
+          Real-time event stream across all workflows with filtering
+        </p>
+        <WorkflowsFilters />
+        <WorkflowsEventStream />
+      </section>
     </div>
   );
 }
