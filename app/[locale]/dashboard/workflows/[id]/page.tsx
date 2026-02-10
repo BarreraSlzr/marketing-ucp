@@ -1,3 +1,4 @@
+import { WorkflowEventStream } from "@/components/pipeline/workflow-event-stream";
 import { Link } from "@/i18n/navigation";
 import { ALL_TEMPLATES } from "@repo/entities/templates";
 import { notFound } from "next/navigation";
@@ -55,6 +56,10 @@ export default async function WorkflowDetailPage({
         workflow={workflow}
         templateParams={template.params as Record<string, unknown>}
       />
+
+      <section className={styles.eventStreamSection}>
+        <WorkflowEventStream workflowId={workflow.id} />
+      </section>
     </div>
   );
 }
