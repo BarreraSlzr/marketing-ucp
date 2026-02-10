@@ -111,3 +111,12 @@ export {
     type HandlerHealthStatus
 } from "./health";
 
+/* ── Cross-Platform Bridge ──────────────────────────────── */
+export {
+    getCrossPlatformSessionData,
+    getLinkedPlatforms,
+    getSessionByExternalId,
+    linkSessionToPlatform,
+    type CrossPlatformLink,
+    type CrossPlatformSessionData
+} from "./cross-platform-bridge";

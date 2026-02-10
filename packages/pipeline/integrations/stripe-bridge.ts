@@ -6,7 +6,7 @@ import { linkSessionToPlatform } from "../cross-platform-bridge";
 // All usage must comply with this LEGEND and the LICENSE
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_mock", {
-  apiVersion: "2024-12-18.acacia",
+  apiVersion: "2025-02-24.acacia",
 });
 
 interface LinkStripeSessionParams {
