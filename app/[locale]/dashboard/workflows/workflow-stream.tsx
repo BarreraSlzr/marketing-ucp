@@ -4,7 +4,6 @@ import { Link } from "@/i18n/navigation";
 import type { WorkflowDefinition } from "@repo/workflows";
 import { Play, Wand2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { parseAsString, useQueryStates } from "nuqs";
 import { ScopedEventStream } from "./components/scoped-event-stream";
 import styles from "./workflow-stream.module.css";
 
@@ -19,9 +18,6 @@ interface WorkflowStreamProps {
 export function WorkflowStream(props: WorkflowStreamProps) {
   const { workflows } = props;
   const router = useRouter();
-  const [filters, setFilters] = useQueryStates({
-    workflowId: parseAsString,
-  });
 
   const handlePlayDemo = (workflowId: string) => {
     router.push(`/dashboard/workflows/${workflowId}`);
@@ -86,50 +82,8 @@ export function WorkflowStream(props: WorkflowStreamProps) {
         </div>
       </section>
 
-      {/* Workflow Selector */}
-      <section className={styles.selectorSection}>
-        <div className={styles.selectorHeader}>
-          <h2 className={styles.selectorTitle}>Filter by Workflow</h2>
-          <p className={styles.selectorSubtitle}>
-            Select a specific workflow to view its events, or leave blank to see all
-          </p>
-        </div>
-        <div className={styles.selectorControl}>
-          <label htmlFor="workflowFilter" className={styles.selectorLabel}>
-            Workflow
-          </label>
-          <select
-            id="workflowFilter"
-            value={filters.workflowId || ""}
-            onChange={(e) =>
-              setFilters({ workflowId: e.target.value || null })
-            }
-            className={styles.selectorSelect}
-          >
-            <option value="">All workflows</option>
-            {workflows.map((workflow) => (
-              <option key={workflow.id} value={workflow.id}>
-                {workflow.name}
-              </option>
-            ))}
-          </select>
-          {filters.workflowId && (
-            <button
-              type="button"
-              onClick={() => setFilters({ workflowId: null })}
-              className={styles.clearSelectorButton}
-            >
-              Clear selection
-            </button>
-          )}
-        </div>
-      </section>
-
       {/* Live Event Stream with Filters */}
-      <ScopedEventStream
-        workflowId={filters.workflowId || undefined}
-        showWorkflowBadge={!filters.workflowId}
-      />
+      <ScopedEventStream workflows={workflows} showWorkflowBadge />
     </div>
   );
 }

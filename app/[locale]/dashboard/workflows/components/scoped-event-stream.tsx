@@ -1,5 +1,6 @@
 "use client";
 
+import type { WorkflowDefinition } from "@repo/workflows";
 import { RefreshCw } from "lucide-react";
 import { parseAsString, useQueryStates } from "nuqs";
 import { useState } from "react";
@@ -15,6 +16,7 @@ import styles from "./scoped-event-stream.module.css";
 interface ScopedEventStreamProps {
   workflowId?: string;
   showWorkflowBadge?: boolean;
+  workflows?: WorkflowDefinition[];
 }
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -33,9 +35,10 @@ function formatTimestamp(params: { timestamp: string }): string {
 }
 
 export function ScopedEventStream(props: ScopedEventStreamProps) {
-  const { workflowId, showWorkflowBadge = false } = props;
+  const { workflowId, showWorkflowBadge = false, workflows } = props;
 
   const [filters, setFilters] = useQueryStates({
+    workflowId: parseAsString,
     sessionId: parseAsString,
     pipelineId: parseAsString,
     status: parseAsString,
@@ -51,7 +54,7 @@ export function ScopedEventStream(props: ScopedEventStreamProps) {
     mutate,
   } = useSWR(
     {
-      workflowId: workflowId || undefined,
+      workflowId: workflowId || filters.workflowId || undefined,
       sessionId: filters.sessionId || undefined,
       pipelineId: filters.pipelineId || undefined,
       limit: 50,
@@ -77,7 +80,7 @@ export function ScopedEventStream(props: ScopedEventStreamProps) {
   };
 
   const hasActiveFilters =
-    filters.sessionId || filters.pipelineId || filters.status;
+    filters.workflowId || filters.sessionId || filters.pipelineId || filters.status;
 
   return (
     <div className={styles.container}>
@@ -98,6 +101,29 @@ export function ScopedEventStream(props: ScopedEventStreamProps) {
         </div>
 
         <div className={styles.filters}>
+          {workflows && (
+            <div className={styles.filterGroup}>
+              <label htmlFor="workflowId" className={styles.filterLabel}>
+                Workflow
+              </label>
+              <select
+                id="workflowId"
+                value={filters.workflowId || ""}
+                onChange={(e) =>
+                  setFilters({ workflowId: e.target.value || null })
+                }
+                className={styles.filterSelect}
+              >
+                <option value="">All workflows</option>
+                {workflows.map((workflow) => (
+                  <option key={workflow.id} value={workflow.id}>
+                    {workflow.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div className={styles.filterGroup}>
             <label htmlFor="sessionId" className={styles.filterLabel}>
               Session ID
@@ -153,6 +179,7 @@ export function ScopedEventStream(props: ScopedEventStreamProps) {
               type="button"
               onClick={() =>
                 setFilters({
+                  workflowId: null,
                   sessionId: null,
                   pipelineId: null,
                   status: null,
