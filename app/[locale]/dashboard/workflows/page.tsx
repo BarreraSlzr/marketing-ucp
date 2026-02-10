@@ -1,7 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { getWorkflowDefinitions } from "./data";
-import { WorkflowListClient } from "./workflow-list";
 import styles from "./page.module.css";
+import { WorkflowStream } from "./workflow-stream";
 
 export const dynamic = "force-dynamic";
 
@@ -12,10 +12,10 @@ export default async function WorkflowsPage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div>
-          <p className={styles.kicker}>Registry</p>
-          <h1 className={styles.title}>Workflow Definitions</h1>
+          <p className={styles.kicker}>Workflow Registry</p>
+          <h1 className={styles.title}>Workflow Orchestration</h1>
           <p className={styles.subtitle}>
-            Canonical checkout and payment workflows powering UCP flows.
+            Launch demo workflows, monitor live events, and explore canonical checkout patterns.
           </p>
         </div>
         <Link className={styles.backLink} href="/dashboard">
@@ -23,7 +23,7 @@ export default async function WorkflowsPage() {
         </Link>
       </header>
 
-      <WorkflowListClient workflows={workflows} />
+      <WorkflowStream workflows={workflows} />
     </div>
   );
 }

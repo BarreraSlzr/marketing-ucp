@@ -1,0 +1,139 @@
+@reference "../../../../theme.css";
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  color: var(--color-muted-foreground);
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--color-muted-foreground);
+  margin-top: 6px;
+}
+
+.backLink {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.categories {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.typeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.typeHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.typeName {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.typeCount {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--color-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+}
+
+.workflowGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.workflowCard {
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  padding: 20px;
+  background: linear-gradient(
+    140deg,
+    rgba(29, 114, 232, 0.08),
+    transparent 60%
+  );
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.workflowCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.1);
+  border-color: var(--color-primary);
+}
+
+.workflowCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.workflowName {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--color-foreground);
+}
+
+.workflowDescription {
+  font-size: 0.85rem;
+  color: var(--color-muted-foreground);
+  line-height: 1.5;
+}
+
+.workflowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.pill {
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-secondary);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+}

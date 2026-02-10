@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { ALL_TEMPLATES } from "@repo/entities/templates";
 import { notFound } from "next/navigation";
+import { ScopedEventStream } from "../components/scoped-event-stream";
 import { getWorkflowById } from "../data";
 import styles from "../page.module.css";
 import { WorkflowRunnerClient } from "./workflow-runner-client";
@@ -55,6 +56,14 @@ export default async function WorkflowDetailPage({
         workflow={workflow}
         templateParams={template.params as Record<string, unknown>}
       />
+
+      <section className={styles.eventStreamSection}>
+        <h2 className={styles.sectionTitle}>Live Event Monitoring</h2>
+        <p className={styles.sectionSubtitle}>
+          Real-time events from this workflow execution
+        </p>
+        <ScopedEventStream workflowId={workflow.id} />
+      </section>
     </div>
   );
 }
